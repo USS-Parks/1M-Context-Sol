@@ -72,7 +72,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-03 — Record architecture and threat decisions
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; awaiting commit and push
+- **Status:** Complete
 - **Scope:** Nine accepted ADRs, sole-authority/component contract, twenty trust transitions, Mermaid data flow, repository-scoped threat model, README/security linkage, and structural tests.
 - **Authority result:** Codex retains the agent loop and credentials; `cctx` has one named owner for install, model policy, lifecycle capture, durable context, recall, compaction, rollover, MCP, and compliance verdicts.
 - **Excluded parallel systems:** No replacement agent orchestrator, second durable store, cloud transcript backend, or alternate-model router.
@@ -88,5 +88,5 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - 20 trust transitions have owned endpoints, validation controls, and fail-closed outcomes
   - all 9 ADRs have accepted status and normalized contract fields
   - threat model contains all required repository-scope sections and exact cache footer
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+- **Implementation commit:** `907254aca8a7228d5af7561004cb220921590362`
+- **Published remote SHA:** `907254aca8a7228d5af7561004cb220921590362` on `codex/context-continuum-v0.1`
