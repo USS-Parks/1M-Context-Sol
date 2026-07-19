@@ -164,7 +164,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-12 — Implement native-window doctor and status output
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Status:** Complete
 - **Scope:** Read-only `cctx doctor` and `cctx status` commands, detailed and compact JSON forms, deterministic policy evaluator, strict sanitized TOML inspection, five-code process contract, Draft 2020-12 schemas, claim-safe human rendering, actionable failure guidance, and frozen golden outputs.
 - **Truth boundary:** `policy_ready` means configuration policy is internally ready for exact Sol. Every CAC-12 report still fixes `catalog_is_not_live_proof = true`, `live_native_window_proven = false`, and `release_claim_ready = false`; catalog/status arithmetic cannot close G2.
 - **Capacity labels:** All six IDs, labels, units, and authorities match the claim vocabulary. Official 1,050,000 total, 922,000 maximum input, and 128,000 maximum output remain separate from resolved catalog policy, Effective Codex budget, operational threshold, and durable capacity.
@@ -183,5 +183,6 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - exact-one-Sol catalog shape, strict config types, paired compaction settings, operational threshold, guard proof, and distinct usage/runtime/readiness/incompatibility exits are enforced
   - live installed `cctx doctor --json` and `cctx status --json` both returned `not_ready`/2 with exact configured Sol, ChatGPT auth, Codex 0.144.5, resolved 272,000, Effective Codex budget 258,400, and 17 checks (9 pass, 1 warn, 7 fail)
   - live config SHA-256 remained `6F274971BD736B79CDEE52DA94A584134217528420C2CDBFEBCAD6F5D5CB0BDA`; no config write, credential entry, catalog installation, or model request occurred
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+  - GitHub Actions run [29708215480](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29708215480) passed all 10 jobs
+- **Implementation commit:** `ad14add5edc520aa423148a6f013ded07cec6dc9`
+- **Published remote SHA:** `ad14add5edc520aa423148a6f013ded07cec6dc9` on `codex/context-continuum-v0.1`
