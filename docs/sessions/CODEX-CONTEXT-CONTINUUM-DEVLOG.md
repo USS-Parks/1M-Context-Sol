@@ -5,7 +5,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-00 — Bootstrap the canonical repository and governance
 
 - **Date:** 2026-07-19
-- **Status:** Gate passed; awaiting commit and push
+- **Status:** Complete
 - **Authorization:** Full STS execution, commits, and pushes authorized by the user.
 - **Remote:** `https://github.com/USS-Parks/Codex-Added-Context`
 - **Branch:** `codex/context-continuum-v0.1`
@@ -21,5 +21,5 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - PSPR validator — 47 prompts, 47 unique IDs, approved STS status
   - Remote probe — `USS-Parks/Codex-Added-Context` exists, public, empty at bootstrap, default branch `main`
   - Toolchain — Git 2.54.0.windows.1; Cargo/Rust 1.96.1
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+- **Implementation commit:** `f46254ca0967d0a9f04bfc9e900b525390432619`
+- **Published remote SHA:** `f46254ca0967d0a9f04bfc9e900b525390432619` on both `main` and `codex/context-continuum-v0.1`

@@ -8,7 +8,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 
 | Prompt | Gate | Status | Evidence |
 |---|---|---|---|
-| CAC-00 | Repository identity, scope, skeleton checks, first push | Local gate passed; push pending | DEVLOG entry |
+| CAC-00 | Repository identity, scope, skeleton checks, first push | Passed | `f46254ca0967d0a9f04bfc9e900b525390432619` and DEVLOG entry |
 | CAC-01 onward | PSPR prompt-local gates | Not started | — |
 
 ## Baseline local checks
