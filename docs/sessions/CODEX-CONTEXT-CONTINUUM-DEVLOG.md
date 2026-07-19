@@ -117,7 +117,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-10 — Implement versioned model-catalog parsing and overlay generation
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Status:** Complete
 - **Scope:** Strict Codex 0.144.5 catalog profile, exact-one-Sol selection, deterministic overlay/manifest serialization, official-limit and policy validation, live installed-catalog capture, CLI generation, Draft 2020-12 schemas, drift/malformed fixtures, and preservation tests.
 - **Candidate policy:** 1,050,000 context, 1,050,000 maximum, 96% effective (1,008,000 internal budget), with `auto_compact_token_limit` omitted until CAC-14 calibration.
 - **Preservation result:** Only `context_window`, `max_context_window`, and `effective_context_window_percent` changed in the live candidate. Installed base-instruction bytes, model-message semantics, and reviewed feature flags were equivalent.
@@ -133,5 +133,6 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - Codex's own debug parser accepted the command-scoped overlay and reported `1050000,1050000,96`
   - live output catalog SHA-256: `eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081`
   - no model request, user configuration change, credential, or install occurred
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+  - GitHub Actions run [29705566278](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29705566278) — passed all 10 jobs
+- **Implementation commit:** `359c572fb2775a4f68608ff8e3a333dfdc31abfb`
+- **Published remote SHA:** `359c572fb2775a4f68608ff8e3a333dfdc31abfb` on `codex/context-continuum-v0.1`

@@ -13,7 +13,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CAC-02 | Claim vocabulary, limitation matrix, gate map, and fail-closed wording/model tests | Passed | `d21716c34bda05e80f9d328c7814c77cf626be4b`, capability vocabulary, and claim-contract tests |
 | CAC-03 | ADRs, sole authorities, trust transitions, data flow, repository threat model | Passed | `907254aca8a7228d5af7561004cb220921590362`, architecture contract/tests, and threat model |
 | CAC-04 | Rust/docs, PSPR/schema, secrets, supply-chain CI plus negative proofs | Passed | `10c749c5dcecab66ce51ee008dff669ff2952fdd`, repair `6645fce3793a8e74dda72765084a507de1ba1f91`, and green Actions run [29704751317](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29704751317) |
-| CAC-10 | Versioned Sol-only catalog generation, preservation, drift guards, installed-parser proof | Local gate passed; commit and remote CI pending | `src/model_catalog.rs`, catalog schemas/tests, and `docs/evidence/CAC-10/catalog-overlay-manifest.json` |
+| CAC-10 | Versioned Sol-only catalog generation, preservation, drift guards, installed-parser proof | Passed | `359c572fb2775a4f68608ff8e3a333dfdc31abfb`, catalog schemas/tests, CAC-10 manifest, and green Actions run [29705566278](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29705566278) |
 | CAC-11 onward | PSPR prompt-local gates | Not started | — |
 
 ## Baseline local checks
