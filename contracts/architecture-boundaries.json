@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/USS-Parks/Codex-Added-Context",
+  "authority_invariants": {
+    "agent_loop": "codex_host",
+    "credentials": "codex_auth",
+    "durable_context": "reservoir",
+    "model_compliance": "doctor_status",
+    "global_installation": "launcher_installer",
+    "compaction_decision": "compaction_guard"
+  },
+  "forbidden_subsystems": [
+    "parallel_agent_orchestrator",
+    "second_durable_store",
+    "cloud_transcript_backend",
+    "alternate_model_router"
+  ],
+  "components": [
+    {
+      "id": "codex_host",
+      "owner": "OpenAI Codex",
+      "role": "Runs the reasoning loop, tools, permissions, hooks, MCP client, and task lifecycle.",
+      "inputs": ["user prompts", "verified config", "tool results", "bounded untrusted recall"],
+      "outputs": ["hook events", "MCP requests", "task state", "model requests"],
+      "failure_mode": "Context Continuum marks the task noncompliant or unavailable; it does not replace the Codex loop.",
+      "external": true
+    },
+    {
+      "id": "codex_auth",
+      "owner": "OpenAI Codex authentication",
+      "role": "Stores and applies ChatGPT or official OpenAI API authentication.",
+      "inputs": ["operator login or API-key entry through Codex"],
+      "outputs": ["opaque authenticated provider session"],
+      "failure_mode": "The lane is unavailable and doctor fails closed; cctx never receives or persists the credential.",
+      "external": true
+    },
+    {
+      "id": "launcher_installer",
+      "owner": "cctx::install",
+      "role": "Applies and reverses only product-owned binary, plugin, hook, MCP, catalog, and config state.",
+      "inputs": ["explicit operator command", "dry-run approval", "ownership manifest"],
+      "outputs": ["atomic owned installation", "backup", "rollback manifest"],
+      "failure_mode": "Abort and preserve prior bytes; refuse rollback over later user edits.",
+      "external": false
+    },
+    {
+      "id": "native_window_controller",
+      "owner": "cctx::model_catalog",
+      "role": "Generates the version-pinned one-model Sol catalog and calibrated client policy.",
+      "inputs": ["installed and resolved catalogs", "official Sol limits", "measured calibration"],
+      "outputs": ["deterministic Sol-only catalog", "hash manifest", "compatibility verdict"],
+      "failure_mode": "Unknown schema, drift, or non-Sol content fails closed without modifying active config.",
+      "external": false
+    },
+    {
+      "id": "lifecycle_capture",
+      "owner": "cctx::hooks",
+      "role": "Validates documented hook envelopes and converts them to canonical events.",
+      "inputs": ["bounded hook JSON", "versioned transcript fallback"],
+      "outputs": ["canonical events", "structured hook decision"],
+      "failure_mode": "Malformed or oversized input is rejected or quarantined without emitting invalid hook protocol.",
+      "external": false
+    },
+    {
+      "id": "reservoir",
+      "owner": "cctx::reservoir",
+      "role": "Provides the sole durable context authority using SQLite WAL, FTS5, hashes, and checkpoints.",
+      "inputs": ["validated canonical events", "scoped store commands"],
+      "outputs": ["content-addressed records", "ranked rows", "verified checkpoint manifests"],
+      "failure_mode": "Transaction rollback and integrity failure; compaction and rollover remain blocked until verification succeeds.",
+      "external": false
+    },
+    {
+      "id": "recall_controller",
+      "owner": "cctx::recall",
+      "role": "Selects bounded, provenance-rich historical data without granting it instruction authority.",
+      "inputs": ["validated query", "pins", "token budget", "authorized scope"],
+      "outputs": ["bounded untrusted recall capsule", "source IDs and hashes"],
+      "failure_mode": "Return an empty capsule or structured error; never broaden scope or omit the untrusted-data boundary.",
+      "external": false
+    },
+    {
+      "id": "compaction_guard",
+      "owner": "cctx::guard",
+      "role": "Checkpoints and blocks automatic or manual compaction, then directs verified rollover.",
+      "inputs": ["PreCompact event", "token estimate", "checkpoint verdict"],
+      "outputs": ["continue=false decision", "checkpoint ID", "rollover guidance", "violation alarm"],
+      "failure_mode": "Halt the active turn and preserve evidence; never allow compaction after a partial or failed checkpoint.",
+      "external": false
+    },
+    {
+      "id": "successor_rollover",
+      "owner": "cctx::rollover",
+      "role": "Carries a verified recovery capsule into a fresh compliant Codex task before the input ceiling.",
+      "inputs": ["verified checkpoint", "working directory", "Sol-only policy", "bounded recovery capsule"],
+      "outputs": ["successor launch request", "source-to-successor provenance"],
+      "failure_mode": "Leave the source task preserved and stopped; do not invent a replacement reasoning loop.",
+      "external": false
+    },
+    {
+      "id": "mcp_server",
+      "owner": "cctx::mcp",
+      "role": "Exposes bounded store, search, fetch, pin, checkpoint, export, and forget operations.",
+      "inputs": ["schema-valid MCP request", "authorized store scope"],
+      "outputs": ["bounded structured result", "provenance", "structured error"],
+      "failure_mode": "Deny invalid, oversized, or out-of-scope requests without changing model/config authority.",
+      "external": false
+    },
+    {
+      "id": "doctor_status",
+      "owner": "cctx::doctor",
+      "role": "Produces the authoritative compliance verdict from model, auth, catalog, config, guard, and store evidence.",
+      "inputs": ["sanitized runtime facts", "hash manifests", "observed limits"],
+      "outputs": ["human and JSON status", "nonzero failure code", "remediation"],
+      "failure_mode": "Unknown, stale, ambiguous, or unproven state is noncompliant and blocks ordinary work.",
+      "external": false
+    }
+  ],
+  "trust_transitions": [
+    {
+      "id": "T01",
+      "source": "operator",
+      "destination": "launcher_installer",
+      "data": "install, update, rollback, or uninstall intent and paths",
+      "control": "explicit command, dry run, canonical paths, ownership manifest",
+      "failure": "refuse ambiguous or conflicting mutation"
+    },
+    {
+      "id": "T02",
+      "source": "launcher_installer",
+      "destination": "codex_host",
+      "data": "owned config, plugin, hooks, MCP declaration, and catalog path",
+      "control": "atomic write, exact backup, conflict detection, rollback",
+      "failure": "restore prior bytes or fail closed"
+    },
+    {
+      "id": "T03",
+      "source": "operator",
+      "destination": "codex_auth",
+      "data": "ChatGPT login or official OpenAI API credential",
+      "control": "Codex-owned authentication flow; credential excluded from cctx",
+      "failure": "unavailable auth lane"
+    },
+    {
+      "id": "T04",
+      "source": "codex_auth",
+      "destination": "codex_host",
+      "data": "opaque authenticated provider session",
+      "control": "Codex authentication boundary",
+      "failure": "request fails and doctor remains noncompliant"
+    },
+    {
+      "id": "T05",
+      "source": "codex_host",
+      "destination": "lifecycle_capture",
+      "data": "structured hook envelope containing operator, repository, tool, and model text",
+      "control": "schema, size, event-type, and timeout validation",
+      "failure": "reject, quarantine, or emit a visible bounded error"
+    },
+    {
+      "id": "T06",
+      "source": "lifecycle_capture",
+      "destination": "reservoir",
+      "data": "canonical event with provenance and hash",
+      "control": "transaction, size ceiling, idempotency, monotonic sequence",
+      "failure": "rollback and surface capture failure"
+    },
+    {
+      "id": "T07",
+      "source": "codex_host",
+      "destination": "compaction_guard",
+      "data": "PreCompact or PostCompact lifecycle event",
+      "control": "event validation and mandatory policy dispatch",
+      "failure": "block PreCompact or mark PostCompact as an incident"
+    },
+    {
+      "id": "T08",
+      "source": "compaction_guard",
+      "destination": "reservoir",
+      "data": "checkpoint barrier and transcript snapshot request",
+      "control": "WAL checkpoint, fsync policy, hash manifest",
+      "failure": "compaction remains blocked"
+    },
+    {
+      "id": "T09",
+      "source": "reservoir",
+      "destination": "compaction_guard",
+      "data": "verified checkpoint manifest",
+      "control": "independent record-count and hash verification",
+      "failure": "halt without rollover or compaction"
+    },
+    {
+      "id": "T10",
+      "source": "compaction_guard",
+      "destination": "codex_host",
+      "data": "continue=false hook response and recovery guidance",
+      "control": "valid bounded hook protocol and repeated-trigger suppression",
+      "failure": "visible stopped turn, never silent continuation"
+    },
+    {
+      "id": "T11",
+      "source": "codex_host",
+      "destination": "mcp_server",
+      "data": "model- or operator-originated MCP request",
+      "control": "tool schema, authorization scope, pagination, timeout, size limits",
+      "failure": "structured denial"
+    },
+    {
+      "id": "T12",
+      "source": "mcp_server",
+      "destination": "recall_controller",
+      "data": "validated retrieval intent and budget",
+      "control": "allowlisted operation and store namespace",
+      "failure": "bounded error with no query"
+    },
+    {
+      "id": "T13",
+      "source": "recall_controller",
+      "destination": "reservoir",
+      "data": "parameterized exact or ranked query",
+      "control": "prepared statements, hard result/token limits, canonical scope",
+      "failure": "empty result or structured error"
+    },
+    {
+      "id": "T14",
+      "source": "reservoir",
+      "destination": "recall_controller",
+      "data": "historical records and provenance",
+      "control": "hash verification and untrusted-content classification",
+      "failure": "exclude unverifiable rows"
+    },
+    {
+      "id": "T15",
+      "source": "recall_controller",
+      "destination": "mcp_server",
+      "data": "bounded untrusted recall capsule",
+      "control": "delimiters, source IDs, hashes, token and byte ceilings",
+      "failure": "truncate by contract or return an error"
+    },
+    {
+      "id": "T16",
+      "source": "mcp_server",
+      "destination": "codex_host",
+      "data": "structured MCP result containing untrusted historical text",
+      "control": "provenance labels and no instruction-authority elevation",
+      "failure": "Codex receives a visible structured error"
+    },
+    {
+      "id": "T17",
+      "source": "native_window_controller",
+      "destination": "launcher_installer",
+      "data": "Sol-only catalog, compatibility verdict, and hash manifest",
+      "control": "deterministic generation, one-model invariant, schema/version guard",
+      "failure": "installation is refused"
+    },
+    {
+      "id": "T18",
+      "source": "reservoir",
+      "destination": "successor_rollover",
+      "data": "verified checkpoint and bounded recovery capsule",
+      "control": "source IDs, hashes, task namespace, freshness check",
+      "failure": "source remains stopped and preserved"
+    },
+    {
+      "id": "T19",
+      "source": "successor_rollover",
+      "destination": "codex_host",
+      "data": "fresh-task launch request with exact Sol policy and recovery capsule",
+      "control": "doctor preflight and successor identity verification",
+      "failure": "successor is rejected as noncompliant"
+    },
+    {
+      "id": "T20",
+      "source": "operator",
+      "destination": "mcp_server",
+      "data": "pin, export, checkpoint, or forget request",
+      "control": "explicit scope, dry run for deletion, audit record",
+      "failure": "deny ambiguous or escaping scope"
+    }
+  ]
+}

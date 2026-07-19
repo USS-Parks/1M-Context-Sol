@@ -13,3 +13,5 @@ Include the affected commit/version, platform, minimal reproduction, impact, and
 ## Project security invariants
 
 The ordinary runtime is local-only and telemetry-off. Credentials must never enter the repository, reservoir, evidence bundle, or logs. Recalled content is untrusted data. Unknown Codex schemas and catalog drift fail closed.
+
+The repository-scoped [threat model](docs/security/THREAT-MODEL.md) defines assets, trust boundaries, attacker-controlled inputs, security objectives, and severity calibration. The [machine boundary contract](contracts/architecture-boundaries.json) is structurally tested.

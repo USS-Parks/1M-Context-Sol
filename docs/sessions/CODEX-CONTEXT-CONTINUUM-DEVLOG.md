@@ -68,3 +68,25 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - Checked-in contract and schema parse as JSON; README wording passes the validator
 - **Implementation commit:** `d21716c34bda05e80f9d328c7814c77cf626be4b`
 - **Published remote SHA:** `d21716c34bda05e80f9d328c7814c77cf626be4b` on `codex/context-continuum-v0.1`
+
+## CAC-03 — Record architecture and threat decisions
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; awaiting commit and push
+- **Scope:** Nine accepted ADRs, sole-authority/component contract, twenty trust transitions, Mermaid data flow, repository-scoped threat model, README/security linkage, and structural tests.
+- **Authority result:** Codex retains the agent loop and credentials; `cctx` has one named owner for install, model policy, lifecycle capture, durable context, recall, compaction, rollover, MCP, and compliance verdicts.
+- **Excluded parallel systems:** No replacement agent orchestrator, second durable store, cloud transcript backend, or alternate-model router.
+- **Threat model:** Repository scope; generated under Codex Security threat-model guidance; cached under `C:\tmp\codex-security-scans\Codex 1M Context Project\threat_model.md` with target/version footer.
+- **Files changed:** `contracts/architecture-boundaries.json`, nine `docs/architecture/decisions/ADR-*` files, data-flow/trust-boundary document, `docs/security/THREAT-MODEL.md`, `tests/architecture_boundaries.rs`, README, SECURITY, and ledgers.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --locked --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 28 tests total, including 6 architecture-boundary tests
+  - 11 unique components each have owner, inputs, outputs, and failure mode
+  - 6 authorities resolve to existing sole owners
+  - 20 trust transitions have owned endpoints, validation controls, and fail-closed outcomes
+  - all 9 ADRs have accepted status and normalized contract fields
+  - threat model contains all required repository-scope sections and exact cache footer
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.

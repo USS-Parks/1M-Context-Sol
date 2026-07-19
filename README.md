@@ -18,6 +18,8 @@ That sentence is a gated target, not a current performance claim. The project al
 
 Implementation follows stable CAC prompt IDs, prompt-local acceptance gates, and an auditable [development log](docs/sessions/CODEX-CONTEXT-CONTINUUM-DEVLOG.md). Public wording and capacity numbers are governed by the [claim contract](docs/architecture/CLAIM-CONTRACT.md) and its [machine-readable vocabulary](contracts/capability-vocabulary.json). See [verification status](docs/VERIFICATION.md) before relying on any capability.
 
+The settled component ownership and trust transitions are documented in the [data-flow contract](docs/architecture/DATA-FLOW-AND-TRUST-BOUNDARIES.md), nine [architecture decisions](docs/architecture/decisions/), and the repository [threat model](docs/security/THREAT-MODEL.md).
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
