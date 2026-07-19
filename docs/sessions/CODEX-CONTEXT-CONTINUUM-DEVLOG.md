@@ -27,7 +27,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-01 — Freeze the Codex capability baseline
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; awaiting commit and push
+- **Status:** Complete
 - **Scope:** Read-only `cctx probe`, sanitized schema/evidence, catalog compatibility fixtures, baseline document, and explicit bundled-versus-resolved PSPR correction.
 - **Observed runtime:** `codex-cli 0.144.5`; ChatGPT-authenticated; exact configured model `gpt-5.6-sol`; hooks/plugins stable and enabled.
 - **Observed catalogs:** Bundled Sol 372,000 / 372,000 with 353,400 effective; resolved Sol 272,000 / 272,000 with 258,400 effective.
@@ -46,5 +46,5 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - Official model source — exact `gpt-5.6-sol` at 1,050,000 total / 922,000 max input / 128,000 max output
   - Current upstream source freeze — Sol 272,000 / 272,000 at the recorded commit/blob
   - `git diff --check` — passed
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+- **Implementation commit:** `8ff3cd7d0e8ed98f09dc095832cc9b6848602759`
+- **Published remote SHA:** `8ff3cd7d0e8ed98f09dc095832cc9b6848602759` on `codex/context-continuum-v0.1`
