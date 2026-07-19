@@ -4,7 +4,7 @@ Context Continuum is an open-source Codex runtime extension in active developmen
 
 ## Current status
 
-Foundation work is underway under the [canonical PSPR](PLANNING/CODEX-CONTEXT-CONTINUUM-PSPR.md). No native one-million-window claim has passed its live gate yet, and this repository does not currently provide an installable release.
+Foundation milestone M0 is complete under the [canonical PSPR](PLANNING/CODEX-CONTEXT-CONTINUUM-PSPR.md), and M1 implementation is underway. No native one-million-window claim has passed its live gate yet, and this repository does not currently provide an installable release.
 
 The frozen [CAC-01 capability baseline](docs/architecture/CODEX-CAPABILITY-BASELINE.md) shows `codex-cli 0.144.5` bundling Sol at 372,000 tokens but resolving Sol at 272,000 with a 258,400-token effective budget. That reproduces the current “256k class” behavior and remains far below Sol's official 1,050,000-token total window.
 
@@ -21,6 +21,8 @@ Implementation follows stable CAC prompt IDs, prompt-local acceptance gates, and
 The settled component ownership and trust transitions are documented in the [data-flow contract](docs/architecture/DATA-FLOW-AND-TRUST-BOUNDARIES.md), nine [architecture decisions](docs/architecture/decisions/), and the repository [threat model](docs/security/THREAT-MODEL.md).
 
 The [CI and evidence contract](docs/CI-AND-EVIDENCE-CONTRACT.md) requires clean Rust, documentation, secret, supply-chain, PSPR, and Draft 2020-12 JSON Schema gates plus deliberate failure proofs.
+
+The version-pinned [Sol catalog overlay](docs/architecture/MODEL-CATALOG-OVERLAY.md) now generates an uninstalled one-model candidate while preserving installed instructions and capabilities. That local catalog/parser proof is not live backend acceptance.
 
 ## License
 

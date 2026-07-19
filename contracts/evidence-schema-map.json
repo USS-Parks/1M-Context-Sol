@@ -8,6 +8,10 @@
     {
       "path": "docs/evidence/CAC-01/source-freeze.json",
       "schema": "schemas/source-freeze.schema.json"
+    },
+    {
+      "path": "docs/evidence/CAC-10/catalog-overlay-manifest.json",
+      "schema": "schemas/catalog-overlay-manifest.schema.json"
     }
   ]
 }

@@ -113,3 +113,25 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 - **Repair evidence:** The first remote run correctly exposed a stale generated Gitleaks fixture. Commit `6645fce3793a8e74dda72765084a507de1ba1f91` aligned the runtime-only fake value with the exact pinned v8.30.1 OpenAI rule; the clean rerun then passed.
 - **Implementation commit:** `10c749c5dcecab66ce51ee008dff669ff2952fdd`
 - **Published remote SHA:** `6645fce3793a8e74dda72765084a507de1ba1f91` on `codex/context-continuum-v0.1`
+
+## CAC-10 — Implement versioned model-catalog parsing and overlay generation
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Scope:** Strict Codex 0.144.5 catalog profile, exact-one-Sol selection, deterministic overlay/manifest serialization, official-limit and policy validation, live installed-catalog capture, CLI generation, Draft 2020-12 schemas, drift/malformed fixtures, and preservation tests.
+- **Candidate policy:** 1,050,000 context, 1,050,000 maximum, 96% effective (1,008,000 internal budget), with `auto_compact_token_limit` omitted until CAC-14 calibration.
+- **Preservation result:** Only `context_window`, `max_context_window`, and `effective_context_window_percent` changed in the live candidate. Installed base-instruction bytes, model-message semantics, and reviewed feature flags were equivalent.
+- **Fail-closed result:** Unknown Codex version, root or Sol schema drift, malformed JSON, missing/duplicate Sol, official limit regression, sub-million effective budget, and a threshold above Codex's 90% clamp all fail.
+- **Files changed:** `src/model_catalog.rs`, CLI/library wiring, two catalog schemas, current/drift/malformed fixtures, catalog tests, checked-in CAC-10 manifest, architecture documentation, README, evidence map, and ledgers.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --locked --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 40 tests total, including 7 catalog tests
+  - installed `codex-cli 0.144.5` resolved catalog parsed under `codex-model-catalog/0.144.5-v1`
+  - generated output contained exactly one exact `gpt-5.6-sol` entry
+  - Codex's own debug parser accepted the command-scoped overlay and reported `1050000,1050000,96`
+  - live output catalog SHA-256: `eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081`
+  - no model request, user configuration change, credential, or install occurred
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.

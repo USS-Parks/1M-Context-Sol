@@ -105,6 +105,8 @@ fn all_mapped_schemas_compile_as_draft_2020_12() {
         .map(|mapping| mapping.schema.as_str())
         .collect();
     schemas.insert("schemas/capability-vocabulary.schema.json");
+    schemas.insert("schemas/catalog-overlay-manifest.schema.json");
+    schemas.insert("schemas/sol-catalog-overlay.schema.json");
 
     for relative in schemas {
         let path = root().join(relative);
