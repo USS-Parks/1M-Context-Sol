@@ -4,6 +4,7 @@
 
 pub mod claim_contract;
 pub mod config_manager;
+pub mod doctor;
 pub mod model_catalog;
 pub mod probe;
 

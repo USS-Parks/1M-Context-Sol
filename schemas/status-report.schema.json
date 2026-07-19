@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/status-report.schema.json",
+  "title": "Context Continuum compact status report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "captured_at_unix_seconds",
+    "state",
+    "exit_code",
+    "configuration_policy_ready",
+    "required_model",
+    "configured_model",
+    "auth_lane",
+    "authenticated",
+    "codex_version",
+    "native_total_context",
+    "native_max_input",
+    "native_max_output",
+    "resolved_context_window",
+    "effective_codex_budget",
+    "operational_input_threshold",
+    "compaction_guard_state",
+    "live_native_window_proven",
+    "release_claim_ready",
+    "blocking_check_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "captured_at_unix_seconds": { "type": "integer", "minimum": 0 },
+    "state": { "enum": ["policy_ready", "not_ready", "incompatible"] },
+    "exit_code": { "enum": [0, 2, 3] },
+    "configuration_policy_ready": { "type": "boolean" },
+    "required_model": { "const": "gpt-5.6-sol" },
+    "configured_model": { "type": ["string", "null"] },
+    "auth_lane": { "enum": ["chatgpt", "api_key", "unauthenticated", "unknown"] },
+    "authenticated": { "type": "boolean" },
+    "codex_version": { "type": "string", "minLength": 1 },
+    "native_total_context": { "const": 1050000 },
+    "native_max_input": { "const": 922000 },
+    "native_max_output": { "const": 128000 },
+    "resolved_context_window": { "$ref": "#/$defs/positiveOrNull" },
+    "effective_codex_budget": { "$ref": "#/$defs/positiveOrNull" },
+    "operational_input_threshold": { "$ref": "#/$defs/positiveOrNull" },
+    "compaction_guard_state": {
+      "enum": ["not_installed", "configured", "observed_blocking", "failed"]
+    },
+    "live_native_window_proven": { "const": false },
+    "release_claim_ready": { "const": false },
+    "blocking_check_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "state": { "const": "policy_ready" } } },
+      "then": {
+        "properties": {
+          "exit_code": { "const": 0 },
+          "configuration_policy_ready": { "const": true }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "state": { "const": "not_ready" } } },
+      "then": {
+        "properties": {
+          "exit_code": { "const": 2 },
+          "configuration_policy_ready": { "const": false }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "state": { "const": "incompatible" } } },
+      "then": {
+        "properties": {
+          "exit_code": { "const": 3 },
+          "configuration_policy_ready": { "const": false }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "positiveOrNull": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    }
+  }
+}

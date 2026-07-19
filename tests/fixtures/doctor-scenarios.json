@@ -1,0 +1,298 @@
+[
+  {
+    "id": "chatgpt_272k",
+    "observation": {
+      "captured_at_unix_seconds": 1784486400,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "chatgpt",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6-sol",
+        "model_context_window": null,
+        "model_auto_compact_token_limit": null,
+        "model_auto_compact_token_limit_scope": null,
+        "model_catalog_json_configured": false,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "a678f0497f84fe926476bc2e0f8f760c6a8fd8156de6c690e43c2fe245207b9a",
+        "model_count": 8,
+        "slug": "gpt-5.6-sol",
+        "context_window": 272000,
+        "max_context_window": 272000,
+        "effective_context_window_percent": 95,
+        "auto_compact_token_limit": null
+      },
+      "operational_input_threshold": null,
+      "compaction_guard": {
+        "state": "not_installed",
+        "checkpoint_threshold": null,
+        "strict_blocking_proven": false
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "chatgpt_sol_1m_overlay",
+    "observation": {
+      "captured_at_unix_seconds": 1784486401,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "chatgpt",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6-sol",
+        "model_context_window": 1050000,
+        "model_auto_compact_token_limit": null,
+        "model_auto_compact_token_limit_scope": null,
+        "model_catalog_json_configured": true,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": null
+      },
+      "operational_input_threshold": null,
+      "compaction_guard": {
+        "state": "configured",
+        "checkpoint_threshold": null,
+        "strict_blocking_proven": false
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "api_key_sol_ready_policy",
+    "observation": {
+      "captured_at_unix_seconds": 1784486402,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "api_key",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6-sol",
+        "model_context_window": 1050000,
+        "model_auto_compact_token_limit": 900000,
+        "model_auto_compact_token_limit_scope": "total",
+        "model_catalog_json_configured": true,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": 900000
+      },
+      "operational_input_threshold": 880000,
+      "compaction_guard": {
+        "state": "observed_blocking",
+        "checkpoint_threshold": 880000,
+        "strict_blocking_proven": true
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "non_sol_override",
+    "observation": {
+      "captured_at_unix_seconds": 1784486403,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "chatgpt",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6",
+        "model_context_window": 1050000,
+        "model_auto_compact_token_limit": 900000,
+        "model_auto_compact_token_limit_scope": "total",
+        "model_catalog_json_configured": true,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": 900000
+      },
+      "operational_input_threshold": 880000,
+      "compaction_guard": {
+        "state": "observed_blocking",
+        "checkpoint_threshold": 880000,
+        "strict_blocking_proven": true
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "missing_access",
+    "observation": {
+      "captured_at_unix_seconds": 1784486404,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "unauthenticated",
+      "authenticated": false,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6-sol",
+        "model_context_window": 1050000,
+        "model_auto_compact_token_limit": 900000,
+        "model_auto_compact_token_limit_scope": "total",
+        "model_catalog_json_configured": true,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": 900000
+      },
+      "operational_input_threshold": 880000,
+      "compaction_guard": {
+        "state": "observed_blocking",
+        "checkpoint_threshold": 880000,
+        "strict_blocking_proven": true
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "stale_catalog",
+    "observation": {
+      "captured_at_unix_seconds": 1784486405,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "chatgpt",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6-sol",
+        "model_context_window": 1050000,
+        "model_auto_compact_token_limit": 900000,
+        "model_auto_compact_token_limit_scope": "total",
+        "model_catalog_json_configured": true,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "stale",
+        "normalized_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": 900000
+      },
+      "operational_input_threshold": 880000,
+      "compaction_guard": {
+        "state": "observed_blocking",
+        "checkpoint_threshold": 880000,
+        "strict_blocking_proven": true
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "invalid_config",
+    "observation": {
+      "captured_at_unix_seconds": 1784486406,
+      "codex_version": "codex-cli 0.144.5",
+      "auth_lane": "chatgpt",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": false,
+        "error_code": "invalid_toml",
+        "configured_model": null,
+        "model_context_window": null,
+        "model_auto_compact_token_limit": null,
+        "model_auto_compact_token_limit_scope": null,
+        "model_catalog_json_configured": false,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": null
+      },
+      "operational_input_threshold": null,
+      "compaction_guard": {
+        "state": "not_installed",
+        "checkpoint_threshold": null,
+        "strict_blocking_proven": false
+      },
+      "capture_error_code": null
+    }
+  },
+  {
+    "id": "unsupported_codex_version",
+    "observation": {
+      "captured_at_unix_seconds": 1784486407,
+      "codex_version": "codex-cli 0.145.0",
+      "auth_lane": "chatgpt",
+      "authenticated": true,
+      "config": {
+        "present": true,
+        "valid": true,
+        "error_code": null,
+        "configured_model": "gpt-5.6-sol",
+        "model_context_window": 1050000,
+        "model_auto_compact_token_limit": 900000,
+        "model_auto_compact_token_limit_scope": "total",
+        "model_catalog_json_configured": true,
+        "profile_model_override_count": 0
+      },
+      "catalog": {
+        "compatibility": "supported",
+        "normalized_sha256": "eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081",
+        "model_count": 1,
+        "slug": "gpt-5.6-sol",
+        "context_window": 1050000,
+        "max_context_window": 1050000,
+        "effective_context_window_percent": 96,
+        "auto_compact_token_limit": 900000
+      },
+      "operational_input_threshold": 880000,
+      "compaction_guard": {
+        "state": "observed_blocking",
+        "checkpoint_threshold": 880000,
+        "strict_blocking_proven": true
+      },
+      "capture_error_code": null
+    }
+  }
+]

@@ -26,6 +26,8 @@ The version-pinned [Sol catalog overlay](docs/architecture/MODEL-CATALOG-OVERLAY
 
 The [atomic configuration manager](docs/architecture/ATOMIC-CONFIG-MANAGEMENT.md) can now dry-run, atomically apply, and exactly roll back only its declared model, window, catalog, hook/plugin, and MCP settings. It requires explicit absolute paths and has not been run against the real global Codex configuration.
 
+The claim-safe [`doctor` and `status`](docs/architecture/DOCTOR-AND-STATUS-CONTRACT.md) commands now expose exact Sol identity, authentication lane, official limits, resolved catalog policy, Effective Codex budget, operational threshold, and compaction-guard state in human and JSON forms. They deliberately distinguish configuration-policy readiness from still-open live native-window proof.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).

@@ -160,3 +160,28 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - GitHub Actions run [29707154346](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29707154346) — passed all 10 jobs
 - **Implementation commit:** `279819fe11c00a589dce82569fc4ac5631d06af5`
 - **Published remote SHA:** `279819fe11c00a589dce82569fc4ac5631d06af5` on `codex/context-continuum-v0.1`
+
+## CAC-12 — Implement native-window doctor and status output
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Scope:** Read-only `cctx doctor` and `cctx status` commands, detailed and compact JSON forms, deterministic policy evaluator, strict sanitized TOML inspection, five-code process contract, Draft 2020-12 schemas, claim-safe human rendering, actionable failure guidance, and frozen golden outputs.
+- **Truth boundary:** `policy_ready` means configuration policy is internally ready for exact Sol. Every CAC-12 report still fixes `catalog_is_not_live_proof = true`, `live_native_window_proven = false`, and `release_claim_ready = false`; catalog/status arithmetic cannot close G2.
+- **Capacity labels:** All six IDs, labels, units, and authorities match the claim vocabulary. Official 1,050,000 total, 922,000 maximum input, and 128,000 maximum output remain separate from resolved catalog policy, Effective Codex budget, operational threshold, and durable capacity.
+- **Exit codes:** 0 policy ready, 1 runtime inspection failure, 2 trustworthy but not ready, 3 incompatible/untrustworthy input, and 64 invalid usage.
+- **Files changed:** `src/doctor.rs`, CLI/library wiring, doctor/status JSON Schemas, eight-scenario fixture, frozen JSON/human output hashes, doctor/status tests, architecture documentation, README, and ledgers.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --locked --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 60 tests total, including 3 doctor unit tests and 5 doctor/status integration tests
+  - `RUSTDOCFLAGS=-D warnings cargo doc --locked --no-deps --document-private-items` — passed
+  - `cargo deny check` — advisories, bans, licenses, and sources passed
+  - both report schemas compiled and every golden scenario output validated as Draft 2020-12
+  - frozen verdicts and full JSON/human hashes cover ChatGPT Sol at 272k, ChatGPT Sol with the 1.05M overlay, direct-API Sol, non-Sol override, missing access, stale catalog, invalid config, and unsupported Codex version
+  - claim-contract validation accepted every rendered output and required exact dimension labels/authorities
+  - exact-one-Sol catalog shape, strict config types, paired compaction settings, operational threshold, guard proof, and distinct usage/runtime/readiness/incompatibility exits are enforced
+  - live installed `cctx doctor --json` and `cctx status --json` both returned `not_ready`/2 with exact configured Sol, ChatGPT auth, Codex 0.144.5, resolved 272,000, Effective Codex budget 258,400, and 17 checks (9 pass, 1 warn, 7 fail)
+  - live config SHA-256 remained `6F274971BD736B79CDEE52DA94A584134217528420C2CDBFEBCAD6F5D5CB0BDA`; no config write, credential entry, catalog installation, or model request occurred
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.

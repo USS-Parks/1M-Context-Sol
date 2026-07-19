@@ -8,6 +8,10 @@ use context_continuum::config_manager::{
     AutoCompactScope, OwnedConfig, apply as apply_config, plan as plan_config,
     restore as restore_config, uninstall as uninstall_config,
 };
+use context_continuum::doctor::{
+    DoctorOptions, EXIT_RUNTIME_ERROR, EXIT_USAGE, StatusReport, capture_live, render_doctor,
+    render_status,
+};
 use context_continuum::model_catalog::{
     OfficialSolLimits, OverlayPolicy, ParsedCatalog, capture_installed_catalog,
 };
@@ -15,35 +19,109 @@ use context_continuum::probe::{ProbeOptions, capture};
 
 fn main() -> ExitCode {
     match run() {
-        Ok(()) => ExitCode::SUCCESS,
-        Err(message) => {
+        Ok(exit_code) => exit_code,
+        Err((message, exit_code)) => {
             eprintln!("cctx: {message}");
-            ExitCode::FAILURE
+            ExitCode::from(exit_code)
         }
     }
 }
 
-fn run() -> Result<(), String> {
+fn run() -> Result<ExitCode, (String, u8)> {
     let mut args = env::args().skip(1);
     let Some(command) = args.next() else {
         print_help();
-        return Ok(());
+        return Ok(ExitCode::SUCCESS);
     };
 
     match command.as_str() {
         "-h" | "--help" | "help" => {
             print_help();
-            Ok(())
+            Ok(ExitCode::SUCCESS)
         }
         "-V" | "--version" => {
             println!("cctx {}", env!("CARGO_PKG_VERSION"));
-            Ok(())
+            Ok(ExitCode::SUCCESS)
         }
-        "probe" => run_probe(args.collect()),
-        "catalog" => run_catalog(args.collect()),
-        "config" => run_config(args.collect()),
-        other => Err(format!("unknown command `{other}`; run `cctx --help`")),
+        "probe" => ordinary_command(run_probe(args.collect())),
+        "catalog" => ordinary_command(run_catalog(args.collect())),
+        "config" => ordinary_command(run_config(args.collect())),
+        "doctor" => run_doctor_or_status(args.collect(), false),
+        "status" => run_doctor_or_status(args.collect(), true),
+        other => Err((
+            format!("unknown command `{other}`; run `cctx --help`"),
+            EXIT_USAGE,
+        )),
     }
+}
+
+fn ordinary_command(result: Result<(), String>) -> Result<ExitCode, (String, u8)> {
+    result
+        .map(|()| ExitCode::SUCCESS)
+        .map_err(|message| (message, EXIT_RUNTIME_ERROR))
+}
+
+fn run_doctor_or_status(args: Vec<String>, status_mode: bool) -> Result<ExitCode, (String, u8)> {
+    let mut options = DoctorOptions::default();
+    let mut json = false;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--codex" => {
+                index += 1;
+                options.probe.codex_command = doctor_required_value(&args, index, "--codex")?;
+            }
+            "--config" => {
+                index += 1;
+                options.probe.config_path =
+                    Some(doctor_required_value(&args, index, "--config")?.into());
+            }
+            "--json" => json = true,
+            "-h" | "--help" => {
+                print_doctor_help(status_mode);
+                return Ok(ExitCode::SUCCESS);
+            }
+            other => {
+                return Err((
+                    format!(
+                        "unknown {} option `{other}`",
+                        doctor_command_name(status_mode)
+                    ),
+                    EXIT_USAGE,
+                ));
+            }
+        }
+        index += 1;
+    }
+
+    let report = capture_live(&options).map_err(|error| (error.to_string(), EXIT_RUNTIME_ERROR))?;
+    if status_mode {
+        let status = StatusReport::from(&report);
+        if json {
+            print_json(&status).map_err(|message| (message, EXIT_RUNTIME_ERROR))?;
+        } else {
+            print!("{}", render_status(&status));
+        }
+    } else if json {
+        print_json(&report).map_err(|message| (message, EXIT_RUNTIME_ERROR))?;
+    } else {
+        print!("{}", render_doctor(&report));
+    }
+    Ok(ExitCode::from(report.exit_code))
+}
+
+fn doctor_required_value(
+    args: &[String],
+    index: usize,
+    option: &str,
+) -> Result<String, (String, u8)> {
+    args.get(index)
+        .cloned()
+        .ok_or_else(|| (format!("{option} requires a value"), EXIT_USAGE))
+}
+
+fn doctor_command_name(status_mode: bool) -> &'static str {
+    if status_mode { "status" } else { "doctor" }
 }
 
 fn run_config(args: Vec<String>) -> Result<(), String> {
@@ -368,7 +446,7 @@ fn required_u64_value(args: &[String], index: usize, option: &str) -> Result<u64
 
 fn print_help() {
     println!(
-        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
+        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    doctor     Explain exact-Sol policy readiness and remediation\n    status     Print a compact claim-safe readiness summary\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
     );
 }
 
@@ -411,5 +489,12 @@ fn print_config_restore_help(should_uninstall: bool) {
     };
     println!(
         "USAGE:\n    cctx config {command} --config <FILE> --state-dir <DIR>\n\nThe command refuses to write if the installed config differs from the owned snapshot."
+    );
+}
+
+fn print_doctor_help(status_mode: bool) {
+    let command = doctor_command_name(status_mode);
+    println!(
+        "Inspect exact GPT-5.6 Sol identity, authentication, Codex/catalog policy, canonical capacity dimensions, operational threshold, and compaction guard without sending a model request.\n\nUSAGE:\n    cctx {command} [--codex <COMMAND>] [--config <FILE>] [--json]\n\nEXIT CODES:\n    0   Configuration policy ready (not live native-window proof)\n    1   Runtime inspection failure\n    2   Inspected but not ready\n    3   Unsupported or untrustworthy input\n    64  Invalid usage"
     );
 }

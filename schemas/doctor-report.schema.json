@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/doctor-report.schema.json",
+  "title": "Context Continuum doctor report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "captured_at_unix_seconds",
+    "state",
+    "exit_code",
+    "configuration_policy_ready",
+    "model",
+    "authentication",
+    "codex",
+    "dimensions",
+    "configuration",
+    "catalog",
+    "compaction_guard",
+    "checks",
+    "summary",
+    "claim_safety",
+    "sanitization"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "captured_at_unix_seconds": { "type": "integer", "minimum": 0 },
+    "state": { "$ref": "#/$defs/state" },
+    "exit_code": { "enum": [0, 2, 3] },
+    "configuration_policy_ready": { "type": "boolean" },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_slug",
+        "configured_slug",
+        "exact_match",
+        "fallback_allowed",
+        "alias_allowed"
+      ],
+      "properties": {
+        "required_slug": { "const": "gpt-5.6-sol" },
+        "configured_slug": { "type": ["string", "null"] },
+        "exact_match": { "type": "boolean" },
+        "fallback_allowed": { "const": false },
+        "alias_allowed": { "const": false }
+      }
+    },
+    "authentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lane", "authenticated"],
+      "properties": {
+        "lane": { "$ref": "#/$defs/authLane" },
+        "authenticated": { "type": "boolean" }
+      }
+    },
+    "codex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_version", "supported_version", "compatible"],
+      "properties": {
+        "observed_version": { "type": "string", "minLength": 1 },
+        "supported_version": { "const": "0.144.5" },
+        "compatible": { "type": "boolean" }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/dimension" },
+            {
+              "properties": {
+                "id": { "const": "native_total_context" },
+                "label": { "const": "Native total context window" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/dimension" },
+            {
+              "properties": {
+                "id": { "const": "native_max_input" },
+                "label": { "const": "Native maximum input" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/dimension" },
+            {
+              "properties": {
+                "id": { "const": "native_max_output" },
+                "label": { "const": "Native maximum output" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/dimension" },
+            {
+              "properties": {
+                "id": { "const": "codex_effective_budget" },
+                "label": { "const": "Effective Codex budget" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/dimension" },
+            {
+              "properties": {
+                "id": { "const": "operational_input_threshold" },
+                "label": { "const": "Operational input threshold" }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            { "$ref": "#/$defs/dimension" },
+            {
+              "properties": {
+                "id": { "const": "durable_reservoir_capacity" },
+                "label": { "const": "Durable reservoir capacity" }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "valid",
+        "error_code",
+        "model_context_window",
+        "model_auto_compact_token_limit",
+        "model_auto_compact_token_limit_scope",
+        "model_catalog_json_configured",
+        "profile_model_override_count"
+      ],
+      "properties": {
+        "present": { "type": "boolean" },
+        "valid": { "type": "boolean" },
+        "error_code": { "$ref": "#/$defs/stringOrNull" },
+        "model_context_window": { "$ref": "#/$defs/positiveOrNull" },
+        "model_auto_compact_token_limit": { "$ref": "#/$defs/positiveOrNull" },
+        "model_auto_compact_token_limit_scope": {
+          "enum": ["total", "body_after_prefix", null]
+        },
+        "model_catalog_json_configured": { "type": "boolean" },
+        "profile_model_override_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compatibility",
+        "normalized_sha256",
+        "model_count",
+        "slug",
+        "context_window",
+        "max_context_window",
+        "effective_context_window_percent",
+        "effective_codex_budget",
+        "auto_compact_token_limit"
+      ],
+      "properties": {
+        "compatibility": { "$ref": "#/$defs/catalogCompatibility" },
+        "normalized_sha256": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "model_count": { "$ref": "#/$defs/positiveOrNull" },
+        "slug": { "$ref": "#/$defs/stringOrNull" },
+        "context_window": { "$ref": "#/$defs/positiveOrNull" },
+        "max_context_window": { "$ref": "#/$defs/positiveOrNull" },
+        "effective_context_window_percent": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 100
+        },
+        "effective_codex_budget": { "$ref": "#/$defs/positiveOrNull" },
+        "auto_compact_token_limit": { "$ref": "#/$defs/positiveOrNull" }
+      }
+    },
+    "compaction_guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "checkpoint_threshold",
+        "effective_auto_compact_token_limit",
+        "strict_blocking_proven"
+      ],
+      "properties": {
+        "state": { "$ref": "#/$defs/guardState" },
+        "checkpoint_threshold": { "$ref": "#/$defs/positiveOrNull" },
+        "effective_auto_compact_token_limit": { "$ref": "#/$defs/positiveOrNull" },
+        "strict_blocking_proven": { "type": "boolean" }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 17,
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "warned", "failed", "blocking_check_ids"],
+      "properties": {
+        "passed": { "type": "integer", "minimum": 0 },
+        "warned": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "blocking_check_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "claim_safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_is_not_live_proof",
+        "live_native_window_proven",
+        "release_claim_ready"
+      ],
+      "properties": {
+        "catalog_is_not_live_proof": { "const": true },
+        "live_native_window_proven": { "const": false },
+        "release_claim_ready": { "const": false }
+      }
+    },
+    "sanitization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credentials_omitted",
+        "arbitrary_config_omitted",
+        "model_instructions_omitted",
+        "model_request_sent"
+      ],
+      "properties": {
+        "credentials_omitted": { "const": true },
+        "arbitrary_config_omitted": { "const": true },
+        "model_instructions_omitted": { "const": true },
+        "model_request_sent": { "const": false }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "state": { "const": "policy_ready" } } },
+      "then": {
+        "properties": {
+          "exit_code": { "const": 0 },
+          "configuration_policy_ready": { "const": true }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "state": { "const": "not_ready" } } },
+      "then": {
+        "properties": {
+          "exit_code": { "const": 2 },
+          "configuration_policy_ready": { "const": false }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "state": { "const": "incompatible" } } },
+      "then": {
+        "properties": {
+          "exit_code": { "const": 3 },
+          "configuration_policy_ready": { "const": false }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "state": { "enum": ["policy_ready", "not_ready", "incompatible"] },
+    "authLane": { "enum": ["chatgpt", "api_key", "unauthenticated", "unknown"] },
+    "catalogCompatibility": {
+      "enum": ["supported", "stale", "unknown_schema", "missing"]
+    },
+    "guardState": {
+      "enum": ["not_installed", "configured", "observed_blocking", "failed"]
+    },
+    "positiveOrNull": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "stringOrNull": { "type": ["string", "null"] },
+    "dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "unit",
+        "authority",
+        "contract_exact_tokens",
+        "contract_minimum_tokens",
+        "contract_maximum_exclusive_tokens",
+        "observed_policy_tokens",
+        "observation_kind"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "unit": { "const": "tokens" },
+        "authority": { "type": "string", "minLength": 1 },
+        "contract_exact_tokens": { "$ref": "#/$defs/positiveOrNull" },
+        "contract_minimum_tokens": { "$ref": "#/$defs/positiveOrNull" },
+        "contract_maximum_exclusive_tokens": { "$ref": "#/$defs/positiveOrNull" },
+        "observed_policy_tokens": { "$ref": "#/$defs/positiveOrNull" },
+        "observation_kind": { "type": "string", "minLength": 1 }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "status",
+        "incompatible_when_failed",
+        "observed",
+        "expected",
+        "guidance"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["pass", "warn", "fail"] },
+        "incompatible_when_failed": { "type": "boolean" },
+        "observed": { "type": "string", "minLength": 1 },
+        "expected": { "type": "string", "minLength": 1 },
+        "guidance": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

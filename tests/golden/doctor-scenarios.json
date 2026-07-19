@@ -1,0 +1,132 @@
+[
+  {
+    "id": "chatgpt_272k",
+    "state": "not_ready",
+    "exit_code": 2,
+    "passed": 9,
+    "warned": 1,
+    "failed": 7,
+    "blocking_check_ids": [
+      "catalog_single_model",
+      "catalog_native_total",
+      "config_native_total",
+      "catalog_path_configured",
+      "effective_codex_budget",
+      "operational_input_threshold",
+      "compaction_guard"
+    ],
+    "doctor_json_sha256": "99ae4913456adde072b9e3659d6a41337ee4cec1d7ab41a4106427f156f91143",
+    "status_json_sha256": "a63a82988f019b920244a1e9689340f3ccbcd153b057fca56af02bda5b416b5a",
+    "doctor_text_sha256": "90e41503eac3f8edbeb23ef2bb60506529d6d45f62fb3429ad0690edb13f11eb",
+    "status_text_sha256": "985861cf860be6fd6eba5ca3b2f1c6be8b12a1eb588dd81a3c3db364108f9c2a"
+  },
+  {
+    "id": "chatgpt_sol_1m_overlay",
+    "state": "not_ready",
+    "exit_code": 2,
+    "passed": 14,
+    "warned": 1,
+    "failed": 2,
+    "blocking_check_ids": [
+      "operational_input_threshold",
+      "compaction_guard"
+    ],
+    "doctor_json_sha256": "bc4b73b9cebd51036773d9602313ed7556387396e9e43bd9c3a92afb62eb9672",
+    "status_json_sha256": "1dcbf964c01c13cb1cda02d27af50275cab3866d14118afd148f9cb23b6b05ae",
+    "doctor_text_sha256": "284ed9d4bb66b3d976aab814e38849c47823f0a5e26d4237ddd37a1b9fefff2b",
+    "status_text_sha256": "1f6edaad4aba11bf1ffbca3567fd7c2be3ee86653c5de4e115b300d72595d37f"
+  },
+  {
+    "id": "api_key_sol_ready_policy",
+    "state": "policy_ready",
+    "exit_code": 0,
+    "passed": 17,
+    "warned": 0,
+    "failed": 0,
+    "blocking_check_ids": [],
+    "doctor_json_sha256": "1361b47acc544f5c4fa639cf9e7be8e36f5a1217c28b3bde796e84f4a2b6cfd1",
+    "status_json_sha256": "023fcf60d76ddf7e58fbd2d3874e821156df4c80b28584cfcaabb2bf8647aed1",
+    "doctor_text_sha256": "ac2c1ba79ad874f6fcc13c630f42ec07f3d87dabea82b60b01894422a14948d5",
+    "status_text_sha256": "dbdec95cb02c2dc7787393336002ff6db69ed120821f9cc6c58ed76e2b52e3ae"
+  },
+  {
+    "id": "non_sol_override",
+    "state": "not_ready",
+    "exit_code": 2,
+    "passed": 16,
+    "warned": 0,
+    "failed": 1,
+    "blocking_check_ids": [
+      "exact_sol_model"
+    ],
+    "doctor_json_sha256": "82ab2e3ee32da4ca73eaed9e319262a40e8ace8672c63e276c5865cb5fbc42cd",
+    "status_json_sha256": "9320295c12c0132549b4c6950f4fecec4718e261efa765c00cf36b542a67bc91",
+    "doctor_text_sha256": "af02c597af4d55cfdf06c12052330ab5184575b9dc9982ab91b7f7d93cf9ffb4",
+    "status_text_sha256": "3682fdd667b4a711a4538a65daf2292e5aeeae582ccc21734bf0134a39178a5d"
+  },
+  {
+    "id": "missing_access",
+    "state": "not_ready",
+    "exit_code": 2,
+    "passed": 16,
+    "warned": 0,
+    "failed": 1,
+    "blocking_check_ids": [
+      "auth_access"
+    ],
+    "doctor_json_sha256": "b727586a430ec5ba8824662f1db451680c253a5d5f09a6134926fb30572e3471",
+    "status_json_sha256": "34d27331cc5fb6e3190523935c6eaee0ddfb7c703dc0747caba242b6eee7e986",
+    "doctor_text_sha256": "459ad66ee6eabd060853b2c09a7a4338074fcc5b07de396d7d43e7f9f08b4523",
+    "status_text_sha256": "c529a3df3b56264b5cf86fd05f027ab283e1128d579945b64532f34cf00b0578"
+  },
+  {
+    "id": "stale_catalog",
+    "state": "incompatible",
+    "exit_code": 3,
+    "passed": 16,
+    "warned": 0,
+    "failed": 1,
+    "blocking_check_ids": [
+      "catalog_compatibility"
+    ],
+    "doctor_json_sha256": "5c837db49ba7d015dde9ade1dd9ea7c0f9af66dfcc862cddf2c7fa1bf18eed55",
+    "status_json_sha256": "4f0ba79001cdfb81ff08c9f293ca93a6ac997e35c724fdaebab499cdca7b9ee9",
+    "doctor_text_sha256": "66a601367f9bffba132539be2940d98a9a2c193ecaafefcafaeaddd894301fb3",
+    "status_text_sha256": "95a3710b696a3f6998c82223ade2d2126dfe8be8940980c50cfca2dac934e3d6"
+  },
+  {
+    "id": "invalid_config",
+    "state": "incompatible",
+    "exit_code": 3,
+    "passed": 10,
+    "warned": 1,
+    "failed": 6,
+    "blocking_check_ids": [
+      "config_valid",
+      "exact_sol_model",
+      "config_native_total",
+      "catalog_path_configured",
+      "operational_input_threshold",
+      "compaction_guard"
+    ],
+    "doctor_json_sha256": "fb59c543dc342c95c89cfc8f4f7162b62f4cb3ac9b6019f615b8f212046114d8",
+    "status_json_sha256": "b37f1ec0dcacae88655636d6629fc5219aa613ac0863f58b5a011f405e74471e",
+    "doctor_text_sha256": "c7b0c2f8259edc394c56dd41a09ef62db93069d6a63fbcb49c0941f0a5b8e046",
+    "status_text_sha256": "bb8801da44abe0050624a771cfa7dd7583badb82a03b61560c61ffa49794bffc"
+  },
+  {
+    "id": "unsupported_codex_version",
+    "state": "incompatible",
+    "exit_code": 3,
+    "passed": 16,
+    "warned": 0,
+    "failed": 1,
+    "blocking_check_ids": [
+      "codex_version_supported"
+    ],
+    "doctor_json_sha256": "a7a3d0d70e0184f7eec77cb8767649d03c41cceb579b7929c02e05fa4fc49191",
+    "status_json_sha256": "81fc5a55edf4c9864aa2e3a27b25842c9dd752c51ce0355e9f01002236e8f2e1",
+    "doctor_text_sha256": "b536a54a617b370f2b83b185abd4ef8d9ece84885b22788befd5c7aaecbd9fc9",
+    "status_text_sha256": "eb27f116e3cca4de9e3af9d72cc2a77eba4a5aac2353ee039885155b280812ee"
+  }
+]
