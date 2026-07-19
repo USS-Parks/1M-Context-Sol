@@ -10,7 +10,8 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 |---|---|---|---|
 | CAC-00 | Repository identity, scope, skeleton checks, first push | Passed | `f46254ca0967d0a9f04bfc9e900b525390432619` and DEVLOG entry |
 | CAC-01 | Installed Codex/Sol discrepancy, sanitized probe, fixtures, source freeze | Passed | `8ff3cd7d0e8ed98f09dc095832cc9b6848602759`, `docs/evidence/CAC-01/`, and capability baseline |
-| CAC-02 onward | PSPR prompt-local gates | Not started | — |
+| CAC-02 | Claim vocabulary, limitation matrix, gate map, and fail-closed wording/model tests | Local gate passed; push pending | `contracts/capability-vocabulary.json` and claim-contract tests |
+| CAC-03 onward | PSPR prompt-local gates | Not started | — |
 
 ## Baseline local checks
 

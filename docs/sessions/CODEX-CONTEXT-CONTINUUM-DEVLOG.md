@@ -48,3 +48,23 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - `git diff --check` — passed
 - **Implementation commit:** `8ff3cd7d0e8ed98f09dc095832cc9b6848602759`
 - **Published remote SHA:** `8ff3cd7d0e8ed98f09dc095832cc9b6848602759` on `codex/context-continuum-v0.1`
+
+## CAC-02 — Freeze the claim contract and terminology
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; awaiting commit and push
+- **Scope:** Normative claim document, machine-readable vocabulary/schema, typed validator, limitation table, README linkage, and negative wording/model/dimension tests.
+- **Contract:** Exact `gpt-5.6-sol` only; aliases and fallback forbidden; all eleven public claims disabled until their named gates pass.
+- **Dimensions:** Native total, maximum input, maximum output, effective Codex budget, operational input threshold, and durable reservoir capacity are separate and non-substitutable.
+- **Files changed:** `contracts/capability-vocabulary.json`, `schemas/capability-vocabulary.schema.json`, `docs/architecture/CLAIM-CONTRACT.md`, `src/claim_contract.rs`, `tests/claim_contract.rs`, README, and ledgers.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 22 tests total, including 11 claim-contract tests
+  - Six dimension IDs exist exactly once and have empty substitution sets
+  - Eleven public claims map to named G0–G9 gates and are disabled before gate completion
+  - Non-Sol model evidence, conflated totals, low effective/durable capacity, unsafe threshold, missing G4, and ambiguous wording all fail
+  - Checked-in contract and schema parse as JSON; README wording passes the validator
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.

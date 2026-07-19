@@ -2,6 +2,7 @@
 
 //! Shared library skeleton for Context Continuum.
 
+pub mod claim_contract;
 pub mod probe;
 
 /// The only model identifier permitted by the project contract.

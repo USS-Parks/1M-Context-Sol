@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "model_contract": {
+    "required_slug": "gpt-5.6-sol",
+    "fallback_allowed": false,
+    "alias_allowed": false
+  },
+  "dimensions": [
+    {
+      "id": "native_total_context",
+      "label": "Native total context window",
+      "unit": "tokens",
+      "definition": "The total input-plus-output window documented for the exact model backend.",
+      "authority": "OpenAI GPT-5.6 Sol model specification",
+      "gate": "G2",
+      "exact_tokens": 1050000,
+      "minimum_tokens": null,
+      "maximum_exclusive_tokens": null,
+      "substitutes_for": []
+    },
+    {
+      "id": "native_max_input",
+      "label": "Native maximum input",
+      "unit": "tokens",
+      "definition": "The maximum input accepted by the exact model backend before client and hidden overhead.",
+      "authority": "OpenAI GPT-5.6 Sol model specification",
+      "gate": "G2",
+      "exact_tokens": 922000,
+      "minimum_tokens": null,
+      "maximum_exclusive_tokens": null,
+      "substitutes_for": []
+    },
+    {
+      "id": "native_max_output",
+      "label": "Native maximum output",
+      "unit": "tokens",
+      "definition": "The maximum output reserved by the exact model backend.",
+      "authority": "OpenAI GPT-5.6 Sol model specification",
+      "gate": "G2",
+      "exact_tokens": 128000,
+      "minimum_tokens": null,
+      "maximum_exclusive_tokens": null,
+      "substitutes_for": []
+    },
+    {
+      "id": "codex_effective_budget",
+      "label": "Effective Codex budget",
+      "unit": "tokens",
+      "definition": "The total budget Codex exposes after its client reserve; this is not maximum user input.",
+      "authority": "Resolved Codex runtime configuration and live probe",
+      "gate": "G2",
+      "exact_tokens": null,
+      "minimum_tokens": 1000000,
+      "maximum_exclusive_tokens": null,
+      "substitutes_for": []
+    },
+    {
+      "id": "operational_input_threshold",
+      "label": "Operational input threshold",
+      "unit": "tokens",
+      "definition": "The calibrated checkpoint and rollover threshold after instructions, tools, and output allowance.",
+      "authority": "CAC-14 measured calibration",
+      "gate": "G2",
+      "exact_tokens": null,
+      "minimum_tokens": 1,
+      "maximum_exclusive_tokens": 922000,
+      "substitutes_for": []
+    },
+    {
+      "id": "durable_reservoir_capacity",
+      "label": "Durable reservoir capacity",
+      "unit": "tokens",
+      "definition": "Tokenizer-counted context retained in the local integrity-checked store outside the active model window.",
+      "authority": "G3 deterministic corpus benchmark",
+      "gate": "G3",
+      "exact_tokens": null,
+      "minimum_tokens": 1000000,
+      "maximum_exclusive_tokens": null,
+      "substitutes_for": []
+    }
+  ],
+  "public_claims": [
+    {
+      "id": "headline",
+      "text": "GPT-5.6 Sol with its native 1.05M window. Compaction blocked. Durable continuity beyond the window.",
+      "required_gates": ["G2", "G3", "G4", "G5"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "sol_only",
+      "text": "Every compliant task uses exact gpt-5.6-sol with no model fallback.",
+      "required_gates": ["G2", "G5"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "native_window",
+      "text": "The active GPT-5.6 Sol backend exposes its documented 1,050,000-token total context window.",
+      "required_gates": ["G2"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "maximum_input",
+      "text": "GPT-5.6 Sol has a separate 922,000-token maximum input.",
+      "required_gates": ["G2"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "maximum_output",
+      "text": "GPT-5.6 Sol has a separate 128,000-token maximum output.",
+      "required_gates": ["G2"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "effective_budget",
+      "text": "Codex resolves at least a 1,000,000-token internal budget while the operating threshold remains below maximum input.",
+      "required_gates": ["G2"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "durable_capacity",
+      "text": "The local reservoir retains at least 1,000,000 tokenizer-counted tokens with exact retrieval and integrity evidence.",
+      "required_gates": ["G3"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "no_compaction",
+      "text": "Known automatic and manual compaction attempts are checkpointed and visibly blocked.",
+      "required_gates": ["G4"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "fresh_task_enrollment",
+      "text": "Every fresh supported Codex task is automatically enrolled or visibly blocked before ordinary work.",
+      "required_gates": ["G5"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "local_private_default",
+      "text": "Ordinary storage and retrieval are local-only and telemetry-off by default.",
+      "required_gates": ["G6"],
+      "enabled_before_gates_pass": false
+    },
+    {
+      "id": "release_installable",
+      "text": "The supported release installs from verified GitHub artifacts rather than a developer checkout.",
+      "required_gates": ["G8", "G9"],
+      "enabled_before_gates_pass": false
+    }
+  ],
+  "limitations": [
+    {
+      "id": "total_is_not_input",
+      "text": "The 1,050,000-token total window is not a claim of one million input tokens."
+    },
+    {
+      "id": "catalog_is_not_live_proof",
+      "text": "A catalog value or status screen is not native-window proof without a live above-cap Sol request."
+    },
+    {
+      "id": "reservoir_is_not_native",
+      "text": "Durable reservoir capacity cannot substitute for the active native model window."
+    },
+    {
+      "id": "strict_guard_can_stop",
+      "text": "Blocking PreCompact can halt the active turn at its hard limit."
+    },
+    {
+      "id": "rollover_is_a_new_task",
+      "text": "Successor rollover continues work in a verified fresh task, not an infinitely live source task."
+    },
+    {
+      "id": "current_runtime_is_below_goal",
+      "text": "The CAC-01 runtime-resolved Sol catalog is 272,000 total with 258,400 effective tokens."
+    },
+    {
+      "id": "premium_long_context",
+      "text": "Sol requests above 272,000 input tokens receive documented premium pricing and require a cost gate."
+    }
+  ],
+  "forbidden_public_phrases": [
+    "one million input tokens",
+    "1m input tokens",
+    "unlimited context",
+    "infinite context",
+    "no context limit",
+    "works with any model"
+  ]
+}

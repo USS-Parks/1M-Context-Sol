@@ -16,7 +16,7 @@ That sentence is a gated target, not a current performance claim. The project al
 
 ## Governance
 
-Implementation follows stable CAC prompt IDs, prompt-local acceptance gates, and an auditable [development log](docs/sessions/CODEX-CONTEXT-CONTINUUM-DEVLOG.md). See [verification status](docs/VERIFICATION.md) before relying on any capability.
+Implementation follows stable CAC prompt IDs, prompt-local acceptance gates, and an auditable [development log](docs/sessions/CODEX-CONTEXT-CONTINUUM-DEVLOG.md). Public wording and capacity numbers are governed by the [claim contract](docs/architecture/CLAIM-CONTRACT.md) and its [machine-readable vocabulary](contracts/capability-vocabulary.json). See [verification status](docs/VERIFICATION.md) before relying on any capability.
 
 ## License
 
