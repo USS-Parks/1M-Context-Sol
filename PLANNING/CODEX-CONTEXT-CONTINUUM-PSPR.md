@@ -93,6 +93,18 @@ Planning inspection on 2026-07-19 established the following current baseline:
 - Hook-injected context is intentionally small, so a million tokens cannot be pushed wholesale through hook stdout. Durable selective retrieval is required.
 - MCP tools can retrieve stored context, but MCP does not change the model backend's native limit.
 
+#### CAC-01 execution correction — bundled versus resolved catalog
+
+The CAC-01 probe on 2026-07-19 supersedes one planning shorthand above without weakening the goal:
+
+- installed `codex-cli 0.144.5` bundles a Sol entry at 372,000 / 372,000;
+- the same binary's runtime-resolved catalog provides Sol at 272,000 / 272,000;
+- the current open-source Codex `main` catalog at commit `c86b1be3cdbe12307843bcc9e7a44c1904ddcdf1` also provides 272,000 / 272,000;
+- the resolved 95 percent effective policy yields 258,400, reproducing the observed “256k class” window; and
+- the implementation must inspect bundled, resolved, and replacement catalogs separately because catalog refresh can override bundled metadata.
+
+The original bullet saying the “installed catalog” is 272,000 is retained as planning history but must now be read as the runtime-resolved catalog, not the bundled catalog. Machine-readable evidence is recorded under `docs/evidence/CAC-01/`.
+
 ### 4.2 Normative public claim
 
 The release may use this claim only after all corresponding gates pass:

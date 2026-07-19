@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "captured_date": "2026-07-19",
+  "openai_codex": {
+    "repository": "https://github.com/openai/codex",
+    "main_commit": "c86b1be3cdbe12307843bcc9e7a44c1904ddcdf1",
+    "model_catalog_path": "codex-rs/models-manager/models.json",
+    "model_catalog_blob_sha": "a43af2a54ed82719b011f6e8498f9028f340a5ce",
+    "sol": {
+      "slug": "gpt-5.6-sol",
+      "context_window": 272000,
+      "max_context_window": 272000,
+      "use_responses_lite": true
+    }
+  },
+  "official_sol": {
+    "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+    "slug": "gpt-5.6-sol",
+    "total_context_window": 1050000,
+    "max_input": 922000,
+    "max_output": 128000,
+    "premium_threshold_input": 272000,
+    "input_price_multiplier_above_threshold": 2.0,
+    "output_price_multiplier_above_threshold": 1.5
+  }
+}

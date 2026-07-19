@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/capability-probe.schema.json",
+  "title": "Context Continuum capability probe",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "captured_at_unix_seconds",
+    "host",
+    "codex",
+    "catalogs",
+    "official_sol_limits",
+    "comparison",
+    "compliance",
+    "sources",
+    "sanitization"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "captured_at_unix_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "architecture"],
+      "properties": {
+        "os": { "type": "string", "minLength": 1 },
+        "architecture": { "type": "string", "minLength": 1 }
+      }
+    },
+    "codex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "auth_lane",
+        "authenticated",
+        "configured_model",
+        "config",
+        "runtime_features"
+      ],
+      "properties": {
+        "version": { "type": "string", "minLength": 1 },
+        "auth_lane": {
+          "enum": ["chatgpt", "api_key", "unauthenticated", "unknown"]
+        },
+        "authenticated": { "type": "boolean" },
+        "configured_model": {
+          "type": ["string", "null"]
+        },
+        "config": { "$ref": "#/$defs/config" },
+        "runtime_features": { "$ref": "#/$defs/runtime_features" }
+      }
+    },
+    "catalogs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bundled", "resolved"],
+      "properties": {
+        "bundled": { "$ref": "#/$defs/catalog" },
+        "resolved": { "$ref": "#/$defs/catalog" }
+      }
+    },
+    "official_sol_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug", "total_context_window", "max_input", "max_output"],
+      "properties": {
+        "slug": { "const": "gpt-5.6-sol" },
+        "total_context_window": { "const": 1050000 },
+        "max_input": { "const": 922000 },
+        "max_output": { "const": 128000 }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundled_total_shortfall",
+        "resolved_total_shortfall",
+        "resolved_effective_shortfall_from_one_million"
+      ],
+      "properties": {
+        "bundled_total_shortfall": { "type": "integer", "minimum": 0 },
+        "resolved_total_shortfall": { "type": "integer", "minimum": 0 },
+        "resolved_effective_shortfall_from_one_million": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_sol_configured",
+        "resolved_catalog_is_exact_sol",
+        "resolved_catalog_has_one_million_internal_budget",
+        "native_one_million_gate_ready"
+      ],
+      "properties": {
+        "exact_sol_configured": { "type": "boolean" },
+        "resolved_catalog_is_exact_sol": { "type": "boolean" },
+        "resolved_catalog_has_one_million_internal_budget": {
+          "type": "boolean"
+        },
+        "native_one_million_gate_ready": { "type": "boolean" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["subject", "url"],
+        "properties": {
+          "subject": { "type": "string", "minLength": 1 },
+          "url": {
+            "type": "string",
+            "pattern": "^https://"
+          }
+        }
+      }
+    },
+    "sanitization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arbitrary_config_keys_omitted",
+        "credentials_omitted",
+        "model_instructions_omitted",
+        "model_request_sent"
+      ],
+      "properties": {
+        "arbitrary_config_keys_omitted": { "const": true },
+        "credentials_omitted": { "const": true },
+        "model_instructions_omitted": { "const": true },
+        "model_request_sent": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "location",
+        "present",
+        "model_context_window",
+        "model_auto_compact_token_limit",
+        "model_catalog_json_configured",
+        "profile_model_override_count"
+      ],
+      "properties": {
+        "location": { "type": "string", "minLength": 1 },
+        "present": { "type": "boolean" },
+        "model_context_window": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "model_auto_compact_token_limit": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "model_catalog_json_configured": { "type": "boolean" },
+        "profile_model_override_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "runtime_features": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hooks",
+        "plugins",
+        "plugin_command_present",
+        "mcp_command_present"
+      ],
+      "properties": {
+        "hooks": { "$ref": "#/$defs/feature_state" },
+        "plugins": { "$ref": "#/$defs/feature_state" },
+        "plugin_command_present": { "type": "boolean" },
+        "mcp_command_present": { "type": "boolean" }
+      }
+    },
+    "feature_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available", "stage", "enabled"],
+      "properties": {
+        "available": { "type": "boolean" },
+        "stage": { "type": ["string", "null"] },
+        "enabled": { "type": ["boolean", "null"] }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalized_sha256",
+        "model_count",
+        "slug",
+        "context_window",
+        "max_context_window",
+        "effective_context_window_percent",
+        "effective_budget",
+        "auto_compact_token_limit",
+        "use_responses_lite"
+      ],
+      "properties": {
+        "normalized_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "model_count": { "type": "integer", "minimum": 1 },
+        "slug": { "const": "gpt-5.6-sol" },
+        "context_window": { "type": "integer", "minimum": 1 },
+        "max_context_window": { "type": "integer", "minimum": 1 },
+        "effective_context_window_percent": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "effective_budget": { "type": "integer", "minimum": 1 },
+        "auto_compact_token_limit": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "use_responses_lite": { "type": "boolean" }
+      }
+    }
+  }
+}

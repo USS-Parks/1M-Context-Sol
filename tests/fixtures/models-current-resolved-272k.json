@@ -1,0 +1,12 @@
+{
+  "models": [
+    {
+      "slug": "gpt-5.6-sol",
+      "context_window": 272000,
+      "max_context_window": 272000,
+      "effective_context_window_percent": 95,
+      "auto_compact_token_limit": null,
+      "use_responses_lite": true
+    }
+  ]
+}
