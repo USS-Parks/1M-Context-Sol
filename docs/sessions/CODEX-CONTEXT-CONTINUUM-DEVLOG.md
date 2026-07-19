@@ -52,7 +52,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-02 — Freeze the claim contract and terminology
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; awaiting commit and push
+- **Status:** Complete
 - **Scope:** Normative claim document, machine-readable vocabulary/schema, typed validator, limitation table, README linkage, and negative wording/model/dimension tests.
 - **Contract:** Exact `gpt-5.6-sol` only; aliases and fallback forbidden; all eleven public claims disabled until their named gates pass.
 - **Dimensions:** Native total, maximum input, maximum output, effective Codex budget, operational input threshold, and durable reservoir capacity are separate and non-substitutable.
@@ -66,5 +66,5 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - Eleven public claims map to named G0–G9 gates and are disabled before gate completion
   - Non-Sol model evidence, conflated totals, low effective/durable capacity, unsafe threshold, missing G4, and ambiguous wording all fail
   - Checked-in contract and schema parse as JSON; README wording passes the validator
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+- **Implementation commit:** `d21716c34bda05e80f9d328c7814c77cf626be4b`
+- **Published remote SHA:** `d21716c34bda05e80f9d328c7814c77cf626be4b` on `codex/context-continuum-v0.1`
