@@ -1,0 +1,18 @@
+[package]
+name = "context-continuum"
+version = "0.0.0"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/USS-Parks/Codex-Added-Context"
+description = "Sol-only Codex context continuity runtime"
+publish = false
+
+[lib]
+name = "context_continuum"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cctx"
+path = "src/main.rs"
+
+[dependencies]
