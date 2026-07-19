@@ -94,7 +94,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-04 — Establish CI and evidence contracts
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; remote GitHub Actions pending
+- **Status:** Complete
 - **Scope:** Read-only CI workflow, pinned toolchain/actions, format/check/Clippy/tests/docs, full-history secret scan, cargo-deny policy, structural PSPR validation, Draft 2020-12 evidence schemas, complete evidence mapping, and negative gate proofs.
 - **Credentials:** Workflow permissions are `contents: read`. No release, deployment, OpenAI, or user-managed GitHub credential is required.
 - **Pinned tools:** checkout v7.0.0 SHA, rust-toolchain action SHA with Rust 1.96.1, cargo-deny action v2.1.1 SHA, Gitleaks 8.30.1 archive SHA-256, and `jsonschema` 0.48.1 with network/file resolution disabled.
@@ -109,6 +109,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - canonical PSPR has 47 unique prompts with required objectives/gates/sections
   - deliberate format, Clippy, test, rustdoc, PSPR, and evidence failures were each blocked
   - `git diff --check` — passed
-- **Remote verification:** Pending clean GitHub Actions jobs for Rust/docs, contracts, six negative gates, Gitleaks clean/negative proof, and cargo-deny clean/negative proof.
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+- **Remote verification:** GitHub Actions run [29704751317](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29704751317) passed all 10 jobs: Rust/docs, contracts, six negative gates, Gitleaks clean/negative proof, and cargo-deny clean/negative proof.
+- **Repair evidence:** The first remote run correctly exposed a stale generated Gitleaks fixture. Commit `6645fce3793a8e74dda72765084a507de1ba1f91` aligned the runtime-only fake value with the exact pinned v8.30.1 OpenAI rule; the clean rerun then passed.
+- **Implementation commit:** `10c749c5dcecab66ce51ee008dff669ff2952fdd`
+- **Published remote SHA:** `6645fce3793a8e74dda72765084a507de1ba1f91` on `codex/context-continuum-v0.1`
