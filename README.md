@@ -20,6 +20,8 @@ Implementation follows stable CAC prompt IDs, prompt-local acceptance gates, and
 
 The settled component ownership and trust transitions are documented in the [data-flow contract](docs/architecture/DATA-FLOW-AND-TRUST-BOUNDARIES.md), nine [architecture decisions](docs/architecture/decisions/), and the repository [threat model](docs/security/THREAT-MODEL.md).
 
+The [CI and evidence contract](docs/CI-AND-EVIDENCE-CONTRACT.md) requires clean Rust, documentation, secret, supply-chain, PSPR, and Draft 2020-12 JSON Schema gates plus deliberate failure proofs.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).

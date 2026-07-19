@@ -12,7 +12,8 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CAC-01 | Installed Codex/Sol discrepancy, sanitized probe, fixtures, source freeze | Passed | `8ff3cd7d0e8ed98f09dc095832cc9b6848602759`, `docs/evidence/CAC-01/`, and capability baseline |
 | CAC-02 | Claim vocabulary, limitation matrix, gate map, and fail-closed wording/model tests | Passed | `d21716c34bda05e80f9d328c7814c77cf626be4b`, capability vocabulary, and claim-contract tests |
 | CAC-03 | ADRs, sole authorities, trust transitions, data flow, repository threat model | Passed | `907254aca8a7228d5af7561004cb220921590362`, architecture contract/tests, and threat model |
-| CAC-04 onward | PSPR prompt-local gates | Not started | — |
+| CAC-04 | Rust/docs, PSPR/schema, secrets, supply-chain CI plus negative proofs | Local gate passed; remote CI pending | `.github/workflows/ci.yml` and CI/evidence contract |
+| CAC-10 onward | PSPR prompt-local gates | Not started | — |
 
 ## Baseline local checks
 

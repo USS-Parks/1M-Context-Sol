@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "documents": [
+    {
+      "path": "docs/evidence/CAC-01/capability-baseline.json",
+      "schema": "schemas/capability-probe.schema.json"
+    },
+    {
+      "path": "docs/evidence/CAC-01/source-freeze.json",
+      "schema": "schemas/source-freeze.schema.json"
+    }
+  ]
+}

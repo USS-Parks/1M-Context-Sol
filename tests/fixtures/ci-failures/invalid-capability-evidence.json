@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "captured_at_unix_seconds": 0,
+  "host": {
+    "os": "fixture",
+    "architecture": "fixture"
+  },
+  "official_sol_limits": {
+    "slug": "not-sol",
+    "total_context_window": 1000000,
+    "max_input": 1000000,
+    "max_output": 0
+  },
+  "sanitization": {
+    "model_request_sent": true
+  }
+}

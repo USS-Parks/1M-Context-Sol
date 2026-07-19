@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/source-freeze.schema.json",
+  "title": "CAC-01 source freeze",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "captured_date", "openai_codex", "official_sol"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "captured_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "openai_codex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "main_commit",
+        "model_catalog_path",
+        "model_catalog_blob_sha",
+        "sol"
+      ],
+      "properties": {
+        "repository": { "const": "https://github.com/openai/codex" },
+        "main_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "model_catalog_path": {
+          "const": "codex-rs/models-manager/models.json"
+        },
+        "model_catalog_blob_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "sol": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "slug",
+            "context_window",
+            "max_context_window",
+            "use_responses_lite"
+          ],
+          "properties": {
+            "slug": { "const": "gpt-5.6-sol" },
+            "context_window": { "type": "integer", "minimum": 1 },
+            "max_context_window": { "type": "integer", "minimum": 1 },
+            "use_responses_lite": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "official_sol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "slug",
+        "total_context_window",
+        "max_input",
+        "max_output",
+        "premium_threshold_input",
+        "input_price_multiplier_above_threshold",
+        "output_price_multiplier_above_threshold"
+      ],
+      "properties": {
+        "source": {
+          "const": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+        },
+        "slug": { "const": "gpt-5.6-sol" },
+        "total_context_window": { "const": 1050000 },
+        "max_input": { "const": 922000 },
+        "max_output": { "const": 128000 },
+        "premium_threshold_input": { "const": 272000 },
+        "input_price_multiplier_above_threshold": { "const": 2.0 },
+        "output_price_multiplier_above_threshold": { "const": 1.5 }
+      }
+    }
+  }
+}

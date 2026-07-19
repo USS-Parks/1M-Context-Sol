@@ -90,3 +90,25 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - threat model contains all required repository-scope sections and exact cache footer
 - **Implementation commit:** `907254aca8a7228d5af7561004cb220921590362`
 - **Published remote SHA:** `907254aca8a7228d5af7561004cb220921590362` on `codex/context-continuum-v0.1`
+
+## CAC-04 — Establish CI and evidence contracts
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; remote GitHub Actions pending
+- **Scope:** Read-only CI workflow, pinned toolchain/actions, format/check/Clippy/tests/docs, full-history secret scan, cargo-deny policy, structural PSPR validation, Draft 2020-12 evidence schemas, complete evidence mapping, and negative gate proofs.
+- **Credentials:** Workflow permissions are `contents: read`. No release, deployment, OpenAI, or user-managed GitHub credential is required.
+- **Pinned tools:** checkout v7.0.0 SHA, rust-toolchain action SHA with Rust 1.96.1, cargo-deny action v2.1.1 SHA, Gitleaks 8.30.1 archive SHA-256, and `jsonschema` 0.48.1 with network/file resolution disabled.
+- **Files changed:** CI workflow, `deny.toml`, two CI scripts, governance/schema tests, source-freeze schema, evidence-schema map, deliberate invalid fixtures, CI/evidence documentation, Cargo dependency lock, README, and ledgers.
+- **Local verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --locked --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 33 tests total, including 5 governance/schema tests
+  - all mapped schemas compile explicitly as Draft 2020-12
+  - every JSON evidence document is mapped exactly once and validates
+  - canonical PSPR has 47 unique prompts with required objectives/gates/sections
+  - deliberate format, Clippy, test, rustdoc, PSPR, and evidence failures were each blocked
+  - `git diff --check` — passed
+- **Remote verification:** Pending clean GitHub Actions jobs for Rust/docs, contracts, six negative gates, Gitleaks clean/negative proof, and cargo-deny clean/negative proof.
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.

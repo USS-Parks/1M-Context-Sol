@@ -1,0 +1,6 @@
+[bans]
+multiple-versions = "allow"
+wildcards = "allow"
+deny = ["serde"]
+skip = []
+skip-tree = []
