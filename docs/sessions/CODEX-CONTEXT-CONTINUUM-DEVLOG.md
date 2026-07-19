@@ -140,7 +140,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-11 — Implement atomic Codex configuration management
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Status:** Complete
 - **Scope:** Explicit-path `cctx config plan|apply|restore|uninstall`, comment-preserving TOML edits, owned-leaf-only dry-run output, same-directory atomic replacement, manager locking, timestamped exact-byte backups and installed snapshots, versioned ownership manifest, first-backup retention across managed updates, and fail-closed conflict handling.
 - **Owned settings:** Exact `gpt-5.6-sol`, 1,050,000-token model window, optional paired automatic-compaction limit/scope, catalog path, hook/plugin enablement, and the required `context_continuum` MCP command, arguments, enablement, and startup timeout.
 - **Safety result:** Apply rechecks exact config and manifest bytes under a lock. Restore requires the current config to equal the hash-verified installed snapshot, restores the hash-verified original bytes when one existed, and refuses concurrent edits, later user edits, MCP ownership collisions, invalid TOML, non-Sol policy, limits above the 90% clamp, ambiguous lifecycle state, or corrupted ownership state.
@@ -157,5 +157,6 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - emitted ownership manifest validated as Draft 2020-12; managed no-op did not rewrite config or manifest; managed update retained the first backup
   - isolated CLI fixture `C:\tmp\cctx-cac11-proof-019f7be3` completed plan/apply/restore with no plan-time state creation and exact before/after SHA-256 `BBB1506DA4F27BC345B29BA5E6C5ED8164711B553F968D8382FA401BF9CD88CD`
   - no global Codex configuration, credential, catalog installation, or model request was touched
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+  - GitHub Actions run [29707154346](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29707154346) — passed all 10 jobs
+- **Implementation commit:** `279819fe11c00a589dce82569fc4ac5631d06af5`
+- **Published remote SHA:** `279819fe11c00a589dce82569fc4ac5631d06af5` on `codex/context-continuum-v0.1`
