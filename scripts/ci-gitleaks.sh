@@ -18,9 +18,12 @@ tar --extract --gzip --file "$archive" --directory "$scratch" gitleaks
 "$binary" git --no-banner --redact "$repo_root"
 
 mkdir -p "$scratch/negative"
-prefix="sk-proj-"
-body="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGH"
-printf 'OPENAI_API_KEY=%s%s\n' "$prefix" "$body" >"$scratch/negative/generated.env"
+prefix="sk-"
+left="A9b8C7d6E5f4G3h2I1j0"
+marker="T3BlbkFJ"
+right="K0l1M2n3O4p5Q6r7S8t9"
+printf 'OPENAI_API_KEY=%s%s%s%s\n' "$prefix" "$left" "$marker" "$right" \
+  >"$scratch/negative/generated.env"
 
 set +e
 "$binary" dir --no-banner --redact "$scratch/negative" >"$scratch/negative.log" 2>&1
