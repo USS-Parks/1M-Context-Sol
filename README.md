@@ -24,6 +24,8 @@ The [CI and evidence contract](docs/CI-AND-EVIDENCE-CONTRACT.md) requires clean 
 
 The version-pinned [Sol catalog overlay](docs/architecture/MODEL-CATALOG-OVERLAY.md) now generates an uninstalled one-model candidate while preserving installed instructions and capabilities. That local catalog/parser proof is not live backend acceptance.
 
+The [atomic configuration manager](docs/architecture/ATOMIC-CONFIG-MANAGEMENT.md) can now dry-run, atomically apply, and exactly roll back only its declared model, window, catalog, hook/plugin, and MCP settings. It requires explicit absolute paths and has not been run against the real global Codex configuration.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).

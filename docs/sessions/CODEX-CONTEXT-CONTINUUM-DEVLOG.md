@@ -136,3 +136,26 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - GitHub Actions run [29705566278](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29705566278) — passed all 10 jobs
 - **Implementation commit:** `359c572fb2775a4f68608ff8e3a333dfdc31abfb`
 - **Published remote SHA:** `359c572fb2775a4f68608ff8e3a333dfdc31abfb` on `codex/context-continuum-v0.1`
+
+## CAC-11 — Implement atomic Codex configuration management
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Scope:** Explicit-path `cctx config plan|apply|restore|uninstall`, comment-preserving TOML edits, owned-leaf-only dry-run output, same-directory atomic replacement, manager locking, timestamped exact-byte backups and installed snapshots, versioned ownership manifest, first-backup retention across managed updates, and fail-closed conflict handling.
+- **Owned settings:** Exact `gpt-5.6-sol`, 1,050,000-token model window, optional paired automatic-compaction limit/scope, catalog path, hook/plugin enablement, and the required `context_continuum` MCP command, arguments, enablement, and startup timeout.
+- **Safety result:** Apply rechecks exact config and manifest bytes under a lock. Restore requires the current config to equal the hash-verified installed snapshot, restores the hash-verified original bytes when one existed, and refuses concurrent edits, later user edits, MCP ownership collisions, invalid TOML, non-Sol policy, limits above the 90% clamp, ambiguous lifecycle state, or corrupted ownership state.
+- **Files changed:** `Cargo.toml`/`Cargo.lock`, `src/config_manager.rs`, CLI/library wiring, `tests/config_manager.rs`, ownership JSON Schema, atomic configuration architecture documentation, README, and ledgers.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --locked --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 52 tests total, including 12 config-manager tests
+  - `RUSTDOCFLAGS=-D warnings cargo doc --locked --no-deps --document-private-items` — passed
+  - `cargo deny check` — advisories, bans, licenses, and sources passed
+  - missing, partial, commented, and CRLF configs round-tripped to exact pre-install bytes
+  - concurrent plan/config edits, manager-lock contention, later user edits, unowned MCP collision, invalid TOML/table shape, non-Sol model, unpaired compaction values, and above-clamp threshold were refused without overwriting config
+  - emitted ownership manifest validated as Draft 2020-12; managed no-op did not rewrite config or manifest; managed update retained the first backup
+  - isolated CLI fixture `C:\tmp\cctx-cac11-proof-019f7be3` completed plan/apply/restore with no plan-time state creation and exact before/after SHA-256 `BBB1506DA4F27BC345B29BA5E6C5ED8164711B553F968D8382FA401BF9CD88CD`
+  - no global Codex configuration, credential, catalog installation, or model request was touched
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.

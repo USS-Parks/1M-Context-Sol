@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/config-ownership-manifest.schema.json",
+  "title": "Context Continuum configuration ownership manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state",
+    "created_at",
+    "updated_at",
+    "uninstalled_at",
+    "config_path",
+    "config_existed_before",
+    "backup_file",
+    "pre_install_sha256",
+    "installed_snapshot_file",
+    "installed_sha256",
+    "desired",
+    "owned_paths"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "state": {
+      "enum": ["pending_install", "installed", "uninstalled"]
+    },
+    "created_at": { "$ref": "#/$defs/timestamp" },
+    "updated_at": { "$ref": "#/$defs/timestamp" },
+    "uninstalled_at": {
+      "oneOf": [
+        { "$ref": "#/$defs/timestamp" },
+        { "type": "null" }
+      ]
+    },
+    "config_path": { "type": "string", "minLength": 1 },
+    "config_existed_before": { "type": "boolean" },
+    "backup_file": {
+      "type": ["string", "null"],
+      "pattern": "^original-unix-[0-9]+-[0-9]{9}-[0-9a-f]{12}\\.toml$"
+    },
+    "pre_install_sha256": {
+      "oneOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    },
+    "installed_snapshot_file": {
+      "type": "string",
+      "pattern": "^installed-unix-[0-9]+-[0-9]{9}-[0-9a-f]{12}\\.toml$"
+    },
+    "installed_sha256": { "$ref": "#/$defs/sha256" },
+    "desired": { "$ref": "#/$defs/ownedConfig" },
+    "owned_paths": {
+      "const": [
+        "model",
+        "model_context_window",
+        "model_auto_compact_token_limit",
+        "model_auto_compact_token_limit_scope",
+        "model_catalog_json",
+        "features.hooks",
+        "features.plugins",
+        "mcp_servers.context_continuum.command",
+        "mcp_servers.context_continuum.args",
+        "mcp_servers.context_continuum.enabled",
+        "mcp_servers.context_continuum.required",
+        "mcp_servers.context_continuum.startup_timeout_sec",
+        "mcp_servers.context_continuum"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "config_existed_before": { "const": true } },
+        "required": ["config_existed_before"]
+      },
+      "then": {
+        "properties": {
+          "backup_file": { "type": "string" },
+          "pre_install_sha256": { "$ref": "#/$defs/sha256" }
+        }
+      },
+      "else": {
+        "properties": {
+          "backup_file": { "type": "null" },
+          "pre_install_sha256": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "state": { "const": "uninstalled" } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": { "uninstalled_at": { "$ref": "#/$defs/timestamp" } }
+      },
+      "else": {
+        "properties": { "uninstalled_at": { "type": "null" } }
+      }
+    }
+  ],
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "pattern": "^unix-[0-9]+-[0-9]{9}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ownedConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "model_context_window",
+        "model_auto_compact_token_limit",
+        "model_auto_compact_token_limit_scope",
+        "model_catalog_json",
+        "hooks_enabled",
+        "plugins_enabled",
+        "mcp"
+      ],
+      "properties": {
+        "model": { "const": "gpt-5.6-sol" },
+        "model_context_window": { "const": 1050000 },
+        "model_auto_compact_token_limit": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 945000
+        },
+        "model_auto_compact_token_limit_scope": {
+          "type": ["string", "null"],
+          "enum": ["total", "body_after_prefix", null]
+        },
+        "model_catalog_json": { "type": "string", "minLength": 1 },
+        "hooks_enabled": { "const": true },
+        "plugins_enabled": { "const": true },
+        "mcp": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "command",
+            "args",
+            "enabled",
+            "required",
+            "startup_timeout_sec"
+          ],
+          "properties": {
+            "command": { "type": "string", "minLength": 1 },
+            "args": { "const": ["mcp", "serve"] },
+            "enabled": { "const": true },
+            "required": { "const": true },
+            "startup_timeout_sec": {
+              "type": ["integer", "null"],
+              "minimum": 1
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "model_auto_compact_token_limit": { "type": "null" }
+            },
+            "required": ["model_auto_compact_token_limit"]
+          },
+          "then": {
+            "properties": {
+              "model_auto_compact_token_limit_scope": { "type": "null" }
+            }
+          },
+          "else": {
+            "properties": {
+              "model_auto_compact_token_limit_scope": { "type": "string" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -4,6 +4,10 @@ use std::env;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
+use context_continuum::config_manager::{
+    AutoCompactScope, OwnedConfig, apply as apply_config, plan as plan_config,
+    restore as restore_config, uninstall as uninstall_config,
+};
 use context_continuum::model_catalog::{
     OfficialSolLimits, OverlayPolicy, ParsedCatalog, capture_installed_catalog,
 };
@@ -37,8 +41,153 @@ fn run() -> Result<(), String> {
         }
         "probe" => run_probe(args.collect()),
         "catalog" => run_catalog(args.collect()),
+        "config" => run_config(args.collect()),
         other => Err(format!("unknown command `{other}`; run `cctx --help`")),
     }
+}
+
+fn run_config(args: Vec<String>) -> Result<(), String> {
+    let Some(subcommand) = args.first() else {
+        print_config_help();
+        return Ok(());
+    };
+    match subcommand.as_str() {
+        "plan" => run_config_plan_or_apply(args[1..].to_vec(), false),
+        "apply" => run_config_plan_or_apply(args[1..].to_vec(), true),
+        "restore" => run_config_restore_or_uninstall(args[1..].to_vec(), false),
+        "uninstall" => run_config_restore_or_uninstall(args[1..].to_vec(), true),
+        "-h" | "--help" | "help" => {
+            print_config_help();
+            Ok(())
+        }
+        other => Err(format!(
+            "unknown config command `{other}`; run `cctx config --help`"
+        )),
+    }
+}
+
+fn run_config_plan_or_apply(args: Vec<String>, should_apply: bool) -> Result<(), String> {
+    let mut config: Option<PathBuf> = None;
+    let mut state_dir: Option<PathBuf> = None;
+    let mut catalog: Option<PathBuf> = None;
+    let mut cctx: Option<PathBuf> = None;
+    let mut auto_compact_limit: Option<u64> = None;
+    let mut auto_compact_scope: Option<AutoCompactScope> = None;
+    let mut index = 0;
+
+    while index < args.len() {
+        match args[index].as_str() {
+            "--config" => {
+                index += 1;
+                config = Some(required_value(&args, index, "--config")?.into());
+            }
+            "--state-dir" => {
+                index += 1;
+                state_dir = Some(required_value(&args, index, "--state-dir")?.into());
+            }
+            "--catalog" => {
+                index += 1;
+                catalog = Some(required_value(&args, index, "--catalog")?.into());
+            }
+            "--cctx" => {
+                index += 1;
+                cctx = Some(required_value(&args, index, "--cctx")?.into());
+            }
+            "--auto-compact-token-limit" => {
+                index += 1;
+                auto_compact_limit = Some(required_u64_value(
+                    &args,
+                    index,
+                    "--auto-compact-token-limit",
+                )?);
+            }
+            "--auto-compact-scope" => {
+                index += 1;
+                auto_compact_scope = Some(
+                    match required_value(&args, index, "--auto-compact-scope")? {
+                        "total" => AutoCompactScope::Total,
+                        "body_after_prefix" => AutoCompactScope::BodyAfterPrefix,
+                        other => {
+                            return Err(format!(
+                                "--auto-compact-scope must be `total` or `body_after_prefix`, not `{other}`"
+                            ));
+                        }
+                    },
+                );
+            }
+            "-h" | "--help" => {
+                print_config_plan_help(should_apply);
+                return Ok(());
+            }
+            other => return Err(format!("unknown config option `{other}`")),
+        }
+        index += 1;
+    }
+
+    if auto_compact_limit.is_some() != auto_compact_scope.is_some() {
+        return Err(
+            "--auto-compact-token-limit and --auto-compact-scope must be supplied together"
+                .to_owned(),
+        );
+    }
+    let config = config.ok_or_else(|| "config command requires --config".to_owned())?;
+    let state_dir = state_dir.ok_or_else(|| "config command requires --state-dir".to_owned())?;
+    let catalog = catalog.ok_or_else(|| "config command requires --catalog".to_owned())?;
+    let cctx = cctx.ok_or_else(|| "config command requires --cctx".to_owned())?;
+    let mut desired = OwnedConfig::candidate(&catalog, &cctx);
+    desired.model_auto_compact_token_limit = auto_compact_limit;
+    desired.model_auto_compact_token_limit_scope = auto_compact_scope;
+    let plan = plan_config(&config, &state_dir, desired).map_err(|error| error.to_string())?;
+
+    if should_apply {
+        let outcome = apply_config(&plan).map_err(|error| error.to_string())?;
+        print_json(&outcome)
+    } else {
+        print_json(plan.diff())
+    }
+}
+
+fn run_config_restore_or_uninstall(
+    args: Vec<String>,
+    should_uninstall: bool,
+) -> Result<(), String> {
+    let mut config: Option<PathBuf> = None;
+    let mut state_dir: Option<PathBuf> = None;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--config" => {
+                index += 1;
+                config = Some(required_value(&args, index, "--config")?.into());
+            }
+            "--state-dir" => {
+                index += 1;
+                state_dir = Some(required_value(&args, index, "--state-dir")?.into());
+            }
+            "-h" | "--help" => {
+                print_config_restore_help(should_uninstall);
+                return Ok(());
+            }
+            other => return Err(format!("unknown config option `{other}`")),
+        }
+        index += 1;
+    }
+    let config = config.ok_or_else(|| "config command requires --config".to_owned())?;
+    let state_dir = state_dir.ok_or_else(|| "config command requires --state-dir".to_owned())?;
+    let outcome = if should_uninstall {
+        uninstall_config(&config, &state_dir)
+    } else {
+        restore_config(&config, &state_dir)
+    }
+    .map_err(|error| error.to_string())?;
+    print_json(&outcome)
+}
+
+fn print_json(value: &impl serde::Serialize) -> Result<(), String> {
+    let json = serde_json::to_string_pretty(value)
+        .map_err(|error| format!("could not serialize command result: {error}"))?;
+    println!("{json}");
+    Ok(())
 }
 
 fn run_catalog(args: Vec<String>) -> Result<(), String> {
@@ -219,7 +368,7 @@ fn required_u64_value(args: &[String], index: usize, option: &str) -> Result<u64
 
 fn print_help() {
     println!(
-        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
+        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
     );
 }
 
@@ -238,5 +387,29 @@ fn print_catalog_help() {
 fn print_catalog_generate_help() {
     println!(
         "Generate an uninstalled Sol-1M candidate catalog while preserving installed Sol metadata.\n\nUSAGE:\n    cctx catalog generate (--input <FILE> --codex-version <VERSION> | --codex <COMMAND>) --output <FILE> --manifest <FILE> [--effective-percent <1-100>] [--auto-compact-token-limit <TOKENS>]\n\nIf neither --input nor --codex is supplied, the installed `codex` command is inspected read-only."
+    );
+}
+
+fn print_config_help() {
+    println!(
+        "Manage only Context Continuum-owned Codex settings with exact-byte rollback.\n\nUSAGE:\n    cctx config <COMMAND>\n\nCOMMANDS:\n    plan       Print an owned-field-only dry-run diff\n    apply      Atomically apply a fresh plan and save ownership state\n    restore    Restore exact pre-install bytes when no later edit exists\n    uninstall  Alias for guarded exact-byte restore\n\nAll paths are required and must be absolute; no real user path is assumed."
+    );
+}
+
+fn print_config_plan_help(should_apply: bool) {
+    let command = if should_apply { "apply" } else { "plan" };
+    println!(
+        "USAGE:\n    cctx config {command} --config <FILE> --state-dir <DIR> --catalog <FILE> --cctx <EXECUTABLE> [--auto-compact-token-limit <TOKENS> --auto-compact-scope <total|body_after_prefix>]"
+    );
+}
+
+fn print_config_restore_help(should_uninstall: bool) {
+    let command = if should_uninstall {
+        "uninstall"
+    } else {
+        "restore"
+    };
+    println!(
+        "USAGE:\n    cctx config {command} --config <FILE> --state-dir <DIR>\n\nThe command refuses to write if the installed config differs from the owned snapshot."
     );
 }

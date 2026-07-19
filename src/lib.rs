@@ -3,6 +3,7 @@
 //! Shared library skeleton for Context Continuum.
 
 pub mod claim_contract;
+pub mod config_manager;
 pub mod model_catalog;
 pub mod probe;
 
