@@ -22,5 +22,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
   - global Codex config SHA-256 recorded as `439752EEBF9FE64D6E1C4A6AA9A2459555C89839ED0DB8E26BE219611625306E`; no global write occurred
   - `git diff --check` — passed
   - no new worktree, dependency tree, model request, credential access, desktop control, or remote mutation occurred
-- **Implementation commit:** Pending.
+- **Implementation commit:** `43b606e293399e1ff4caa67e30c649df9c2021f7`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
