@@ -49,5 +49,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Live spike:** Not runnable through a supported seam. A mock, TUI, panel, separate window, MCP response, static icon, or DOM injection is non-accepting by plan.
 - **Installed client:** `OpenAI.Codex_26.715.7063.0_x64__2p2nqsd0c76g0`; renderer delivered in signed `app/resources/app.asar`; no installed artifact was extracted, changed, or repackaged.
 - **Decision:** G1 fails at the native UI requirement. CDS-03 and CDS-10 onward did not run. Continuation requires separate approval for one CDS-X1 route or an explicit product-contract change.
-- **Implementation commit:** Pending focused CDS-02/M0 evidence commit.
+- **Implementation commit:** `7fe9be609f88225db21435255b7f639a5f10d447`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
