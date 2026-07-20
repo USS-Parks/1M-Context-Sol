@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/capability-probe.schema.json",
+  "$id": "https://github.com/USS-Parks/1M-Context-Sol/schemas/capability-probe.schema.json",
   "title": "Context Continuum capability probe",
   "type": "object",
   "additionalProperties": false,

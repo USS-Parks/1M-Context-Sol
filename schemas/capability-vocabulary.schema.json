@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/capability-vocabulary.schema.json",
+  "$id": "https://github.com/USS-Parks/1M-Context-Sol/schemas/capability-vocabulary.schema.json",
   "title": "Context Continuum capability vocabulary",
   "type": "object",
   "additionalProperties": false,

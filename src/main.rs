@@ -17,6 +17,10 @@ use context_continuum::model_catalog::{
     OfficialSolLimits, OverlayPolicy, ParsedCatalog, capture_installed_catalog,
 };
 use context_continuum::probe::{ProbeOptions, capture};
+use context_continuum::sol_launcher::{
+    launch as launch_sol, meter as sol_meter, prepare as prepare_sol, render_meter,
+    verify as verify_sol,
+};
 use context_continuum::startup_policy::{
     enforce_and_audit, generic_fail_closed_response, parse_hook_input, read_bounded_hook_input,
 };
@@ -52,12 +56,126 @@ fn run() -> Result<ExitCode, (String, u8)> {
         "config" => ordinary_command(run_config(args.collect())),
         "doctor" => run_doctor_or_status(args.collect(), false),
         "status" => run_doctor_or_status(args.collect(), true),
+        "sol" => run_sol(args.collect()),
         "hook" => ordinary_command(run_hook(args.collect())),
         other => Err((
             format!("unknown command `{other}`; run `cctx --help`"),
             EXIT_USAGE,
         )),
     }
+}
+
+fn run_sol(args: Vec<String>) -> Result<ExitCode, (String, u8)> {
+    let Some(subcommand) = args.first() else {
+        print_sol_help();
+        return Ok(ExitCode::SUCCESS);
+    };
+    if matches!(subcommand.as_str(), "-h" | "--help" | "help") {
+        print_sol_help();
+        return Ok(ExitCode::SUCCESS);
+    }
+    if subcommand == "meter" {
+        return run_sol_meter(&args[1..]);
+    }
+    let allow_codex_arguments = subcommand == "run";
+    let (codex, state_dir, codex_arguments) = parse_sol_options(&args[1..], allow_codex_arguments)
+        .map_err(|message| (message, EXIT_USAGE))?;
+    let prepared =
+        prepare_sol(&codex, &state_dir).map_err(|error| (error.to_string(), EXIT_RUNTIME_ERROR))?;
+
+    match subcommand.as_str() {
+        "prepare" => {
+            print_json(&prepared).map_err(|message| (message, EXIT_RUNTIME_ERROR))?;
+            Ok(ExitCode::SUCCESS)
+        }
+        "verify" => {
+            let resolved = verify_sol(&codex, &prepared)
+                .map_err(|error| (error.to_string(), EXIT_RUNTIME_ERROR))?;
+            print_json(&serde_json::json!({
+                "prepared": prepared,
+                "codex_parser_verified": true,
+                "resolved_policy": resolved,
+                "live_request_proven": false
+            }))
+            .map_err(|message| (message, EXIT_RUNTIME_ERROR))?;
+            Ok(ExitCode::SUCCESS)
+        }
+        "run" => {
+            verify_sol(&codex, &prepared)
+                .map_err(|error| (error.to_string(), EXIT_RUNTIME_ERROR))?;
+            let status = launch_sol(&codex, &prepared, &codex_arguments)
+                .map_err(|error| (error.to_string(), EXIT_RUNTIME_ERROR))?;
+            let code = status
+                .code()
+                .and_then(|value| u8::try_from(value).ok())
+                .unwrap_or(EXIT_RUNTIME_ERROR);
+            Ok(ExitCode::from(code))
+        }
+        other => Err((
+            format!("unknown sol command `{other}`; run `cctx sol --help`"),
+            EXIT_USAGE,
+        )),
+    }
+}
+
+fn run_sol_meter(args: &[String]) -> Result<ExitCode, (String, u8)> {
+    let mut used_tokens: Option<u64> = None;
+    let mut json = false;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--used-tokens" => {
+                index += 1;
+                used_tokens = Some(
+                    required_u64_value(args, index, "--used-tokens")
+                        .map_err(|message| (message, EXIT_USAGE))?,
+                );
+            }
+            "--json" => json = true,
+            other => return Err((format!("unknown sol meter option `{other}`"), EXIT_USAGE)),
+        }
+        index += 1;
+    }
+    let used_tokens =
+        used_tokens.ok_or_else(|| ("sol meter requires --used-tokens".to_owned(), EXIT_USAGE))?;
+    let snapshot = sol_meter(used_tokens);
+    if json {
+        print_json(&snapshot).map_err(|message| (message, EXIT_RUNTIME_ERROR))?;
+    } else {
+        print!("{}", render_meter(&snapshot));
+    }
+    Ok(ExitCode::SUCCESS)
+}
+
+fn parse_sol_options(
+    args: &[String],
+    allow_codex_arguments: bool,
+) -> Result<(String, PathBuf, Vec<String>), String> {
+    let mut codex = "codex".to_owned();
+    let mut state_dir: Option<PathBuf> = None;
+    let mut codex_arguments = Vec::new();
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--codex" => {
+                index += 1;
+                codex = required_value(args, index, "--codex")?.to_owned();
+            }
+            "--state-dir" => {
+                index += 1;
+                state_dir = Some(required_value(args, index, "--state-dir")?.into());
+            }
+            "--" if allow_codex_arguments => {
+                codex_arguments.extend_from_slice(&args[index + 1..]);
+                break;
+            }
+            "--" => return Err("`--` Codex arguments are valid only for `cctx sol run`".to_owned()),
+            other => return Err(format!("unknown sol option `{other}`")),
+        }
+        index += 1;
+    }
+    let state_dir = state_dir.ok_or_else(|| "sol command requires --state-dir".to_owned())?;
+    Ok((codex, state_dir, codex_arguments))
 }
 
 fn run_hook(args: Vec<String>) -> Result<(), String> {
@@ -537,7 +655,13 @@ fn required_u64_value(args: &[String], index: usize, option: &str) -> Result<u64
 
 fn print_help() {
     println!(
-        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    doctor     Explain exact-Sol policy readiness and remediation\n    status     Print a compact claim-safe readiness summary\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    hook       Enforce bounded Codex lifecycle policy\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
+        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    doctor     Explain exact-Sol policy readiness and remediation\n    status     Print a compact claim-safe readiness summary\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    sol        Prepare, verify, or run Codex with the Sol 1.05M catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    hook       Enforce bounded Codex lifecycle policy\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
+    );
+}
+
+fn print_sol_help() {
+    println!(
+        "Prepare and use an exact GPT-5.6 Sol 1.05M catalog without changing global Codex configuration.\n\nUSAGE:\n    cctx sol prepare --state-dir <ABSOLUTE_DIR> [--codex <COMMAND>]\n    cctx sol verify  --state-dir <ABSOLUTE_DIR> [--codex <COMMAND>]\n    cctx sol run     --state-dir <ABSOLUTE_DIR> [--codex <COMMAND>] [-- <CODEX_ARGS>...]\n    cctx sol meter   --used-tokens <TOKENS> [--json]\n\n`verify` requires Codex itself to resolve 1,050,000 / 1,050,000 / 96 with the 900,000 automatic-compaction boundary. `run` verifies first, displays the context meter, then launches the requested Codex command with only command-scoped overrides."
     );
 }
 

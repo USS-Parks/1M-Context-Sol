@@ -7,6 +7,7 @@ pub mod config_manager;
 pub mod doctor;
 pub mod model_catalog;
 pub mod probe;
+pub mod sol_launcher;
 pub mod startup_policy;
 
 /// The only model identifier permitted by the project contract.

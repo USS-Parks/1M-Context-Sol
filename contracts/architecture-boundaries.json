@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "repository": "https://github.com/USS-Parks/Codex-Added-Context",
+  "repository": "https://github.com/USS-Parks/1M-Context-Sol",
   "authority_invariants": {
     "agent_loop": "codex_host",
     "credentials": "codex_auth",

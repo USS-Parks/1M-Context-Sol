@@ -4,7 +4,7 @@
 > **Initiative:** Codex Added Context
 > **Plan ID:** CAC-PSPR-2
 > **Last updated:** 2026-07-19
-> **Authoritative repository:** `https://github.com/USS-Parks/Codex-Added-Context`
+> **Authoritative repository:** `https://github.com/USS-Parks/1M-Context-Sol`
 > **Authoritative working folder:** `C:\Users\17076\Documents\Codex 1M Context Project`
 > **Model scope:** `gpt-5.6-sol` only; no substitute model is permitted
 > **Planned product name:** Context Continuum for GPT-5.6 Sol
@@ -160,9 +160,9 @@ The PSPR is copied into the repository at CAC-00. Later changes are append-only 
 
 ### 5.2 Repository and branch discipline
 
-- Canonical remote: `USS-Parks/Codex-Added-Context`.
+- Canonical remote: `USS-Parks/1M-Context-Sol`.
 - Canonical default branch: `main`.
-- Initial implementation branch: `codex/context-continuum-v0.1` unless the user overrides it.
+- Canonical implementation branch: `main`, per the user's 2026-07-19 repository override. Earlier feature-branch publication remains recorded in the DEVLOG as history.
 - One prompt per focused commit, or one tightly justified evidence-only entry with no source commit.
 - The DEVLOG records local commit SHA and remote SHA immediately after each authorized push.
 - Parallel sessions, if later authorized, use separate Git worktrees and never share an index.
@@ -891,7 +891,7 @@ The one goal is complete only when all of the following are true on the same rel
 5. every compliant Sol task receives a local reservoir proven to retain at least one million tokens with integrity and exact retrieval;
 6. every known automatic or manual compaction attempt is checkpointed and visibly blocked; longer loops continue through a verified fresh Sol successor rather than an allowed compaction;
 7. install, update, rollback, uninstall, security, privacy, performance, and cross-platform gates pass;
-8. the exact verified source and artifacts are published under an approved open-source license in `USS-Parks/Codex-Added-Context`;
+8. the exact verified source and artifacts are published under an approved open-source license in `USS-Parks/1M-Context-Sol`;
 9. the release is installed successfully from GitHub rather than the developer checkout;
 10. an approved technical launch is published to the official Codex community category;
 11. the approved OpenAI developer showcase submission is sent if eligible; and
@@ -925,6 +925,6 @@ No option is inferred from silence.
 - Codex hooks: <https://learn.chatgpt.com/docs/hooks>
 - Codex plugin building: <https://learn.chatgpt.com/docs/build-plugins>
 - Open-source Codex repository: <https://github.com/openai/codex>
-- Target repository: <https://github.com/USS-Parks/Codex-Added-Context>
+- Target repository: <https://github.com/USS-Parks/1M-Context-Sol>
 - Codex community category: <https://community.openai.com/c/codex/37>
 - OpenAI developer community and showcase: <https://developers.openai.com/community>

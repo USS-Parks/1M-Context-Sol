@@ -12,6 +12,10 @@
     {
       "path": "docs/evidence/CAC-10/catalog-overlay-manifest.json",
       "schema": "schemas/catalog-overlay-manifest.schema.json"
+    },
+    {
+      "path": "docs/evidence/CAC-14/catalog-calibration.json",
+      "schema": "schemas/catalog-calibration.schema.json"
     }
   ]
 }

@@ -17,7 +17,8 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CAC-11 | Atomic owned-setting apply, conflict refusal, and exact-byte rollback | Passed | `279819fe11c00a589dce82569fc4ac5631d06af5`, ownership schema, 12 config-manager tests, isolated CLI proof, and green Actions run [29707154346](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29707154346) |
 | CAC-12 | Claim-safe native-window doctor/status, exit codes, schemas, and eight golden scenarios | Passed | `ad14add5edc520aa423148a6f013ded07cec6dc9`, doctor/status schemas, golden hashes, live read-only baseline proof, and green Actions run [29708215480](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29708215480) |
 | CAC-13 | Strict exact-Sol SessionStart/UserPromptSubmit policy and per-task override audit | Passed | `d8dad4ff80747d8cb69e69db53d3c5b4b8781be3`, 11 startup-policy tests, dual-boundary live 272k block proof, and green Actions run [29709432946](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29709432946) |
-| CAC-14 onward | PSPR prompt-local gates | Not started | — |
+| CAC-14 | Sol-1M catalog calibration, measured overhead, probe bands, meter, and executable Codex launcher | In progress | Codex parser resolved exact `1050000/1050000/96/900000`; live request and compaction-block proof remain open |
+| CAC-15 onward | PSPR prompt-local gates | Not started | — |
 
 ## Baseline local checks
 

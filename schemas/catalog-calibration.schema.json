@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/1M-Context-Sol/schemas/catalog-calibration.schema.json",
+  "title": "Context Continuum Sol 1.05M catalog calibration evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "codex_version", "model", "catalog_sha256", "codex_parser_verified", "global_config_changed", "live_request_proven", "resolved_policy", "official_limits", "measured_overhead", "thresholds", "probe_targets"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "codex_version": { "const": "0.144.5" },
+    "model": { "const": "gpt-5.6-sol" },
+    "catalog_sha256": { "$ref": "#/$defs/sha256" },
+    "codex_parser_verified": { "const": true },
+    "global_config_changed": { "const": false },
+    "live_request_proven": { "const": false },
+    "resolved_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_window", "max_context_window", "effective_context_window_percent", "effective_codex_budget", "auto_compact_token_limit"],
+      "properties": {
+        "context_window": { "const": 1050000 },
+        "max_context_window": { "const": 1050000 },
+        "effective_context_window_percent": { "const": 96 },
+        "effective_codex_budget": { "const": 1008000 },
+        "auto_compact_token_limit": { "const": 900000 }
+      }
+    },
+    "official_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_context_window", "maximum_input", "maximum_output"],
+      "properties": {
+        "total_context_window": { "const": 1050000 },
+        "maximum_input": { "const": 922000 },
+        "maximum_output": { "const": 128000 }
+      }
+    },
+    "measured_overhead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base_instructions_bytes", "model_messages_bytes", "conservative_catalog_overhead_tokens", "unmeasured_tool_and_wrapper_reserve_tokens", "reserved_below_maximum_input_tokens"],
+      "properties": {
+        "base_instructions_bytes": { "type": "integer", "minimum": 1 },
+        "model_messages_bytes": { "type": "integer", "minimum": 1 },
+        "conservative_catalog_overhead_tokens": { "type": "integer", "minimum": 1 },
+        "unmeasured_tool_and_wrapper_reserve_tokens": { "const": 16000 },
+        "reserved_below_maximum_input_tokens": { "const": 42000 }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint", "rollover", "operational_input", "auto_compact"],
+      "properties": {
+        "checkpoint": { "const": 840000 },
+        "rollover": { "const": 860000 },
+        "operational_input": { "const": 880000 },
+        "auto_compact": { "const": 900000 }
+      }
+    },
+    "probe_targets": {
+      "type": "array",
+      "prefixItems": [{ "const": 300000 }, { "const": 600000 }, { "const": 880000 }],
+      "items": false
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "codex_version": "0.144.5",
+  "model": "gpt-5.6-sol",
+  "catalog_sha256": "aa0044cb49656689bffdf55c0334826118a9afcb5cee29fabebe3e0b356b6707",
+  "codex_parser_verified": true,
+  "global_config_changed": false,
+  "live_request_proven": false,
+  "resolved_policy": {
+    "context_window": 1050000,
+    "max_context_window": 1050000,
+    "effective_context_window_percent": 96,
+    "effective_codex_budget": 1008000,
+    "auto_compact_token_limit": 900000
+  },
+  "official_limits": {
+    "total_context_window": 1050000,
+    "maximum_input": 922000,
+    "maximum_output": 128000
+  },
+  "measured_overhead": {
+    "base_instructions_bytes": 17766,
+    "model_messages_bytes": 18039,
+    "conservative_catalog_overhead_tokens": 11935,
+    "unmeasured_tool_and_wrapper_reserve_tokens": 16000,
+    "reserved_below_maximum_input_tokens": 42000
+  },
+  "thresholds": {
+    "checkpoint": 840000,
+    "rollover": 860000,
+    "operational_input": 880000,
+    "auto_compact": 900000
+  },
+  "probe_targets": [300000, 600000, 880000]
+}

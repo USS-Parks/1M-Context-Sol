@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/catalog-overlay-manifest.schema.json",
+  "$id": "https://github.com/USS-Parks/1M-Context-Sol/schemas/catalog-overlay-manifest.schema.json",
   "title": "Context Continuum catalog overlay hash manifest",
   "type": "object",
   "additionalProperties": false,

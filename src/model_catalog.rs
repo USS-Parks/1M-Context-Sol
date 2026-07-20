@@ -19,6 +19,21 @@ pub const CATALOG_SCHEMA_ID: &str = "codex-model-catalog/0.144.5-v1";
 /// Minimum internal effective budget required by the Sol-1M candidate policy.
 pub const MINIMUM_EFFECTIVE_BUDGET: u64 = 1_000_000;
 
+/// Effective-window percentage verified by Codex for the Sol-1M catalog.
+pub const CALIBRATED_EFFECTIVE_PERCENT: u64 = 96;
+
+/// Automatic-compaction boundary kept below Sol's separate maximum input.
+pub const CALIBRATED_AUTO_COMPACT_LIMIT: u64 = 900_000;
+
+/// Operational input boundary reserved below Sol's 922,000-token maximum.
+pub const CALIBRATED_OPERATIONAL_INPUT_LIMIT: u64 = 880_000;
+
+/// Proactive checkpoint boundary below rollover and request admission.
+pub const CALIBRATED_CHECKPOINT_LIMIT: u64 = 840_000;
+
+/// Successor-rollover boundary below the operational input ceiling.
+pub const CALIBRATED_ROLLOVER_LIMIT: u64 = 860_000;
+
 const POLICY_FIELDS: [&str; 4] = [
     "auto_compact_token_limit",
     "context_window",
@@ -160,8 +175,18 @@ impl OverlayPolicy {
         Self {
             context_window: OFFICIAL_TOTAL_CONTEXT,
             max_context_window: OFFICIAL_TOTAL_CONTEXT,
-            effective_context_window_percent: 96,
+            effective_context_window_percent: CALIBRATED_EFFECTIVE_PERCENT,
             auto_compact_token_limit: None,
+        }
+    }
+
+    /// Return the parser-verified catalog policy used by the Sol launcher.
+    pub fn sol_1m_calibrated() -> Self {
+        Self {
+            context_window: OFFICIAL_TOTAL_CONTEXT,
+            max_context_window: OFFICIAL_TOTAL_CONTEXT,
+            effective_context_window_percent: CALIBRATED_EFFECTIVE_PERCENT,
+            auto_compact_token_limit: Some(CALIBRATED_AUTO_COMPACT_LIMIT),
         }
     }
 
@@ -172,6 +197,23 @@ impl OverlayPolicy {
             .map(|value| value / 100)
             .ok_or_else(|| CatalogError::new("effective context budget overflows u64"))
     }
+}
+
+/// Context policy read from one exact Sol entry after Codex resolves a catalog.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ResolvedCatalogPolicy {
+    pub model: String,
+    pub context_window: u64,
+    pub max_context_window: u64,
+    pub effective_context_window_percent: u64,
+    pub auto_compact_token_limit: Option<u64>,
+}
+
+/// Measured instruction metadata carried by the live resolved Sol catalog.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CatalogOverheadObservation {
+    pub base_instructions_bytes: u64,
+    pub model_messages_bytes: u64,
 }
 
 /// Hash and compatibility evidence emitted beside an overlay.
@@ -355,6 +397,43 @@ impl ParsedCatalog {
                 official_sol_limits: limits.clone(),
                 overlay_policy: policy.clone(),
             },
+        })
+    }
+
+    /// Return the policy fields from the parsed exact-Sol entry.
+    pub fn resolved_policy(&self) -> Result<ResolvedCatalogPolicy, CatalogError> {
+        Ok(ResolvedCatalogPolicy {
+            model: REQUIRED_MODEL.to_owned(),
+            context_window: required_u64(&self.source_sol, "context_window")?,
+            max_context_window: required_u64(&self.source_sol, "max_context_window")?,
+            effective_context_window_percent: required_u64(
+                &self.source_sol,
+                "effective_context_window_percent",
+            )?,
+            auto_compact_token_limit: optional_u64(&self.source_sol, "auto_compact_token_limit")?,
+        })
+    }
+
+    /// Measure the instruction-bearing fields preserved into the replacement catalog.
+    pub fn overhead_observation(&self) -> Result<CatalogOverheadObservation, CatalogError> {
+        let base_instructions_bytes = self
+            .source_sol
+            .get("base_instructions")
+            .and_then(Value::as_str)
+            .ok_or_else(|| CatalogError::new("Sol base instructions must be a string"))?
+            .len();
+        let model_messages_bytes = serde_json::to_vec(
+            self.source_sol
+                .get("model_messages")
+                .ok_or_else(|| CatalogError::new("Sol model messages must exist"))?,
+        )
+        .map_err(|error| CatalogError::new(format!("could not measure model messages: {error}")))?
+        .len();
+        Ok(CatalogOverheadObservation {
+            base_instructions_bytes: u64::try_from(base_instructions_bytes)
+                .map_err(|_| CatalogError::new("base-instruction byte count exceeds u64"))?,
+            model_messages_bytes: u64::try_from(model_messages_bytes)
+                .map_err(|_| CatalogError::new("model-message byte count exceeds u64"))?,
         })
     }
 }
@@ -548,6 +627,22 @@ fn without_policy_fields(sol: &Map<String, Value>) -> Map<String, Value> {
 
 fn insert_u64(object: &mut Map<String, Value>, field: &str, value: u64) {
     object.insert(field.to_owned(), Value::from(value));
+}
+
+fn required_u64(object: &Map<String, Value>, field: &str) -> Result<u64, CatalogError> {
+    object
+        .get(field)
+        .and_then(Value::as_u64)
+        .ok_or_else(|| CatalogError::new(format!("Sol catalog field `{field}` must be a u64")))
+}
+
+fn optional_u64(object: &Map<String, Value>, field: &str) -> Result<Option<u64>, CatalogError> {
+    match object.get(field) {
+        None | Some(Value::Null) => Ok(None),
+        Some(value) => value.as_u64().map(Some).ok_or_else(|| {
+            CatalogError::new(format!("Sol catalog field `{field}` must be a u64 or null"))
+        }),
+    }
 }
 
 fn normalize_codex_version(raw: &str) -> Result<String, CatalogError> {
