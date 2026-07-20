@@ -212,3 +212,34 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - GitHub Actions run [29709432946](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29709432946) passed all 10 jobs
 - **Implementation commit:** `d8dad4ff80747d8cb69e69db53d3c5b4b8781be3`
 - **Published remote SHA:** `d8dad4ff80747d8cb69e69db53d3c5b4b8781be3` on `codex/context-continuum-v0.1`
+
+## Repository migration — Correct the authoritative GitHub destination
+
+- **Date:** 2026-07-19
+- **Status:** Complete
+- **User direction:** `C:\Users\17076\Documents\Codex 1M Context Project` remains the canonical working folder; `https://github.com/USS-Parks/1M-Context-Sol` replaces `USS-Parks/Codex-Added-Context` as the authoritative repository; publication targets `main`.
+- **Destination baseline:** GitHub reported a public, empty repository with default branch `main`, so no remote history required merging or replacement.
+- **Migration result:** Local `origin` now uses `https://github.com/USS-Parks/1M-Context-Sol.git`; the canonical local branch is `main` tracking `origin/main`; package metadata, schemas, security guidance, architecture contracts, and the PSPR point to the new repository. Historical Actions and publication links to the previous repository remain unchanged as evidence history.
+- **Preservation result:** The complete existing Git history was pushed normally. No force push, history rewrite, second checkout, or new worktree was used.
+- **Published implementation SHA:** `a973bdd19fd3db1dab96a02bb92c250095e397c6` on `main`.
+
+## CAC-14 — Calibrate Sol catalog, input, and no-compaction thresholds
+
+- **Date:** 2026-07-19
+- **Status:** In progress; the deployable catalog/launcher cut is published, while the paid above-272k request and strict PreCompact checkpoint/block evidence remain open.
+- **Implemented cut:** Release-mode `cctx sol prepare|verify|run|meter`; an exact-one-`gpt-5.6-sol` replacement catalog derived from installed Codex 0.144.5; parser-verified `1,050,000 / 1,050,000 / 96 / 900,000` policy; measured catalog overhead; frozen checkpoint/rollover/admission bands; deterministic 300k/600k/880k canary plan; and command-scoped launch with Codex's native live `context-remaining` TUI footer.
+- **UX boundary:** A new task launched by `cctx sol run` displays the startup threshold meter and Codex's live remaining-context footer. The model does not introspect its exact token count; Codex owns the live count. Existing desktop tasks do not adopt a replacement catalog retroactively, and no undocumented embedded desktop dial is claimed.
+- **Safety boundary:** The launcher changes no global Codex configuration and invokes no alternate model or transport. Machine evidence keeps `live_request_proven: false` until a budget-authorized progressive live probe succeeds.
+- **Frozen values:** 840,000 checkpoint; 860,000 rollover; 880,000 request admission stop; 900,000 automatic compaction; 922,000 maximum input; 1,008,000 Effective Codex budget.
+- **Measured overhead:** 17,766 base-instruction bytes; 18,039 model-message bytes; 11,935 conservative catalog-overhead tokens; 16,000 additional tool/wrapper reserve; 42,000 total margin below maximum input.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 74 tests total, including launcher meter, deterministic probe, schema, catalog, config, doctor, and startup-policy coverage
+  - `RUSTDOCFLAGS=-D warnings cargo doc --locked --no-deps --document-private-items` — passed
+  - `cargo deny check` — advisories, bans, licenses, and sources passed; two existing unused-license allowance warnings remain non-failing
+  - `git diff --check` — passed
+  - release executable `target\release\cctx.exe sol verify` asked installed Codex itself to resolve the generated catalog and returned exact model `gpt-5.6-sol`, context/max `1050000/1050000`, 96 percent effective, auto-compaction `900000`, and catalog SHA-256 `aa0044cb49656689bffdf55c0334826118a9afcb5cee29fabebe3e0b356b6707`
+  - isolated `sol run -- debug models` displayed the threshold meter and returned the same exact resolved policy; global config remained unchanged
+- **Implementation commit:** `a973bdd19fd3db1dab96a02bb92c250095e397c6`
+- **Published remote SHA:** `a973bdd19fd3db1dab96a02bb92c250095e397c6` on `main`
