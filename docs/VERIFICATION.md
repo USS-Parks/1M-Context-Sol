@@ -12,6 +12,8 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 |---|---|---|---|
 | CDS-00 | Corrected scope, preservation, sole active roster | Passed | `43b606e293399e1ff4caa67e30c649df9c2021f7`, ledger follow-up `467d46f`, and `docs/evidence/CDS-00/` |
 | CDS-01 | Fresh Desktop task adopts exact Sol-1M host configuration | Passed | `docs/evidence/CDS-01/desktop-config-adoption.md`; task `019f7fd8-2c21-7753-a4bf-6b8988326e8f` reported exact Sol and `1008000` effective tokens |
+| CDS-02 | Host token state plus live native prompt-pill component seam | Blocked / hard stop | Token event exists; no supported dynamic prompt-pill insertion contract. See `docs/evidence/CDS-02/` |
+| CDS-03 onward | Architecture freeze and product implementation | Not run | G1 prerequisite failed at CDS-02; see `docs/evidence/M0/feasibility-verdict.md` |
 
 ### Historical Context Continuum initiative
 

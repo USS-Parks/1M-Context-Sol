@@ -1,6 +1,6 @@
 # Codex Desktop Sol 1M Context Dial — Canonical Plan / Sequential Prompt Roster
 
-> **Status:** APPROVED — FULL STS EXECUTION ACTIVE — M0 FEASIBILITY STOP RETAINED
+> **Status:** M0 NO-GO — CDS-01 PASSED; CDS-02 BLOCKED — CDS-X1 OR CONTRACT CHANGE REQUIRES USER APPROVAL
 >
 > **Plan ID:** CDS1M-PSPR-1
 >

@@ -38,3 +38,16 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Implementation:** No product source change. No installed binary, credential, long-context request, or remote state changed.
 - **Implementation commit:** `cba1dae907d439924e2fc3ec0a06edd72ef61f42`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
+
+## CDS-02 - Prove the prompt-pill UI and token-state seam
+
+- **Date:** 2026-07-20
+- **Status:** Blocked at acceptance gate; mandatory hard stop executed.
+- **Evidence:** `docs/evidence/CDS-02/prompt-pill-seam-assessment.md` and `docs/evidence/M0/feasibility-verdict.md`.
+- **Passed half:** App-server exposes host-authoritative `thread/tokenUsage/updated` state with token breakdowns and `modelContextWindow`.
+- **Blocked half:** Current plugin manifests expose only a static `interface.composerIcon`; MCP UI is limited to embedded app surfaces; the public repository does not contain the Desktop Electron renderer or a prompt-pill component API.
+- **Live spike:** Not runnable through a supported seam. A mock, TUI, panel, separate window, MCP response, static icon, or DOM injection is non-accepting by plan.
+- **Installed client:** `OpenAI.Codex_26.715.7063.0_x64__2p2nqsd0c76g0`; renderer delivered in signed `app/resources/app.asar`; no installed artifact was extracted, changed, or repackaged.
+- **Decision:** G1 fails at the native UI requirement. CDS-03 and CDS-10 onward did not run. Continuation requires separate approval for one CDS-X1 route or an explicit product-contract change.
+- **Implementation commit:** Pending focused CDS-02/M0 evidence commit.
+- **Remote SHA:** Not published; push authorization has not been granted for this lane.
