@@ -14,6 +14,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CDS-01 | Fresh Desktop task adopts exact Sol-1M host configuration | Passed | `docs/evidence/CDS-01/desktop-config-adoption.md`; task `019f7fd8-2c21-7753-a4bf-6b8988326e8f` reported exact Sol and `1008000` effective tokens |
 | CDS-02 | Host token state plus live native prompt-pill component seam | Blocked / hard stop | Token event exists; no supported dynamic prompt-pill insertion contract. See `docs/evidence/CDS-02/` |
 | CDS-03 onward | Architecture freeze and product implementation | Not run | G1 prerequisite failed at CDS-02; see `docs/evidence/M0/feasibility-verdict.md` |
+| CDO-00 | Approved floating-overlay contract and execution authority | Passed | `PLANNING/CODEX-DESKTOP-SOL-1M-OVERLAY-ADDENDUM.md` and DEVLOG |
 
 ### Historical Context Continuum initiative
 

@@ -51,3 +51,14 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Decision:** G1 fails at the native UI requirement. CDS-03 and CDS-10 onward did not run. Continuation requires separate approval for one CDS-X1 route or an explicit product-contract change.
 - **Implementation commit:** `7fe9be609f88225db21435255b7f639a5f10d447`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
+
+## CDO-00 - Record the approved overlay contract
+
+- **Date:** 2026-07-20
+- **Status:** Complete.
+- **Authorization:** User approved the floating overlay addendum and authorized full STS execution.
+- **Scope:** Resume from the M0 no-go through one focusless Windows overlay; retain the native-seam blocker as historical truth.
+- **Implementation choice:** Native WPF/Win32 PowerShell with no new application framework or dependency tree. MCP is omitted unless a later acceptance need proves it necessary.
+- **Preservation:** One registered worktree only. Pre-existing `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain excluded and retain their CDS-00 hashes.
+- **Implementation commit:** Pending focused CDO-00 governance commit.
+- **Remote SHA:** Not published; push authorization has not been granted for this lane.
