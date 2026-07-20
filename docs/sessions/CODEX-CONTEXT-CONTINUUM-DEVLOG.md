@@ -190,7 +190,7 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
 ## CAC-13 — Implement strict Sol-only startup policy
 
 - **Date:** 2026-07-19
-- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Status:** Complete
 - **Scope:** Bounded strict parsing for the documented Codex 0.144.5 `SessionStart` and `UserPromptSubmit` envelopes, active-model versus configured-model enforcement, explicit doctor invariant revalidation, event-specific fail-closed JSON, visible remediation commands, and atomic prompt-free per-task audits.
 - **Truth boundary:** An event is allowed only when exact hook-reported `gpt-5.6-sol` matches the configured root model and doctor is genuinely `policy_ready`/0 with every auth, catalog, capacity, threshold, and guard invariant green. Policy readiness remains non-live configuration evidence; `live_native_window_proven` stays false and G2 remains open.
 - **Privacy and override audit:** Audit paths use SHA-256-derived session/turn identifiers. Records retain only sanitized model/auth/catalog policy, decision, blocker IDs, and remediation; raw prompt, transcript path, session/turn IDs, working directory, credentials, arbitrary config, and model instructions are omitted.
@@ -209,5 +209,6 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - Windows command transport accepts one UTF-8 BOM while other malformed input remains blocked
   - live installed SessionStart and UserPromptSubmit proofs at `C:\tmp\cctx-cac13-live-proof-019f7be3` both returned protocol-valid blocks with exit 0 for exact Sol on ChatGPT auth because the supported catalog resolved 272,000 total and a 258,400-token Effective Codex budget
   - the live proofs wrote exactly two sanitized audits with eight blocker IDs each; the unique prompt canary and raw transcript path were absent from all audit bytes; config SHA-256 remained `6F274971BD736B79CDEE52DA94A584134217528420C2CDBFEBCAD6F5D5CB0BDA`; no credential entry, config/catalog installation, or model request occurred
-- **Implementation commit:** Pending.
-- **Published remote SHA:** Pending.
+  - GitHub Actions run [29709432946](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29709432946) passed all 10 jobs
+- **Implementation commit:** `d8dad4ff80747d8cb69e69db53d3c5b4b8781be3`
+- **Published remote SHA:** `d8dad4ff80747d8cb69e69db53d3c5b4b8781be3` on `codex/context-continuum-v0.1`
