@@ -6,6 +6,15 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 
 ## Prompt status
 
+### Corrected desktop initiative (`CDS1M-PSPR-1`)
+
+| Prompt | Gate | Status | Evidence |
+|---|---|---|---|
+| CDS-00 | Corrected scope, preservation, sole active roster | Passed | `43b606e293399e1ff4caa67e30c649df9c2021f7`, ledger follow-up `467d46f`, and `docs/evidence/CDS-00/` |
+| CDS-01 | Fresh Desktop task adopts exact Sol-1M host configuration | Passed | `docs/evidence/CDS-01/desktop-config-adoption.md`; task `019f7fd8-2c21-7753-a4bf-6b8988326e8f` reported exact Sol and `1008000` effective tokens |
+
+### Historical Context Continuum initiative
+
 | Prompt | Gate | Status | Evidence |
 |---|---|---|---|
 | CAC-00 | Repository identity, scope, skeleton checks, first push | Passed | `f46254ca0967d0a9f04bfc9e900b525390432619` and DEVLOG entry |

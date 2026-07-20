@@ -24,3 +24,17 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
   - no new worktree, dependency tree, model request, credential access, desktop control, or remote mutation occurred
 - **Implementation commit:** `43b606e293399e1ff4caa67e30c649df9c2021f7`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
+
+## CDS-01 - Prove desktop adoption of host configuration
+
+- **Date:** 2026-07-20
+- **Status:** Complete; configuration-adoption gate passed.
+- **Authorization:** User separately approved the temporary real-profile change and packaged app-server restart/control.
+- **Evidence:** `docs/evidence/CDS-01/desktop-config-adoption.md`.
+- **Result:** A disposable task created through the native Codex Desktop task API completed on exact `gpt-5.6-sol`; its local rollout reports `Codex Desktop`, app-server `0.145.0-alpha.18`, and host-authoritative `model_context_window = 1008000`, matching 96 percent of the configured 1,050,000-token catalog window.
+- **Compaction setting:** Startup configuration used `model_auto_compact_token_limit = 900000` and `model_auto_compact_token_limit_scope = "total"`. The task rollout does not echo this field; actual boundary behavior remains gated by G3.
+- **Rollback:** All four temporary owned keys were removed. The original bytes were not blindly restored because a simultaneous Store update changed five app-owned runtime values; those later changes were preserved. Final temporary-owned-key count is zero.
+- **Host drift:** The installed package updated during the approved restart from `26.715.4045.0` to `26.715.7063.0`; the accepted evidence names the final package.
+- **Implementation:** No product source change. No installed binary, credential, long-context request, or remote state changed.
+- **Implementation commit:** Pending focused CDS-01 evidence commit.
+- **Remote SHA:** Not published; push authorization has not been granted for this lane.
