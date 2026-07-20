@@ -73,5 +73,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Window result:** Interactive read-only dry-run found `ChatGPT` / `Chrome_WidgetWin_1`, foreground window rectangle `-7,-7,1543,823`, and computed a valid 72-by-72 anchor at `1319,647`.
 - **Cleanup:** Both one-time scheduled probe tasks were removed. No Codex window, input, configuration, or installed file was changed.
 - **Verification:** `overlay/Test-ContextOverlay.ps1` passed; pinned and automatic live dry-runs passed; `git diff --check` passed.
-- **Implementation commit:** Pending focused CDO-01 commit.
+- **Implementation commit:** `f7496d357de2d111a6aa1e005a4e4fe9a558c3f0`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
