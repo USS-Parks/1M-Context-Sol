@@ -15,6 +15,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CDS-02 | Host token state plus live native prompt-pill component seam | Blocked / hard stop | Token event exists; no supported dynamic prompt-pill insertion contract. See `docs/evidence/CDS-02/` |
 | CDS-03 onward | Architecture freeze and product implementation | Not run | G1 prerequisite failed at CDS-02; see `docs/evidence/M0/feasibility-verdict.md` |
 | CDO-00 | Approved floating-overlay contract and execution authority | Passed | `919aba898399ee409f0b54318d6cb5583eb9d463`, addendum, and DEVLOG |
+| CDO-01 | Active-context parser, root-task selection, and real-window anchor | Passed | `overlay/Test-ContextOverlay.ps1` and `docs/evidence/CDO-01/state-and-anchor-proof.md` |
 
 ### Historical Context Continuum initiative
 

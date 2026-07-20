@@ -62,3 +62,16 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Preservation:** One registered worktree only. Pre-existing `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain excluded and retain their CDS-00 hashes.
 - **Implementation commit:** `919aba898399ee409f0b54318d6cb5583eb9d463`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
+
+## CDO-01 - Prove state selection and window anchoring
+
+- **Date:** 2026-07-20
+- **Status:** Complete; AO-G1 spike and anchor gate passed.
+- **Files:** `overlay/ContextOverlay.Core.psm1`, `overlay/context-overlay.ps1`, `overlay/Test-ContextOverlay.ps1`, and `docs/evidence/CDO-01/state-and-anchor-proof.md`.
+- **State result:** The parser uses `last_token_usage.total_tokens`, the 12,000-token baseline, and `model_context_window`; malformed, stale, compacted, and ambiguous states are tested explicitly.
+- **Selection result:** Automatic root-task selection chose current task `019f7e5d-bbfa-7922-ba42-71b52f309a39` and reported `SelectionIsAmbiguous = false`.
+- **Window result:** Interactive read-only dry-run found `ChatGPT` / `Chrome_WidgetWin_1`, foreground window rectangle `-7,-7,1543,823`, and computed a valid 72-by-72 anchor at `1319,647`.
+- **Cleanup:** Both one-time scheduled probe tasks were removed. No Codex window, input, configuration, or installed file was changed.
+- **Verification:** `overlay/Test-ContextOverlay.ps1` passed; pinned and automatic live dry-runs passed; `git diff --check` passed.
+- **Implementation commit:** Pending focused CDO-01 commit.
+- **Remote SHA:** Not published; push authorization has not been granted for this lane.
