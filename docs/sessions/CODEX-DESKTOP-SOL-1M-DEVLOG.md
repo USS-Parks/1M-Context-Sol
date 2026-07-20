@@ -60,5 +60,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Scope:** Resume from the M0 no-go through one focusless Windows overlay; retain the native-seam blocker as historical truth.
 - **Implementation choice:** Native WPF/Win32 PowerShell with no new application framework or dependency tree. MCP is omitted unless a later acceptance need proves it necessary.
 - **Preservation:** One registered worktree only. Pre-existing `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain excluded and retain their CDS-00 hashes.
-- **Implementation commit:** Pending focused CDO-00 governance commit.
+- **Implementation commit:** `919aba898399ee409f0b54318d6cb5583eb9d463`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
