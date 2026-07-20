@@ -28,6 +28,8 @@ The [atomic configuration manager](docs/architecture/ATOMIC-CONFIG-MANAGEMENT.md
 
 The claim-safe [`doctor` and `status`](docs/architecture/DOCTOR-AND-STATUS-CONTRACT.md) commands now expose exact Sol identity, authentication lane, official limits, resolved catalog policy, Effective Codex budget, operational threshold, and compaction-guard state in human and JSON forms. They deliberately distinguish configuration-policy readiness from still-open live native-window proof.
 
+The [strict startup policy](docs/architecture/STRICT-SOL-STARTUP-POLICY.md) now implements fail-closed `SessionStart` and `UserPromptSubmit` handling. It blocks any non-Sol active model, model override, non-green doctor state, missing access, 272k/stale catalog, missing calibrated threshold, or unproven compaction guard, and records a prompt-free per-task audit. It is implemented and tested but is not globally installed yet.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).

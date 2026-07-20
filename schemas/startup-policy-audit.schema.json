@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/USS-Parks/Codex-Added-Context/schemas/startup-policy-audit.schema.json",
+  "title": "Context Continuum startup-policy audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "captured_at_unix_seconds",
+    "event",
+    "source",
+    "permission_mode",
+    "session_id_sha256",
+    "turn_id_sha256",
+    "cwd_sha256",
+    "active_model",
+    "configured_model",
+    "per_task_model_override_detected",
+    "decision",
+    "doctor_state",
+    "doctor_exit_code",
+    "doctor_policy_ready",
+    "auth_lane",
+    "authenticated",
+    "catalog_compatibility",
+    "catalog_sha256",
+    "resolved_context_window",
+    "effective_codex_budget",
+    "blocking_check_ids",
+    "remediation_commands",
+    "prompt_omitted",
+    "transcript_path_omitted",
+    "credentials_omitted",
+    "live_native_window_proven"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "captured_at_unix_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "event": {
+      "enum": [
+        "SessionStart",
+        "UserPromptSubmit"
+      ]
+    },
+    "source": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "startup",
+        "resume",
+        "clear",
+        "compact",
+        null
+      ]
+    },
+    "permission_mode": {
+      "enum": [
+        "default",
+        "acceptEdits",
+        "plan",
+        "dontAsk",
+        "bypassPermissions"
+      ]
+    },
+    "session_id_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "turn_id_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cwd_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "active_model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "configured_model": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 256
+    },
+    "per_task_model_override_detected": {
+      "type": "boolean"
+    },
+    "decision": {
+      "enum": [
+        "allow",
+        "block"
+      ]
+    },
+    "doctor_state": {
+      "enum": [
+        "policy_ready",
+        "not_ready",
+        "incompatible"
+      ]
+    },
+    "doctor_exit_code": {
+      "enum": [
+        0,
+        2,
+        3
+      ]
+    },
+    "doctor_policy_ready": {
+      "type": "boolean"
+    },
+    "auth_lane": {
+      "enum": [
+        "chatgpt",
+        "api_key",
+        "unauthenticated",
+        "unknown"
+      ]
+    },
+    "authenticated": {
+      "type": "boolean"
+    },
+    "catalog_compatibility": {
+      "enum": [
+        "supported",
+        "stale",
+        "unknown_schema",
+        "missing"
+      ]
+    },
+    "catalog_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resolved_context_window": {
+      "$ref": "#/$defs/nullableTokens"
+    },
+    "effective_codex_budget": {
+      "$ref": "#/$defs/nullableTokens"
+    },
+    "blocking_check_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "remediation_commands": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    },
+    "prompt_omitted": {
+      "const": true
+    },
+    "transcript_path_omitted": {
+      "const": true
+    },
+    "credentials_omitted": {
+      "const": true
+    },
+    "live_native_window_proven": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableTokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    }
+  }
+}

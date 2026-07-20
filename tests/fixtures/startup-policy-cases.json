@@ -1,0 +1,56 @@
+[
+  {
+    "id": "session_non_sol_override",
+    "doctor_scenario": "api_key_sol_ready_policy",
+    "event": "SessionStart",
+    "active_model": "gpt-5.6-terra",
+    "expected_decision": "block",
+    "expected_blocker": "active_hook_model_exact_sol",
+    "override_expected": true
+  },
+  {
+    "id": "prompt_272k_catalog",
+    "doctor_scenario": "chatgpt_272k",
+    "event": "UserPromptSubmit",
+    "active_model": "gpt-5.6-sol",
+    "expected_decision": "block",
+    "expected_blocker": "catalog_native_total",
+    "override_expected": false
+  },
+  {
+    "id": "prompt_stale_overlay",
+    "doctor_scenario": "stale_catalog",
+    "event": "UserPromptSubmit",
+    "active_model": "gpt-5.6-sol",
+    "expected_decision": "block",
+    "expected_blocker": "catalog_compatibility",
+    "override_expected": false
+  },
+  {
+    "id": "prompt_unproven_auth",
+    "doctor_scenario": "missing_access",
+    "event": "UserPromptSubmit",
+    "active_model": "gpt-5.6-sol",
+    "expected_decision": "block",
+    "expected_blocker": "auth_access",
+    "override_expected": false
+  },
+  {
+    "id": "session_green_exact_sol",
+    "doctor_scenario": "api_key_sol_ready_policy",
+    "event": "SessionStart",
+    "active_model": "gpt-5.6-sol",
+    "expected_decision": "allow",
+    "expected_blocker": null,
+    "override_expected": false
+  },
+  {
+    "id": "prompt_green_exact_sol",
+    "doctor_scenario": "api_key_sol_ready_policy",
+    "event": "UserPromptSubmit",
+    "active_model": "gpt-5.6-sol",
+    "expected_decision": "allow",
+    "expected_blocker": null,
+    "override_expected": false
+  }
+]

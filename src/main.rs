@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 use std::env;
+use std::io;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
@@ -16,6 +17,9 @@ use context_continuum::model_catalog::{
     OfficialSolLimits, OverlayPolicy, ParsedCatalog, capture_installed_catalog,
 };
 use context_continuum::probe::{ProbeOptions, capture};
+use context_continuum::startup_policy::{
+    enforce_and_audit, generic_fail_closed_response, parse_hook_input, read_bounded_hook_input,
+};
 
 fn main() -> ExitCode {
     match run() {
@@ -48,11 +52,98 @@ fn run() -> Result<ExitCode, (String, u8)> {
         "config" => ordinary_command(run_config(args.collect())),
         "doctor" => run_doctor_or_status(args.collect(), false),
         "status" => run_doctor_or_status(args.collect(), true),
+        "hook" => ordinary_command(run_hook(args.collect())),
         other => Err((
             format!("unknown command `{other}`; run `cctx --help`"),
             EXIT_USAGE,
         )),
     }
+}
+
+fn run_hook(args: Vec<String>) -> Result<(), String> {
+    let Some(subcommand) = args.first() else {
+        print_hook_help();
+        return Ok(());
+    };
+    match subcommand.as_str() {
+        "startup-policy" => run_startup_policy_hook(args[1..].to_vec()),
+        "-h" | "--help" | "help" => {
+            print_hook_help();
+            Ok(())
+        }
+        other => Err(format!(
+            "unknown hook command `{other}`; run `cctx hook --help`"
+        )),
+    }
+}
+
+fn run_startup_policy_hook(args: Vec<String>) -> Result<(), String> {
+    let mut options = DoctorOptions::default();
+    let mut audit_dir: Option<PathBuf> = None;
+    let mut index = 0;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--codex" => {
+                index += 1;
+                let Some(value) = args.get(index) else {
+                    return print_json(&generic_fail_closed_response(
+                        "startup-policy hook option --codex requires a value",
+                    ));
+                };
+                options.probe.codex_command = value.clone();
+            }
+            "--config" => {
+                index += 1;
+                let Some(value) = args.get(index) else {
+                    return print_json(&generic_fail_closed_response(
+                        "startup-policy hook option --config requires a value",
+                    ));
+                };
+                options.probe.config_path = Some(value.into());
+            }
+            "--audit-dir" => {
+                index += 1;
+                let Some(value) = args.get(index) else {
+                    return print_json(&generic_fail_closed_response(
+                        "startup-policy hook option --audit-dir requires a value",
+                    ));
+                };
+                audit_dir = Some(value.into());
+            }
+            "-h" | "--help" => {
+                print_startup_policy_hook_help();
+                return Ok(());
+            }
+            other => {
+                return print_json(&generic_fail_closed_response(format!(
+                    "unknown startup-policy hook option `{other}`"
+                )));
+            }
+        }
+        index += 1;
+    }
+    let Some(audit_dir) = audit_dir else {
+        return print_json(&generic_fail_closed_response(
+            "startup-policy hook requires --audit-dir <ABSOLUTE_DIR>",
+        ));
+    };
+
+    let stdin = io::stdin();
+    let mut locked = stdin.lock();
+    let bytes = match read_bounded_hook_input(&mut locked) {
+        Ok(bytes) => bytes,
+        Err(error) => return print_json(&generic_fail_closed_response(error.to_string())),
+    };
+    let input = match parse_hook_input(&bytes) {
+        Ok(input) => input,
+        Err(error) => return print_json(&generic_fail_closed_response(error.to_string())),
+    };
+    let doctor = match capture_live(&options) {
+        Ok(report) => report,
+        Err(error) => return print_json(&generic_fail_closed_response(error.to_string())),
+    };
+    let outcome = enforce_and_audit(&input, &doctor, &audit_dir);
+    print_json(&outcome.response)
 }
 
 fn ordinary_command(result: Result<(), String>) -> Result<ExitCode, (String, u8)> {
@@ -446,7 +537,19 @@ fn required_u64_value(args: &[String], index: usize, option: &str) -> Result<u64
 
 fn print_help() {
     println!(
-        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    doctor     Explain exact-Sol policy readiness and remediation\n    status     Print a compact claim-safe readiness summary\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
+        "Context Continuum for GPT-5.6 Sol\n\nUSAGE:\n    cctx <COMMAND>\n\nCOMMANDS:\n    probe      Capture a sanitized, read-only Codex capability report\n    doctor     Explain exact-Sol policy readiness and remediation\n    status     Print a compact claim-safe readiness summary\n    catalog    Parse and generate a version-pinned Sol-only catalog\n    config     Plan, apply, restore, or uninstall owned Codex settings\n    hook       Enforce bounded Codex lifecycle policy\n    help       Print this help\n\nRun `cctx <COMMAND> --help` for command options."
+    );
+}
+
+fn print_hook_help() {
+    println!(
+        "Run fail-closed Codex lifecycle policy handlers.\n\nUSAGE:\n    cctx hook <COMMAND>\n\nCOMMANDS:\n    startup-policy   Enforce exact-Sol doctor policy at SessionStart/UserPromptSubmit"
+    );
+}
+
+fn print_startup_policy_hook_help() {
+    println!(
+        "Read one official Codex SessionStart or UserPromptSubmit JSON envelope from stdin, block unless exact GPT-5.6 Sol and doctor policy are green, and write a prompt-free audit.\n\nUSAGE:\n    cctx hook startup-policy --audit-dir <ABSOLUTE_DIR> [--codex <COMMAND>] [--config <FILE>]\n\nThe hook always emits protocol-valid JSON for runtime policy decisions. A green doctor policy is configuration evidence, not live native-window proof."
     );
 }
 

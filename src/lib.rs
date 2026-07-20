@@ -7,6 +7,7 @@ pub mod config_manager;
 pub mod doctor;
 pub mod model_catalog;
 pub mod probe;
+pub mod startup_policy;
 
 /// The only model identifier permitted by the project contract.
 pub const REQUIRED_MODEL: &str = "gpt-5.6-sol";

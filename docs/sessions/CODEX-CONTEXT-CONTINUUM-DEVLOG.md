@@ -186,3 +186,28 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - GitHub Actions run [29708215480](https://github.com/USS-Parks/Codex-Added-Context/actions/runs/29708215480) passed all 10 jobs
 - **Implementation commit:** `ad14add5edc520aa423148a6f013ded07cec6dc9`
 - **Published remote SHA:** `ad14add5edc520aa423148a6f013ded07cec6dc9` on `codex/context-continuum-v0.1`
+
+## CAC-13 — Implement strict Sol-only startup policy
+
+- **Date:** 2026-07-19
+- **Status:** Local gate passed; implementation commit and remote CI pending
+- **Scope:** Bounded strict parsing for the documented Codex 0.144.5 `SessionStart` and `UserPromptSubmit` envelopes, active-model versus configured-model enforcement, explicit doctor invariant revalidation, event-specific fail-closed JSON, visible remediation commands, and atomic prompt-free per-task audits.
+- **Truth boundary:** An event is allowed only when exact hook-reported `gpt-5.6-sol` matches the configured root model and doctor is genuinely `policy_ready`/0 with every auth, catalog, capacity, threshold, and guard invariant green. Policy readiness remains non-live configuration evidence; `live_native_window_proven` stays false and G2 remains open.
+- **Privacy and override audit:** Audit paths use SHA-256-derived session/turn identifiers. Records retain only sanitized model/auth/catalog policy, decision, blocker IDs, and remediation; raw prompt, transcript path, session/turn IDs, working directory, credentials, arbitrary config, and model instructions are omitted.
+- **Files changed:** `src/startup_policy.rs`, CLI/library wiring, startup-policy audit JSON Schema, six-case acceptance fixture, integration tests, strict-startup architecture documentation, README, and ledgers.
+- **Verification:**
+  - `cargo fmt --all -- --check` — passed
+  - `cargo check --locked --all-targets` — passed
+  - `cargo clippy --locked --all-targets -- -D warnings` — passed
+  - `cargo test --locked --all-targets` — passed; 71 tests total, including 4 startup-policy unit tests and 7 integration tests
+  - `RUSTDOCFLAGS=-D warnings cargo doc --locked --no-deps --document-private-items` — passed
+  - `cargo deny check` — advisories, bans, licenses, and sources passed
+  - the frozen matrix blocks a non-Sol per-task override, the 272k Sol catalog, a stale overlay, and an unauthenticated lane; exact Sol proceeds for both governed events only with the green doctor fixture
+  - SessionStart block output uses common `continue: false`/`stopReason`/`systemMessage`; UserPromptSubmit uses documented `decision: block`/`reason`; malformed, mixed, unknown, oversized, or misconfigured invocation paths fail closed
+  - per-task audit output validates as Draft 2020-12, detects the override, and contains none of the test prompt, transcript path, raw task IDs, or working directory
+  - a report labeled green but missing its normalized catalog SHA-256 is rejected as internally inconsistent
+  - Windows command transport accepts one UTF-8 BOM while other malformed input remains blocked
+  - live installed SessionStart and UserPromptSubmit proofs at `C:\tmp\cctx-cac13-live-proof-019f7be3` both returned protocol-valid blocks with exit 0 for exact Sol on ChatGPT auth because the supported catalog resolved 272,000 total and a 258,400-token Effective Codex budget
+  - the live proofs wrote exactly two sanitized audits with eight blocker IDs each; the unique prompt canary and raw transcript path were absent from all audit bytes; config SHA-256 remained `6F274971BD736B79CDEE52DA94A584134217528420C2CDBFEBCAD6F5D5CB0BDA`; no credential entry, config/catalog installation, or model request occurred
+- **Implementation commit:** Pending.
+- **Published remote SHA:** Pending.
