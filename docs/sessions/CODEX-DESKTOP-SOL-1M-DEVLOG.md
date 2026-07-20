@@ -36,5 +36,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Rollback:** All four temporary owned keys were removed. The original bytes were not blindly restored because a simultaneous Store update changed five app-owned runtime values; those later changes were preserved. Final temporary-owned-key count is zero.
 - **Host drift:** The installed package updated during the approved restart from `26.715.4045.0` to `26.715.7063.0`; the accepted evidence names the final package.
 - **Implementation:** No product source change. No installed binary, credential, long-context request, or remote state changed.
-- **Implementation commit:** Pending focused CDS-01 evidence commit.
+- **Implementation commit:** `cba1dae907d439924e2fc3ec0a06edd72ef61f42`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
