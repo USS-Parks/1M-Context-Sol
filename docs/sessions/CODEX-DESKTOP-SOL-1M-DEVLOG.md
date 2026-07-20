@@ -75,3 +75,17 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Verification:** `overlay/Test-ContextOverlay.ps1` passed; pinned and automatic live dry-runs passed; `git diff --check` passed.
 - **Implementation commit:** `f7496d357de2d111a6aa1e005a4e4fe9a558c3f0`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
+
+## CDO-02 - Implement the floating context dial
+
+- **Date:** 2026-07-20
+- **Status:** Complete; AO-G2 passed in the interactive Desktop session.
+- **Files:** `overlay/ContextOverlay.Core.psm1`, `overlay/context-overlay.ps1`, and `docs/evidence/CDO-02/floating-dial-acceptance.md`.
+- **Surface:** One circular 72-DIP WPF window, borderless/topmost, no taskbar entry, no activation, transparent outside its native elliptical region, and right-click-to-stop.
+- **State:** Live percentage, host window, active/remaining tokens, task/source tooltip, stale/ambiguous colors, and a distinct `900k` compaction marker all come from the CDO-01 host parser.
+- **DPI:** Device coordinates are converted to WPF DIPs; the accepted 125-percent-scale native rectangle was `1705,853,1795,943`.
+- **Native proof:** `HasNoActivate = true`, `CornerPassesThrough = true`, `CenterBelongsToDial = true`, foreground visibility true, and no runtime error.
+- **Lifecycle:** Focus loss hid the dial without ending the corrected dispatcher; a clean stop reached `Ready`; all temporary CDO-02 tasks and probe files were removed.
+- **Verification:** Core test and PowerShell syntax parser passed; live counter update, hide/persist, DPI anchor, native styles, region hit-test, and clean stop passed.
+- **Implementation commit:** Pending focused CDO-02 commit.
+- **Remote SHA:** Not published; push authorization has not been granted for this lane.

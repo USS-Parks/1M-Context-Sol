@@ -209,6 +209,9 @@ namespace ContextOverlay {
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT { public int Left, Top, Right, Bottom; }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT { public int X, Y; }
+
         [DllImport("user32.dll")] public static extern bool EnumWindows(EnumWindowsProc callback, IntPtr extraData);
         [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
         [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr hWnd);
@@ -217,6 +220,21 @@ namespace ContextOverlay {
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern int GetClassName(IntPtr hWnd, StringBuilder text, int count);
         [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")] public static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int index);
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")] public static extern IntPtr GetWindowLongPtr32(IntPtr hWnd, int index);
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")] public static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int index, IntPtr value);
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")] public static extern IntPtr SetWindowLongPtr32(IntPtr hWnd, int index, IntPtr value);
+        [DllImport("user32.dll")] public static extern IntPtr WindowFromPoint(POINT point);
+        [DllImport("gdi32.dll")] public static extern IntPtr CreateEllipticRgn(int left, int top, int right, int bottom);
+        [DllImport("user32.dll")] public static extern int SetWindowRgn(IntPtr hWnd, IntPtr region, bool redraw);
+
+        public static IntPtr GetWindowLongPtr(IntPtr hWnd, int index) {
+            return IntPtr.Size == 8 ? GetWindowLongPtr64(hWnd, index) : GetWindowLongPtr32(hWnd, index);
+        }
+
+        public static IntPtr SetWindowLongPtr(IntPtr hWnd, int index, IntPtr value) {
+            return IntPtr.Size == 8 ? SetWindowLongPtr64(hWnd, index, value) : SetWindowLongPtr32(hWnd, index, value);
+        }
 
         public static List<WindowInfo> EnumerateVisibleWindows() {
             var windows = new List<WindowInfo>();
@@ -277,6 +295,8 @@ function Get-CodexWindowAnchor {
 
     $window = $windows[0]
     $foreground = [ContextOverlay.NativeMethods]::GetForegroundWindow()
+    [uint32]$foregroundProcessId = 0
+    [void][ContextOverlay.NativeMethods]::GetWindowThreadProcessId($foreground, [ref]$foregroundProcessId)
     $left = $window.Right - $RightOffset - $DialWidth
     $top = $window.Bottom - $BottomOffset - $DialHeight
 
@@ -290,7 +310,7 @@ function Get-CodexWindowAnchor {
         WindowRight  = $window.Right
         WindowBottom = $window.Bottom
         IsMinimized  = $window.IsMinimized
-        IsForeground = $window.Handle -eq $foreground
+        IsForeground = $codexProcessIds -contains [int]$foregroundProcessId
         AnchorLeft   = $left
         AnchorTop    = $top
         DialWidth    = $DialWidth
