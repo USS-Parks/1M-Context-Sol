@@ -243,3 +243,11 @@ This append-only ledger records execution of `CAC-PSPR-2`. A prompt is complete 
   - isolated `sol run -- debug models` displayed the threshold meter and returned the same exact resolved policy; global config remained unchanged
 - **Implementation commit:** `a973bdd19fd3db1dab96a02bb92c250095e397c6`
 - **Published remote SHA:** `a973bdd19fd3db1dab96a02bb92c250095e397c6` on `main`
+
+## Product-direction supersession
+
+- **Date:** 2026-07-20
+- **Status:** Historical lane suspended; unfinished local work preserved.
+- **User correction:** The requested product is the existing Codex desktop UX with exact `gpt-5.6-sol`, a live 1.05M context window, a small context-remaining dial in the prompt pill, and normal automatic compaction at 900,000 tokens. A replacement TUI, durable reservoir, and strict compaction-blocking product do not satisfy that goal.
+- **New authority:** `PLANNING/CODEX-DESKTOP-SOL-1M-PSPR.md` and `docs/sessions/CODEX-DESKTOP-SOL-1M-DEVLOG.md`.
+- **Preservation:** The dirty `src/lib.rs`, `src/main.rs`, and untracked `src/precompact_guard.rs` work remains byte-preserved and uncommitted. No old implementation or evidence was deleted.

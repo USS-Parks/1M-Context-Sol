@@ -1,6 +1,8 @@
 # Context Continuum for GPT-5.6 Sol — Canonical Plan / Sequential Prompt Roster
 
-> **Status:** APPROVED — FULL STS EXECUTION ACTIVE — GPT-5.6 SOL ONLY
+> **Status:** SUPERSEDED 2026-07-20 — HISTORICAL RECORD — EXECUTION MOVED TO `CODEX-DESKTOP-SOL-1M-PSPR.md`
+
+> **Supersession note:** This plan accurately records the earlier Context Continuum direction and completed CAC evidence, but it is no longer execution authority. The user corrected the product goal to the existing Codex desktop UX with exact Sol-1M configuration, a native prompt-pill context dial, and normal automatic compaction at 900,000 tokens. Do not resume this roster unless the user explicitly restores it through a new addendum.
 > **Initiative:** Codex Added Context
 > **Plan ID:** CAC-PSPR-2
 > **Last updated:** 2026-07-19
