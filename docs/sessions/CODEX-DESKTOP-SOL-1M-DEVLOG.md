@@ -87,5 +87,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Native proof:** `HasNoActivate = true`, `CornerPassesThrough = true`, `CenterBelongsToDial = true`, foreground visibility true, and no runtime error.
 - **Lifecycle:** Focus loss hid the dial without ending the corrected dispatcher; a clean stop reached `Ready`; all temporary CDO-02 tasks and probe files were removed.
 - **Verification:** Core test and PowerShell syntax parser passed; live counter update, hide/persist, DPI anchor, native styles, region hit-test, and clean stop passed.
-- **Implementation commit:** Pending focused CDO-02 commit.
+- **Implementation commit:** `882351c7f5e6daf8bb01f6b625536bc4369ff426`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
