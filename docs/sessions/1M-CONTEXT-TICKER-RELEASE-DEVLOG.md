@@ -25,5 +25,5 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Copy:** Centered name/value statement, functions, placement, exact capacity terms, current preview install, status/stop/uninstall, verification, privacy/safety, limitations, and historical note.
 - **Claim boundary:** Windows preview only; native executable is explicitly in progress until RLS-03/RLS-05; macOS, imagery, signing, push, and public release remain parked.
 - **Verification:** All repository-relative README links resolve; install/status/uninstall commands name existing scripts/actions; stale active-product TUI/MCP claims are absent; `git diff --check` passed.
-- **Implementation commit:** Pending focused RLS-01 commit.
+- **Implementation commit:** `2a7211911dee95d500524f5429dd196b01a8813d`
 - **Remote SHA:** Not published; push authorization has not been granted.
