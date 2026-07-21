@@ -102,7 +102,7 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Corrective proof:** Duplicate processes reduced from two to one; live host window `1008000`; bounded tail parser 6-21 ms warm; status timestamp advanced; duplicate launch rejected.
 - **Final user-directed face:** Regular-weight `Context: used tokens / 1M` ticker only; no circle or progress bar; 190-by-28 DIPs on the prompt pill's bottom row between approval and model controls.
 - **Native visual match:** Border/frame removed; ticker lowered onto the controls' baseline; foreground uses a sampled-theme muted blend matching Codex's subdued composer labels.
-- **Final placement proof:** Native rectangle `819,961,1057,996`; live face `Context: 216,062 / 1M`; regular muted 13px type aligned with approval/model controls; no frame; one helper process; sampled background `#2D2D2D`; no runtime error.
+- **Final placement proof:** Native rectangle `804,959,1042,994`; live face `Context: 226,557 / 1M`; regular muted 12px type aligned with approval/model controls; no frame; one helper process; sampled background `#2D2D2D`; no runtime error.
 - **Theme proof:** Live prompt-pill sampling selected `#2D2D2D` in dark mode; foreground, border, track, and normal progress colors derive from sampled luminance for Codex-controlled light/dark adaptation.
 - **Verification:** Core and installer suites passed; `git diff --check` passed.
 - **Implementation commit:** `01157263c7e9b7090882e58ffc9ccc29a51b7a41`

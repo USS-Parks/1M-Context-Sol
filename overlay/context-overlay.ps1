@@ -4,8 +4,8 @@ param(
     [string] $SessionsRoot = (Join-Path $env:USERPROFILE '.codex\sessions'),
     [string] $ThreadId,
     [int] $StaleAfterSeconds = 300,
-    [int] $RightOffset = 920,
-    [int] $BottomOffset = 40,
+    [int] $RightOffset = 935,
+    [int] $BottomOffset = 42,
     [int] $CompactionThreshold = 900000,
     [int] $RefreshMilliseconds = 1000,
     [string] $OutputPath
@@ -73,7 +73,7 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
         <Border Name="Capsule" Background="#FF303030" BorderThickness="0" CornerRadius="14" />
         <TextBlock Name="UsedText" Text="Context: -- / 1M"
                    Foreground="#FFF6F7F9" FontFamily="Cascadia Mono, Consolas"
-                   FontSize="13" FontWeight="Normal"
+                   FontSize="12" FontWeight="Normal"
                    HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>

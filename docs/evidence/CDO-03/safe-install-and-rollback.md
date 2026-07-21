@@ -55,10 +55,10 @@ Final live state after the user's normal restart:
 | Overlay process count | `1` |
 | Active task | `019f7e5d-bbfa-7922-ba42-71b52f309a39` |
 | Host context window | `1008000` |
-| Active context ticker | `Context: 216062 / 1M` at final placement proof |
-| Diagnostic used fraction | `20` percent |
-| Host remaining | `800674` tokens / `80` percent |
-| Native overlay rectangle | `819,961,1057,996` |
+| Active context ticker | `Context: 226557 / 1M` at final placement proof |
+| Diagnostic used fraction | `22` percent |
+| Host remaining | `781443` tokens / `78` percent |
+| Native overlay rectangle | `804,959,1042,994` |
 | Sampled prompt background | `#2D2D2D`, dark |
 | Status refresh | advanced across a three-second sample |
 | Selection stale/ambiguous | `false` / `false` |
