@@ -398,24 +398,33 @@ function Get-CodexPromptPalette {
         $red = [int](@($samples.R | Sort-Object)[$middle])
         $green = [int](@($samples.G | Sort-Object)[$middle])
         $blue = [int](@($samples.B | Sort-Object)[$middle])
+        $windowWidth = $Window.WindowRight - $Window.WindowLeft
+        $windowHeight = $Window.WindowBottom - $Window.WindowTop
+        $sidebarColor = [ContextOverlay.NativeMethods]::GetPixel(
+            $deviceContext,
+            ($Window.WindowRight - [int]($windowWidth * 0.10)),
+            ($Window.WindowTop + [int]($windowHeight * 0.25))
+        )
+        $sidebarRed = [int]($sidebarColor -band 0xFF)
+        $sidebarGreen = [int](($sidebarColor -shr 8) -band 0xFF)
+        $sidebarBlue = [int](($sidebarColor -shr 16) -band 0xFF)
+        $sidebarOpen = [math]::Abs($sidebarRed - $red) -le 12 -and
+            [math]::Abs($sidebarGreen - $green) -le 12 -and
+            [math]::Abs($sidebarBlue - $blue) -le 12
+        $navigationWidth = $windowWidth * 0.15625
+        $sidebarWidth = if ($sidebarOpen) { $windowWidth * 0.203125 } else { 0.0 }
+        $promptCenter = $Window.WindowLeft + $navigationWidth + (($windowWidth - $navigationWidth - $sidebarWidth) / 2.0)
         $luminance = (0.2126 * $red) + (0.7152 * $green) + (0.0722 * $blue)
         $foreground = if ($luminance -gt 145) { 32 } else { 246 }
         [pscustomobject]@{
             BackgroundR = $red
             BackgroundG = $green
             BackgroundB = $blue
-            ForegroundR = $foreground
-            ForegroundG = $foreground
-            ForegroundB = $foreground
             MutedR = [int][math]::Round(($red * 0.35) + ($foreground * 0.65))
             MutedG = [int][math]::Round(($green * 0.35) + ($foreground * 0.65))
             MutedB = [int][math]::Round(($blue * 0.35) + ($foreground * 0.65))
-            TrackR = [int][math]::Round(($red * 0.72) + ($foreground * 0.28))
-            TrackG = [int][math]::Round(($green * 0.72) + ($foreground * 0.28))
-            TrackB = [int][math]::Round(($blue * 0.72) + ($foreground * 0.28))
-            BorderR = [int][math]::Round(($red * 0.84) + ($foreground * 0.16))
-            BorderG = [int][math]::Round(($green * 0.84) + ($foreground * 0.16))
-            BorderB = [int][math]::Round(($blue * 0.84) + ($foreground * 0.16))
+            PromptCenter = [int][math]::Round($promptCenter)
+            SidebarOpen = $sidebarOpen
             IsLight = $luminance -gt 145
         }
     }

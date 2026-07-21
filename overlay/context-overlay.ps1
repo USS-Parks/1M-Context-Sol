@@ -66,15 +66,15 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         Title="Codex Context Dial"
-        Width="190" Height="28" WindowStyle="None" ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight" WindowStyle="None" ResizeMode="NoResize"
         AllowsTransparency="True" Background="Transparent" Topmost="True"
         ShowInTaskbar="False" ShowActivated="False" Focusable="False" Opacity="0">
     <Grid Name="DialRoot" ToolTipService.ShowDuration="60000">
-        <Border Name="Capsule" Background="#FF303030" BorderThickness="0" CornerRadius="14" />
-        <TextBlock Name="UsedText" Text="Context: -- / 1M"
-                   Foreground="#FFF6F7F9" FontFamily="Cascadia Mono, Consolas"
-                   FontSize="12" FontWeight="Normal"
-                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Border Name="Capsule" Background="#FF303030" BorderThickness="0" CornerRadius="9" Padding="2,0">
+            <TextBlock Name="UsedText" Text="Context: -- / 1M"
+                       Foreground="#FFF6F7F9" FontFamily="Cascadia Mono, Consolas"
+                       FontSize="12" FontWeight="Normal" />
+        </Border>
     </Grid>
 </Window>
 '@
@@ -96,6 +96,35 @@ $script:lastState = $state
 $script:overlayHandle = [IntPtr]::Zero
 $script:lastPalette = $null
 
+function Update-OverlayRegion {
+    if ($script:overlayHandle -eq [IntPtr]::Zero) { return }
+    $rect = New-Object ContextOverlay.NativeMethods+RECT
+    if ([ContextOverlay.NativeMethods]::GetWindowRect($script:overlayHandle, [ref]$rect)) {
+        $region = [ContextOverlay.NativeMethods]::CreateEllipticRgn(0, 0, ($rect.Right - $rect.Left + 1), ($rect.Bottom - $rect.Top + 1))
+        if ($region -ne [IntPtr]::Zero) {
+            [void][ContextOverlay.NativeMethods]::SetWindowRgn($script:overlayHandle, $region, $true)
+        }
+    }
+}
+
+function Set-OverlayLocation($Position, $Palette) {
+    $window.UpdateLayout()
+    $centerDevice = New-Object Windows.Point(
+        $Palette.PromptCenter,
+        ($Position.WindowBottom - 53.0)
+    )
+    $presentationSource = [Windows.PresentationSource]::FromVisual($window)
+    if ($null -ne $presentationSource -and $null -ne $presentationSource.CompositionTarget) {
+        $centerDip = $presentationSource.CompositionTarget.TransformFromDevice.Transform($centerDevice)
+        $window.Left = $centerDip.X - ($window.ActualWidth / 2.0)
+        $window.Top = $centerDip.Y - ($window.ActualHeight / 2.0)
+    }
+    else {
+        $window.Left = $centerDevice.X - ($window.ActualWidth / 2.0)
+        $window.Top = $centerDevice.Y - ($window.ActualHeight / 2.0)
+    }
+}
+
 $window.Add_SourceInitialized({
     $helper = New-Object Windows.Interop.WindowInteropHelper $window
     $handle = $helper.Handle
@@ -103,14 +132,9 @@ $window.Add_SourceInitialized({
     $extendedStyle = [ContextOverlay.NativeMethods]::GetWindowLongPtr($handle, -20).ToInt64()
     $extendedStyle = $extendedStyle -bor 0x00000080L -bor 0x08000000L
     [void][ContextOverlay.NativeMethods]::SetWindowLongPtr($handle, -20, [IntPtr]$extendedStyle)
-    $rect = New-Object ContextOverlay.NativeMethods+RECT
-    if ([ContextOverlay.NativeMethods]::GetWindowRect($handle, [ref]$rect)) {
-        $region = [ContextOverlay.NativeMethods]::CreateEllipticRgn(0, 0, ($rect.Right - $rect.Left + 1), ($rect.Bottom - $rect.Top + 1))
-        if ($region -ne [IntPtr]::Zero) {
-            [void][ContextOverlay.NativeMethods]::SetWindowRgn($handle, $region, $true)
-        }
-    }
+    Update-OverlayRegion
 })
+$window.Add_SizeChanged({ Update-OverlayRegion })
 
 $dialRoot.Add_MouseRightButtonUp({ $window.Close() })
 
@@ -171,6 +195,8 @@ function Write-OverlayStatus($CurrentState, $Position, [bool] $Visible, [string]
         SelectionAmbiguous = $script:selectionAmbiguous
         PromptBackground  = if ($null -eq $script:lastPalette) { $null } else { '#{0:X2}{1:X2}{2:X2}' -f $script:lastPalette.BackgroundR, $script:lastPalette.BackgroundG, $script:lastPalette.BackgroundB }
         PromptTheme       = if ($null -eq $script:lastPalette) { $null } elseif ($script:lastPalette.IsLight) { 'light' } else { 'dark' }
+        PromptCenter      = if ($null -eq $script:lastPalette) { $null } else { $script:lastPalette.PromptCenter }
+        SidebarOpen       = if ($null -eq $script:lastPalette) { $null } else { $script:lastPalette.SidebarOpen }
         CompactionThreshold = $CompactionThreshold
         AnchorLeftDip     = if ($null -eq $Position) { $null } else { [math]::Round($window.Left, 1) }
         AnchorTopDip      = if ($null -eq $Position) { $null } else { [math]::Round($window.Top, 1) }
@@ -210,23 +236,13 @@ function Update-Overlay {
             return
         }
 
-        $devicePoint = New-Object Windows.Point($position.AnchorLeft, $position.AnchorTop)
-        $presentationSource = [Windows.PresentationSource]::FromVisual($window)
-        if ($null -ne $presentationSource -and $null -ne $presentationSource.CompositionTarget) {
-            $dipPoint = $presentationSource.CompositionTarget.TransformFromDevice.Transform($devicePoint)
-            $window.Left = $dipPoint.X
-        $window.Top = $dipPoint.Y
-        }
-        else {
-            $window.Left = $position.AnchorLeft
-            $window.Top = $position.AnchorTop
-        }
         $usedPercent = 100 - $current.PercentRemaining
         $usedText.Text = ('Context: {0:N0} / 1M' -f $current.UsedTokens)
         $palette = Get-CodexPromptPalette -Window $position
         $script:lastPalette = $palette
         $capsule.Background = New-RgbBrush $palette.BackgroundR $palette.BackgroundG $palette.BackgroundB
         $usedText.Foreground = New-RgbBrush $palette.MutedR $palette.MutedG $palette.MutedB
+        Set-OverlayLocation $position $palette
 
         if ($current.IsStale) {
             $usedText.Foreground = [Windows.Media.Brushes]::SlateGray
@@ -265,13 +281,9 @@ Right-click the dial to stop the overlay.
         try {
             $position = Get-CodexWindowAnchor -RightOffset $RightOffset -BottomOffset $BottomOffset
             if ($position.IsForeground -and -not $position.IsMinimized) {
-                $devicePoint = New-Object Windows.Point($position.AnchorLeft, $position.AnchorTop)
-                $presentationSource = [Windows.PresentationSource]::FromVisual($window)
-                if ($null -ne $presentationSource -and $null -ne $presentationSource.CompositionTarget) {
-                    $dipPoint = $presentationSource.CompositionTarget.TransformFromDevice.Transform($devicePoint)
-                    $window.Left = $dipPoint.X
-                    $window.Top = $dipPoint.Y
-                }
+                $palette = Get-CodexPromptPalette -Window $position
+                $script:lastPalette = $palette
+                Set-OverlayLocation $position $palette
                 if (-not $window.IsVisible) { $window.Show() }
             }
             else {
