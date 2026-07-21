@@ -4,8 +4,8 @@ param(
     [string] $SessionsRoot = (Join-Path $env:USERPROFILE '.codex\sessions'),
     [string] $ThreadId,
     [int] $StaleAfterSeconds = 300,
-    [int] $RightOffset = 152,
-    [int] $BottomOffset = 104,
+    [int] $RightOffset = 600,
+    [int] $BottomOffset = 115,
     [int] $CompactionThreshold = 900000,
     [int] $RefreshMilliseconds = 1000,
     [string] $OutputPath
@@ -15,9 +15,22 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'ContextOverlay.Core.psm1') -Force
 
+$createdNew = $false
+$script:singleInstanceMutex = New-Object Threading.Mutex($true, 'Local\CodexContextOverlay', [ref]$createdNew)
+if (-not $createdNew) {
+    $script:singleInstanceMutex.Dispose()
+    return
+}
+
 $selection = Select-ContextRollout -SessionsRoot $SessionsRoot -ThreadId $ThreadId
 $state = Get-ContextOverlayState -RolloutPath $selection.Path -StaleAfterSeconds $StaleAfterSeconds
-$anchor = Get-CodexWindowAnchor -RightOffset $RightOffset -BottomOffset $BottomOffset
+$anchor = $null
+try {
+    $anchor = Get-CodexWindowAnchor -RightOffset $RightOffset -BottomOffset $BottomOffset
+}
+catch {
+    if ($DryRun) { throw }
+}
 
 $result = [pscustomobject]@{
     Mode             = if ($DryRun) { 'dry-run' } else { 'overlay' }
@@ -53,25 +66,15 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         Title="Codex Context Dial"
-        Width="72" Height="72" WindowStyle="None" ResizeMode="NoResize"
+        Width="128" Height="28" WindowStyle="None" ResizeMode="NoResize"
         AllowsTransparency="True" Background="Transparent" Topmost="True"
         ShowInTaskbar="False" ShowActivated="False" Focusable="False" Opacity="0">
     <Grid Name="DialRoot" ToolTipService.ShowDuration="60000">
-        <Ellipse Fill="#E8181B22" Stroke="#705F6673" StrokeThickness="1" />
-        <Ellipse Margin="6" Stroke="#453E4652" StrokeThickness="5" />
-        <Path Name="ProgressArc" Stroke="#55D6BE" StrokeThickness="5"
-              StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Name="PercentText" Text="--%" Foreground="#FFF6F7F9"
-                       FontFamily="Segoe UI Semibold" FontSize="17"
-                       HorizontalAlignment="Center" />
-            <TextBlock Name="WindowText" Text="waiting" Foreground="#FFAFB6C3"
-                       FontFamily="Segoe UI" FontSize="8"
-                       HorizontalAlignment="Center" />
-            <TextBlock Name="ThresholdText" Text="↻ 900k" Foreground="#FFFFC857"
-                       FontFamily="Segoe UI" FontSize="8"
-                       HorizontalAlignment="Center" />
-        </StackPanel>
+        <Border Name="Capsule" Background="#FF303030" BorderBrush="#FF4A4A4A" BorderThickness="1" CornerRadius="14" />
+        <TextBlock Name="UsedText" Text="-- / 1M"
+                   Foreground="#FFF6F7F9" FontFamily="Cascadia Mono, Consolas"
+                   FontSize="13" FontWeight="SemiBold"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>
 '@
@@ -79,49 +82,11 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 $reader = New-Object Xml.XmlNodeReader $xaml
 $window = [Windows.Markup.XamlReader]::Load($reader)
 $dialRoot = $window.FindName('DialRoot')
-$progressArc = $window.FindName('ProgressArc')
-$percentText = $window.FindName('PercentText')
-$windowText = $window.FindName('WindowText')
-$thresholdText = $window.FindName('ThresholdText')
-$thresholdText.Text = '↻ ' + [math]::Round($CompactionThreshold / 1000) + 'k'
+$capsule = $window.FindName('Capsule')
+$usedText = $window.FindName('UsedText')
 
-function Format-CompactTokens([long] $Tokens) {
-    if ($Tokens -ge 1000000) {
-        return ('{0:0.00}m' -f ($Tokens / 1000000.0))
-    }
-    if ($Tokens -ge 1000) {
-        return ('{0:0}k' -f ($Tokens / 1000.0))
-    }
-    return [string]$Tokens
-}
-
-function Set-ProgressArc([int] $Percent) {
-    $bounded = [math]::Max(0, [math]::Min(100, $Percent))
-    if ($bounded -eq 0) {
-        $progressArc.Data = $null
-        return
-    }
-
-    $angle = [math]::Min(359.999, 360.0 * ($bounded / 100.0))
-    $radius = 27.5
-    $center = 36.0
-    $radians = $angle * [math]::PI / 180.0
-    $start = New-Object Windows.Point($center, ($center - $radius))
-    $end = New-Object Windows.Point(
-        ($center + ([math]::Sin($radians) * $radius)),
-        ($center - ([math]::Cos($radians) * $radius))
-    )
-    $segment = New-Object Windows.Media.ArcSegment
-    $segment.Point = $end
-    $segment.Size = New-Object Windows.Size($radius, $radius)
-    $segment.IsLargeArc = $angle -gt 180
-    $segment.SweepDirection = [Windows.Media.SweepDirection]::Clockwise
-    $figure = New-Object Windows.Media.PathFigure
-    $figure.StartPoint = $start
-    $figure.Segments.Add($segment)
-    $geometry = New-Object Windows.Media.PathGeometry
-    $geometry.Figures.Add($figure)
-    $progressArc.Data = $geometry
+function New-RgbBrush([int] $Red, [int] $Green, [int] $Blue) {
+    New-Object Windows.Media.SolidColorBrush ([Windows.Media.Color]::FromRgb([byte]$Red, [byte]$Green, [byte]$Blue))
 }
 
 $script:selectedPath = $selection.Path
@@ -129,6 +94,7 @@ $script:selectionAmbiguous = $selection.Ambiguous
 $script:previousUsed = $null
 $script:lastState = $state
 $script:overlayHandle = [IntPtr]::Zero
+$script:lastPalette = $null
 
 $window.Add_SourceInitialized({
     $helper = New-Object Windows.Interop.WindowInteropHelper $window
@@ -200,8 +166,11 @@ function Write-OverlayStatus($CurrentState, $Position, [bool] $Visible, [string]
         ContextWindow     = if ($null -eq $CurrentState) { $null } else { $CurrentState.ContextWindow }
         RemainingTokens   = if ($null -eq $CurrentState) { $null } else { $CurrentState.RemainingTokens }
         PercentRemaining  = if ($null -eq $CurrentState) { $null } else { $CurrentState.PercentRemaining }
+        PercentUsed       = if ($null -eq $CurrentState) { $null } else { 100 - $CurrentState.PercentRemaining }
         IsStale           = if ($null -eq $CurrentState) { $null } else { $CurrentState.IsStale }
         SelectionAmbiguous = $script:selectionAmbiguous
+        PromptBackground  = if ($null -eq $script:lastPalette) { $null } else { '#{0:X2}{1:X2}{2:X2}' -f $script:lastPalette.BackgroundR, $script:lastPalette.BackgroundG, $script:lastPalette.BackgroundB }
+        PromptTheme       = if ($null -eq $script:lastPalette) { $null } elseif ($script:lastPalette.IsLight) { 'light' } else { 'dark' }
         CompactionThreshold = $CompactionThreshold
         AnchorLeftDip     = if ($null -eq $Position) { $null } else { [math]::Round($window.Left, 1) }
         AnchorTopDip      = if ($null -eq $Position) { $null } else { [math]::Round($window.Top, 1) }
@@ -246,30 +215,31 @@ function Update-Overlay {
         if ($null -ne $presentationSource -and $null -ne $presentationSource.CompositionTarget) {
             $dipPoint = $presentationSource.CompositionTarget.TransformFromDevice.Transform($devicePoint)
             $window.Left = $dipPoint.X
-            $window.Top = $dipPoint.Y
+        $window.Top = $dipPoint.Y
         }
         else {
             $window.Left = $position.AnchorLeft
             $window.Top = $position.AnchorTop
         }
-        $percentText.Text = [string]$current.PercentRemaining + '%'
-        $windowText.Text = (Format-CompactTokens $current.ContextWindow) + ' window'
-        Set-ProgressArc $current.PercentRemaining
+        $usedPercent = 100 - $current.PercentRemaining
+        $usedText.Text = ('{0:N0} / 1M' -f $current.UsedTokens)
+        $palette = Get-CodexPromptPalette -Window $position
+        $script:lastPalette = $palette
+        $capsule.Background = New-RgbBrush $palette.BackgroundR $palette.BackgroundG $palette.BackgroundB
+        $capsule.BorderBrush = New-RgbBrush $palette.BorderR $palette.BorderG $palette.BorderB
+        $usedText.Foreground = New-RgbBrush $palette.ForegroundR $palette.ForegroundG $palette.ForegroundB
 
         if ($current.IsStale) {
-            $progressArc.Stroke = [Windows.Media.Brushes]::SlateGray
+            $capsule.BorderBrush = [Windows.Media.Brushes]::SlateGray
         }
         elseif ($script:selectionAmbiguous) {
-            $progressArc.Stroke = [Windows.Media.Brushes]::Gold
+            $capsule.BorderBrush = [Windows.Media.Brushes]::Gold
         }
-        elseif ($current.PercentRemaining -le 10) {
-            $progressArc.Stroke = [Windows.Media.Brushes]::OrangeRed
+        elseif ($usedPercent -ge 90) {
+            $capsule.BorderBrush = [Windows.Media.Brushes]::OrangeRed
         }
-        elseif ($current.PercentRemaining -le 25) {
-            $progressArc.Stroke = [Windows.Media.Brushes]::Orange
-        }
-        else {
-            $progressArc.Stroke = New-Object Windows.Media.SolidColorBrush ([Windows.Media.Color]::FromRgb(0x55, 0xD6, 0xBE))
+        elseif ($usedPercent -ge 75) {
+            $capsule.BorderBrush = [Windows.Media.Brushes]::Orange
         }
 
         $status = if ($current.IsStale) { 'STALE' } elseif ($script:selectionAmbiguous) { 'AMBIGUOUS' } else { 'LIVE' }
@@ -290,9 +260,8 @@ Right-click the dial to stop the overlay.
         Write-OverlayStatus $current $position $true $null
     }
     catch {
-        $percentText.Text = '!'
-        $windowText.Text = 'state error'
-        $progressArc.Stroke = [Windows.Media.Brushes]::OrangeRed
+        $usedText.Text = '! / 1M'
+        $capsule.BorderBrush = [Windows.Media.Brushes]::OrangeRed
         $dialRoot.ToolTip = 'Context overlay error: ' + $_.Exception.Message
         try {
             $position = Get-CodexWindowAnchor -RightOffset $RightOffset -BottomOffset $BottomOffset
@@ -323,6 +292,11 @@ $timer.Interval = [timespan]::FromMilliseconds([math]::Max(250, $RefreshMillisec
 $timer.Add_Tick({ Update-Overlay })
 $window.Add_Closed({
     $timer.Stop()
+    if ($null -ne $script:singleInstanceMutex) {
+        $script:singleInstanceMutex.ReleaseMutex()
+        $script:singleInstanceMutex.Dispose()
+        $script:singleInstanceMutex = $null
+    }
     $window.Dispatcher.InvokeShutdown()
 })
 $window.Add_Loaded({

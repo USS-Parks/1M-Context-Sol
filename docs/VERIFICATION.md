@@ -17,6 +17,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CDO-00 | Approved floating-overlay contract and execution authority | Passed | `919aba898399ee409f0b54318d6cb5583eb9d463`, addendum, and DEVLOG |
 | CDO-01 | Active-context parser, root-task selection, and real-window anchor | Passed | `f7496d357de2d111a6aa1e005a4e4fe9a558c3f0`, focused test, and `docs/evidence/CDO-01/` |
 | CDO-02 | Focusless floating context dial | Passed | `882351c7f5e6daf8bb01f6b625536bc4369ff426` and live no-activate/DPI/region/lifecycle proof |
+| CDO-03 | Safe four-key install, user shortcuts, rollback, and corrected live refresh | Passed | `docs/evidence/CDO-03/safe-install-and-rollback.md`; implementation commit pending |
 
 ### Historical Context Continuum initiative
 

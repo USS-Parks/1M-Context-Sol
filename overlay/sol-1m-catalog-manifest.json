@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "catalog_schema_id": "codex-model-catalog/0.144.5-v1",
+  "supported_codex_version": "0.144.5",
+  "model": "gpt-5.6-sol",
+  "source_catalog_sha256": "b312e55d66ef9da1ed07a038c8d610c77b0d3c30a09a5932bae11179fd812b77",
+  "source_normalized_sha256": "a678f0497f84fe926476bc2e0f8f760c6a8fd8156de6c690e43c2fe245207b9a",
+  "source_sol_sha256": "446544e485dd43aafa6548c1e27b753fcfeba7d70633a3ff93fb81ee5ee1679c",
+  "preserved_sol_sha256": "6f20f03be5fbe6e59cd4e251855fa0cb20beababa1f1b54fe2d02178d7e21188",
+  "output_catalog_sha256": "aa0044cb49656689bffdf55c0334826118a9afcb5cee29fabebe3e0b356b6707",
+  "output_sol_sha256": "6df417fbe4e3a680959e3ed60e840c4a36fe2e459ab3f43e5c9b39db4bfe11ec",
+  "output_model_count": 1,
+  "changed_policy_fields": [
+    "auto_compact_token_limit",
+    "context_window",
+    "effective_context_window_percent",
+    "max_context_window"
+  ],
+  "official_sol_limits": {
+    "slug": "gpt-5.6-sol",
+    "total_context_window": 1050000,
+    "max_input": 922000,
+    "max_output": 128000
+  },
+  "overlay_policy": {
+    "context_window": 1050000,
+    "max_context_window": 1050000,
+    "effective_context_window_percent": 96,
+    "auto_compact_token_limit": 900000
+  }
+}

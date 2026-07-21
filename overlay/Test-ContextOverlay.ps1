@@ -34,6 +34,19 @@ catch {
 }
 Assert-Equal $true $invalidFailed 'malformed input fails closed'
 
+$tailFixture = Join-Path ([IO.Path]::GetTempPath()) ('context-overlay-tail-' + [guid]::NewGuid().ToString('N') + '.jsonl')
+try {
+    $largePrefix = ('x' * 300000) + "`n"
+    $tailEvent = '{"timestamp":"2026-07-20T12:00:00Z","type":"event_msg","payload":{"type":"token_count","info":{"total_token_usage":{"total_tokens":999999},"last_token_usage":{"total_tokens":112000},"model_context_window":1008000}}}'
+    [IO.File]::WriteAllText($tailFixture, ($largePrefix + $tailEvent + "`n"), (New-Object Text.UTF8Encoding($false)))
+    $boundedTail = @(Read-ContextRolloutTail -Path $tailFixture -MaximumBytes 262144)
+    $boundedState = ConvertFrom-ContextTokenEvent -Lines $boundedTail -Now $now
+    Assert-Equal 112000 $boundedState.UsedTokens 'bounded seek-from-end parser'
+}
+finally {
+    Remove-Item -LiteralPath $tailFixture -Force -ErrorAction SilentlyContinue
+}
+
 $testRoot = Join-Path ([IO.Path]::GetTempPath()) ('context-overlay-test-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $testRoot | Out-Null
 try {

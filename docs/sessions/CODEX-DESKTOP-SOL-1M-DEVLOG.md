@@ -89,3 +89,20 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Verification:** Core test and PowerShell syntax parser passed; live counter update, hide/persist, DPI anchor, native styles, region hit-test, and clean stop passed.
 - **Implementation commit:** `882351c7f5e6daf8bb01f6b625536bc4369ff426`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
+
+## CDO-03 - Implement safe install and rollback
+
+- **Date:** 2026-07-20
+- **Status:** Complete after user-safety re-scope and post-reopen corrective verification.
+- **Safety override:** The user rejected forced app-server restart. The accepted installer has zero Codex process control, zero scheduled tasks, and requires normal user-operated Codex restart.
+- **Files:** Safe manager/test, pinned Sol catalog/manifest, single-instance/fast-tail dial corrections, and `docs/evidence/CDO-03/safe-install-and-rollback.md`.
+- **Config ownership:** Exactly four keys; the existing exact Sol model key remains user-owned. Exact original backup hash `90329a7d57f48c5472e5357fad5906c37eee5869c0faa72db0aea4e6d8d1c80f`.
+- **Real lifecycle:** Plan, install, byte-exact uninstall, absence verification, and final reinstall passed without changing app-server PID `38484`.
+- **Activation:** User restarted Codex normally and launched the ordinary Start Menu shortcut. Startup shortcut is installed for future Windows sign-ins.
+- **Corrective proof:** Duplicate processes reduced from two to one; live host window `1008000`; bounded tail parser 6-21 ms warm; status timestamp advanced; duplicate launch rejected.
+- **Final user-directed face:** Exact `used tokens / 1M` ticker only; no circle or progress bar; 128-by-28 DIPs fully inside the prompt pill's upper-right empty band.
+- **Final placement proof:** Native rectangle `1201,886,1361,921`; live face `200,643 / 1M`; one helper process; sampled background `#2D2D2D`; no runtime error.
+- **Theme proof:** Live prompt-pill sampling selected `#2D2D2D` in dark mode; foreground, border, track, and normal progress colors derive from sampled luminance for Codex-controlled light/dark adaptation.
+- **Verification:** Core and installer suites passed; `git diff --check` passed.
+- **Implementation commit:** Pending focused CDO-03 commit.
+- **Remote SHA:** Not published; push authorization has not been granted for this lane.

@@ -112,3 +112,28 @@ No new worktree is required. The canonical checkout remains authoritative and th
 ## 6. Completion boundary
 
 This addendum completes a local Windows product only. Public release, a paid/large token proof, multi-platform support, and a true native prompt-pill integration remain outside scope.
+
+## 7. User-safety execution amendment - 2026-07-20
+
+The user's later instruction overrides the earlier permission to restart the packaged app-server during installation. Installation and removal must not stop, restart, or otherwise control Codex Desktop or its app-server.
+
+The accepted activation flow is:
+
+- install files under the user's local application-data directory;
+- own only the four context/catalog keys while leaving the existing exact `model` key user-owned;
+- create ordinary user Startup and Start Menu shortcuts, never a scheduled task;
+- require the user to quit/reopen Codex normally for startup configuration adoption;
+- start or stop only the overlay helper itself;
+- keep a named single-instance lock so repeated shortcut launches cannot stack stale dials.
+
+This amendment is authoritative for CDO-03 and CDO-04. The aborted app-server-control attempt rolled back fully before this safer flow was applied.
+
+## 8. Final ticker display amendment - 2026-07-20
+
+The user rejected both a large remaining-percentage dial and a subsequent progress ring. The accepted face is a compact ticker capsule at the prompt pill's upper-right edge:
+
+- the ticker shows the exact host `last_token_usage.total_tokens` count with thousands separators followed by literal ` / 1M`;
+- no window-size, remaining-percent, or threshold text appears on the face;
+- full remaining/window/900,000-threshold details remain available in the tooltip;
+- the installed default is 128 by 28 device-independent pixels, fully inside the prompt pill's upper-right empty band with screenshot-calibrated padding;
+- the capsule samples quiet pixels from the actual Codex prompt pill and derives neutral foreground, border, and ring colors from the observed luminance, so Codex light/dark theme—not a separate hard-coded theme—controls its appearance.

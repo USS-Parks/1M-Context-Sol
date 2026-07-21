@@ -161,8 +161,17 @@ function Get-ContextOverlayState {
         throw 'The selected file is not a valid Codex Desktop rollout.'
     }
 
-    $tail = @(Get-Content -LiteralPath $RolloutPath -Tail 512 -ErrorAction Stop)
-    $tokens = ConvertFrom-ContextTokenEvent -Lines $tail -StaleAfterSeconds $StaleAfterSeconds -PreviousUsedTokens $PreviousUsedTokens
+    $tokens = $null
+    foreach ($tailBytes in 262144, 1048576, 4194304, 16777216) {
+        $tail = @(Read-ContextRolloutTail -Path $RolloutPath -MaximumBytes $tailBytes)
+        try {
+            $tokens = ConvertFrom-ContextTokenEvent -Lines $tail -StaleAfterSeconds $StaleAfterSeconds -PreviousUsedTokens $PreviousUsedTokens
+            break
+        }
+        catch {
+            if ($tailBytes -eq 16777216) { throw }
+        }
+    }
     [pscustomobject]@{
         SessionId        = $metadata.SessionId
         ShortId          = $metadata.SessionId.Substring([math]::Max(0, $metadata.SessionId.Length - 8))
@@ -176,6 +185,42 @@ function Get-ContextOverlayState {
         AgeSeconds       = $tokens.AgeSeconds
         IsStale          = $tokens.IsStale
         WasCompacted     = $tokens.WasCompacted
+    }
+}
+
+function Read-ContextRolloutTail {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)][string] $Path,
+        [int] $MaximumBytes = 1048576
+    )
+
+    $stream = New-Object IO.FileStream(
+        $Path,
+        [IO.FileMode]::Open,
+        [IO.FileAccess]::Read,
+        ([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete)
+    )
+    try {
+        $count = [int][math]::Min([long]$MaximumBytes, $stream.Length)
+        $start = $stream.Length - $count
+        [void]$stream.Seek($start, [IO.SeekOrigin]::Begin)
+        $buffer = New-Object byte[] $count
+        $read = 0
+        while ($read -lt $count) {
+            $chunk = $stream.Read($buffer, $read, ($count - $read))
+            if ($chunk -eq 0) { break }
+            $read += $chunk
+        }
+        $text = [Text.Encoding]::UTF8.GetString($buffer, 0, $read)
+        $lines = @($text -split "\r?\n")
+        if ($start -gt 0 -and $lines.Count -gt 0) {
+            $lines = @($lines | Select-Object -Skip 1)
+        }
+        @($lines | Where-Object { $_.Length -gt 0 })
+    }
+    finally {
+        $stream.Dispose()
     }
 }
 
@@ -225,6 +270,9 @@ namespace ContextOverlay {
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")] public static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int index, IntPtr value);
         [DllImport("user32.dll", EntryPoint = "SetWindowLong")] public static extern IntPtr SetWindowLongPtr32(IntPtr hWnd, int index, IntPtr value);
         [DllImport("user32.dll")] public static extern IntPtr WindowFromPoint(POINT point);
+        [DllImport("user32.dll")] public static extern IntPtr GetDC(IntPtr hWnd);
+        [DllImport("user32.dll")] public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        [DllImport("gdi32.dll")] public static extern uint GetPixel(IntPtr hDC, int x, int y);
         [DllImport("gdi32.dll")] public static extern IntPtr CreateEllipticRgn(int left, int top, int right, int bottom);
         [DllImport("user32.dll")] public static extern int SetWindowRgn(IntPtr hWnd, IntPtr region, bool redraw);
 
@@ -272,8 +320,8 @@ namespace ContextOverlay {
 function Get-CodexWindowAnchor {
     [CmdletBinding()]
     param(
-        [int] $DialWidth = 72,
-        [int] $DialHeight = 72,
+        [int] $DialWidth = 128,
+        [int] $DialHeight = 28,
         [int] $RightOffset = 152,
         [int] $BottomOffset = 104
     )
@@ -318,4 +366,59 @@ function Get-CodexWindowAnchor {
     }
 }
 
-Export-ModuleMember -Function ConvertFrom-ContextTokenEvent, Get-ContextRolloutMetadata, Select-ContextRollout, Get-ContextOverlayState, Get-CodexWindowAnchor
+function Get-CodexPromptPalette {
+    [CmdletBinding()]
+    param([Parameter(Mandatory = $true)] $Window)
+
+    Initialize-ContextOverlayNativeApi
+    $deviceContext = [ContextOverlay.NativeMethods]::GetDC([IntPtr]::Zero)
+    if ($deviceContext -eq [IntPtr]::Zero) {
+        throw 'Could not acquire the screen device context for prompt-pill color sampling.'
+    }
+    try {
+        $samples = New-Object System.Collections.Generic.List[object]
+        foreach ($rightInset in 700, 800, 900) {
+            $color = [ContextOverlay.NativeMethods]::GetPixel(
+                $deviceContext,
+                ($Window.WindowRight - $rightInset),
+                ($Window.WindowBottom - 110)
+            )
+            if ($color -ne [uint32]::MaxValue) {
+                $samples.Add([pscustomobject]@{
+                    R = [int]($color -band 0xFF)
+                    G = [int](($color -shr 8) -band 0xFF)
+                    B = [int](($color -shr 16) -band 0xFF)
+                })
+            }
+        }
+        if ($samples.Count -eq 0) {
+            throw 'Prompt-pill color sampling returned no valid pixels.'
+        }
+        $middle = [int][math]::Floor($samples.Count / 2)
+        $red = [int](@($samples.R | Sort-Object)[$middle])
+        $green = [int](@($samples.G | Sort-Object)[$middle])
+        $blue = [int](@($samples.B | Sort-Object)[$middle])
+        $luminance = (0.2126 * $red) + (0.7152 * $green) + (0.0722 * $blue)
+        $foreground = if ($luminance -gt 145) { 32 } else { 246 }
+        [pscustomobject]@{
+            BackgroundR = $red
+            BackgroundG = $green
+            BackgroundB = $blue
+            ForegroundR = $foreground
+            ForegroundG = $foreground
+            ForegroundB = $foreground
+            TrackR = [int][math]::Round(($red * 0.72) + ($foreground * 0.28))
+            TrackG = [int][math]::Round(($green * 0.72) + ($foreground * 0.28))
+            TrackB = [int][math]::Round(($blue * 0.72) + ($foreground * 0.28))
+            BorderR = [int][math]::Round(($red * 0.84) + ($foreground * 0.16))
+            BorderG = [int][math]::Round(($green * 0.84) + ($foreground * 0.16))
+            BorderB = [int][math]::Round(($blue * 0.84) + ($foreground * 0.16))
+            IsLight = $luminance -gt 145
+        }
+    }
+    finally {
+        [void][ContextOverlay.NativeMethods]::ReleaseDC([IntPtr]::Zero, $deviceContext)
+    }
+}
+
+Export-ModuleMember -Function ConvertFrom-ContextTokenEvent, Get-ContextRolloutMetadata, Select-ContextRollout, Get-ContextOverlayState, Read-ContextRolloutTail, Get-CodexWindowAnchor, Get-CodexPromptPalette
