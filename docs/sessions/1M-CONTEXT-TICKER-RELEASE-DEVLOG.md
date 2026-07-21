@@ -24,7 +24,7 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Files:** `ticker/fixtures/behavior-cases.json`, `overlay/ContextOverlay.Core.psm1`, `overlay/Test-ContextOverlay.ps1`, and `docs/evidence/RLS-02/shared-behavior-fixtures.md`.
 - **Coverage:** Active-vs-cumulative usage, baseline, exhaustion, stale, compaction, malformed input, bounded tails, task selection, subagent exclusion, pinning, and sidebar-aware layout centers.
 - **Verification:** `overlay/Test-ContextOverlay.ps1` passed all shared cases; `git diff --check` passed.
-- **Implementation commit:** Pending focused RLS-02 commit.
+- **Implementation commit:** `368fcbba1a91006c37ab1b1b6da4ef60525e452c`
 - **Remote SHA:** Not published; push authorization has not been granted.
 
 ## RLS-01 - Replace repository welcome-page copy
