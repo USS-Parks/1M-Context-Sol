@@ -273,7 +273,7 @@ namespace ContextOverlay {
         [DllImport("user32.dll")] public static extern IntPtr GetDC(IntPtr hWnd);
         [DllImport("user32.dll")] public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
         [DllImport("gdi32.dll")] public static extern uint GetPixel(IntPtr hDC, int x, int y);
-        [DllImport("gdi32.dll")] public static extern IntPtr CreateEllipticRgn(int left, int top, int right, int bottom);
+        [DllImport("gdi32.dll")] public static extern IntPtr CreateRoundRectRgn(int left, int top, int right, int bottom, int ellipseWidth, int ellipseHeight);
         [DllImport("user32.dll")] public static extern int SetWindowRgn(IntPtr hWnd, IntPtr region, bool redraw);
 
         public static IntPtr GetWindowLongPtr(IntPtr hWnd, int index) {

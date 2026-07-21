@@ -70,7 +70,7 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
         AllowsTransparency="True" Background="Transparent" Topmost="True"
         ShowInTaskbar="False" ShowActivated="False" Focusable="False" Opacity="0">
     <Grid Name="DialRoot" ToolTipService.ShowDuration="60000">
-        <Border Name="Capsule" Background="#FF303030" BorderThickness="0" CornerRadius="9" Padding="2,0">
+        <Border Name="Capsule" Background="#FF303030" BorderThickness="0" CornerRadius="13" Padding="5">
             <TextBlock Name="UsedText" Text="Context: -- / 1M"
                        Foreground="#FFF6F7F9" FontFamily="Cascadia Mono, Consolas"
                        FontSize="12" FontWeight="Normal" />
@@ -100,7 +100,9 @@ function Update-OverlayRegion {
     if ($script:overlayHandle -eq [IntPtr]::Zero) { return }
     $rect = New-Object ContextOverlay.NativeMethods+RECT
     if ([ContextOverlay.NativeMethods]::GetWindowRect($script:overlayHandle, [ref]$rect)) {
-        $region = [ContextOverlay.NativeMethods]::CreateEllipticRgn(0, 0, ($rect.Right - $rect.Left + 1), ($rect.Bottom - $rect.Top + 1))
+        $width = $rect.Right - $rect.Left
+        $height = $rect.Bottom - $rect.Top
+        $region = [ContextOverlay.NativeMethods]::CreateRoundRectRgn(0, 0, ($width + 1), ($height + 1), $height, $height)
         if ($region -ne [IntPtr]::Zero) {
             [void][ContextOverlay.NativeMethods]::SetWindowRgn($script:overlayHandle, $region, $true)
         }

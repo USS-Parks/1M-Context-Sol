@@ -81,7 +81,7 @@ namespace OneMContextTicker
         [DllImport("gdi32.dll")]
         private static extern uint GetPixel(IntPtr deviceContext, int x, int y);
         [DllImport("gdi32.dll")]
-        internal static extern IntPtr CreateEllipticRgn(int left, int top, int right, int bottom);
+        internal static extern IntPtr CreateRoundRectRgn(int left, int top, int right, int bottom, int ellipseWidth, int ellipseHeight);
         [DllImport("user32.dll")]
         internal static extern int SetWindowRgn(IntPtr handle, IntPtr region, bool redraw);
 

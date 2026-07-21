@@ -54,8 +54,8 @@ namespace OneMContextTicker
             {
                 Background = new SolidColorBrush(Color.FromRgb(48, 48, 48)),
                 BorderThickness = new Thickness(0),
-                CornerRadius = new CornerRadius(9),
-                Padding = new Thickness(2, 0, 2, 0),
+                CornerRadius = new CornerRadius(13),
+                Padding = new Thickness(5),
                 Child = text
             };
             Content = capsule;
@@ -96,7 +96,9 @@ namespace OneMContextTicker
             if (handle == IntPtr.Zero) return;
             Native.Rect rect;
             if (!Native.GetWindowRect(handle, out rect)) return;
-            IntPtr region = Native.CreateEllipticRgn(0, 0, rect.Right - rect.Left + 1, rect.Bottom - rect.Top + 1);
+            int width = rect.Right - rect.Left;
+            int height = rect.Bottom - rect.Top;
+            IntPtr region = Native.CreateRoundRectRgn(0, 0, width + 1, height + 1, height, height);
             if (region != IntPtr.Zero) Native.SetWindowRgn(handle, region, true);
         }
 
