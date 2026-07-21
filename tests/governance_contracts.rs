@@ -33,6 +33,71 @@ fn canonical_pspr_is_structurally_valid() {
 }
 
 #[test]
+fn active_release_authority_is_structurally_valid() {
+    let path = root().join("PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md");
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("could not read {}: {error}", path.display()));
+
+    for required in [
+        "> **Status:** APPROVED - FULL STS EXECUTION ACTIVE",
+        "> **Addendum ID:** 1MCT-R1",
+        "## 7. Verification gates",
+        "## 8. Sequential prompt roster",
+        "## 11. Completion boundary",
+    ] {
+        assert!(
+            text.contains(required),
+            "{}: missing active release marker: {required}",
+            path.display()
+        );
+    }
+
+    let lines: Vec<_> = text.lines().collect();
+    let prompt_starts: Vec<_> = lines
+        .iter()
+        .enumerate()
+        .filter_map(|(index, line)| line.starts_with("### RLS-").then_some(index))
+        .collect();
+    assert_eq!(prompt_starts.len(), 7, "expected RLS-00 through RLS-06");
+
+    let mut ids = BTreeSet::new();
+    for (position, start) in prompt_starts.iter().copied().enumerate() {
+        let id = lines[start]
+            .strip_prefix("### ")
+            .and_then(|line| line.split_once(" - "))
+            .map(|(id, _)| id)
+            .unwrap_or_else(|| panic!("malformed release prompt header at line {}", start + 1));
+        assert!(ids.insert(id), "duplicate release prompt ID: {id}");
+        let end = prompt_starts
+            .get(position + 1)
+            .copied()
+            .unwrap_or(lines.len());
+        let block = lines[start + 1..end].join("\n");
+        assert!(
+            block.contains("**Objective:**"),
+            "{id} is missing an objective"
+        );
+        assert!(block.contains("**Gate:**"), "{id} is missing a gate");
+    }
+    let expected_ids: BTreeSet<_> = [
+        "RLS-00", "RLS-01", "RLS-02", "RLS-03", "RLS-04", "RLS-05", "RLS-06",
+    ]
+    .into_iter()
+    .collect();
+    assert_eq!(ids, expected_ids, "release prompt roster is not contiguous");
+
+    let agents_path = root().join("AGENTS.md");
+    let agents = fs::read_to_string(&agents_path)
+        .unwrap_or_else(|error| panic!("could not read {}: {error}", agents_path.display()));
+    assert!(
+        agents.contains("PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md")
+            && agents
+                .contains("execute the release addendum's RLS prompt roster in dependency order"),
+        "AGENTS.md does not route execution to the active release authority"
+    );
+}
+
+#[test]
 fn mapped_evidence_conforms_to_schema() {
     let evidence_map = load_evidence_map();
     assert_eq!(evidence_map.schema_version, 1);
@@ -172,7 +237,8 @@ fn collect_json_files(directory: &Path, files: &mut Vec<PathBuf>) {
 
 fn validate_pspr(text: &str) -> Result<(), String> {
     for required in [
-        "> **Status:** APPROVED — FULL STS EXECUTION ACTIVE — GPT-5.6 SOL ONLY",
+        "> **Status:** SUPERSEDED 2026-07-20 — HISTORICAL RECORD — EXECUTION MOVED TO `CODEX-DESKTOP-SOL-1M-PSPR.md`",
+        "> **Supersession note:** This plan accurately records the earlier Context Continuum direction",
         "## 1. Authorization and execution state",
         "## 2. Mission",
         "## 5. Governance",
