@@ -17,6 +17,16 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Implementation commit:** `d0d9cacb504f946f6537c22e8c7c89ae2200b4aa`
 - **Remote SHA:** Not published; push authorization has not been granted.
 
+## RLS-02 - Freeze executable parity fixtures
+
+- **Date:** 2026-07-20
+- **Status:** Complete for the accepted reference; executable consumption is an RLS-03 gate.
+- **Files:** `ticker/fixtures/behavior-cases.json`, `overlay/ContextOverlay.Core.psm1`, `overlay/Test-ContextOverlay.ps1`, and `docs/evidence/RLS-02/shared-behavior-fixtures.md`.
+- **Coverage:** Active-vs-cumulative usage, baseline, exhaustion, stale, compaction, malformed input, bounded tails, task selection, subagent exclusion, pinning, and sidebar-aware layout centers.
+- **Verification:** `overlay/Test-ContextOverlay.ps1` passed all shared cases; `git diff --check` passed.
+- **Implementation commit:** Pending focused RLS-02 commit.
+- **Remote SHA:** Not published; push authorization has not been granted.
+
 ## RLS-01 - Replace repository welcome-page copy
 
 - **Date:** 2026-07-20

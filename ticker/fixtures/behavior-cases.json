@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "baseline_tokens": 12000,
+  "token_cases": [
+    {
+      "id": "active_not_cumulative",
+      "timestamp": "2026-07-20T12:00:00Z",
+      "now": "2026-07-20T12:00:30Z",
+      "stale_after_seconds": 60,
+      "cumulative_total_tokens": 999999,
+      "active_total_tokens": 112000,
+      "context_window": 1008000,
+      "previous_used_tokens": null,
+      "expected": { "used_tokens": 112000, "effective_window": 996000, "remaining_tokens": 896000, "percent_remaining": 90, "is_stale": false, "was_compacted": false }
+    },
+    {
+      "id": "baseline_floor",
+      "timestamp": "2026-07-20T12:00:00Z",
+      "now": "2026-07-20T12:00:01Z",
+      "stale_after_seconds": 60,
+      "cumulative_total_tokens": 50000,
+      "active_total_tokens": 8000,
+      "context_window": 1008000,
+      "previous_used_tokens": null,
+      "expected": { "used_tokens": 8000, "effective_window": 996000, "remaining_tokens": 996000, "percent_remaining": 100, "is_stale": false, "was_compacted": false }
+    },
+    {
+      "id": "fully_consumed",
+      "timestamp": "2026-07-20T12:00:00Z",
+      "now": "2026-07-20T12:00:01Z",
+      "stale_after_seconds": 60,
+      "cumulative_total_tokens": 2500000,
+      "active_total_tokens": 1200000,
+      "context_window": 1008000,
+      "previous_used_tokens": null,
+      "expected": { "used_tokens": 1200000, "effective_window": 996000, "remaining_tokens": 0, "percent_remaining": 0, "is_stale": false, "was_compacted": false }
+    },
+    {
+      "id": "stale",
+      "timestamp": "2026-07-20T12:00:00Z",
+      "now": "2026-07-20T12:02:00Z",
+      "stale_after_seconds": 60,
+      "cumulative_total_tokens": 999999,
+      "active_total_tokens": 112000,
+      "context_window": 1008000,
+      "previous_used_tokens": null,
+      "expected": { "used_tokens": 112000, "effective_window": 996000, "remaining_tokens": 896000, "percent_remaining": 90, "is_stale": true, "was_compacted": false }
+    },
+    {
+      "id": "compacted",
+      "timestamp": "2026-07-20T12:00:00Z",
+      "now": "2026-07-20T12:00:01Z",
+      "stale_after_seconds": 60,
+      "cumulative_total_tokens": 999999,
+      "active_total_tokens": 112000,
+      "context_window": 1008000,
+      "previous_used_tokens": 120000,
+      "expected": { "used_tokens": 112000, "effective_window": 996000, "remaining_tokens": 896000, "percent_remaining": 90, "is_stale": false, "was_compacted": true }
+    }
+  ],
+  "selection_cases": [
+    {
+      "id": "freshest_root_is_ambiguous_when_close",
+      "explicit_thread_id": null,
+      "candidates": [
+        { "session_id": "00000000-0000-0000-0000-000000000001", "thread_source": "user", "last_write_offset_seconds": 0 },
+        { "session_id": "00000000-0000-0000-0000-000000000002", "thread_source": "user", "last_write_offset_seconds": 10 }
+      ],
+      "expected_session_id": "00000000-0000-0000-0000-000000000002",
+      "expected_ambiguous": true
+    },
+    {
+      "id": "automatic_excludes_subagent",
+      "explicit_thread_id": null,
+      "candidates": [
+        { "session_id": "00000000-0000-0000-0000-000000000003", "thread_source": "user", "last_write_offset_seconds": 10 },
+        { "session_id": "00000000-0000-0000-0000-000000000004", "thread_source": "subagent", "last_write_offset_seconds": 30 }
+      ],
+      "expected_session_id": "00000000-0000-0000-0000-000000000003",
+      "expected_ambiguous": false
+    },
+    {
+      "id": "explicit_pin_is_authoritative",
+      "explicit_thread_id": "00000000-0000-0000-0000-000000000005",
+      "candidates": [
+        { "session_id": "00000000-0000-0000-0000-000000000005", "thread_source": "user", "last_write_offset_seconds": 0 },
+        { "session_id": "00000000-0000-0000-0000-000000000006", "thread_source": "user", "last_write_offset_seconds": 30 }
+      ],
+      "expected_session_id": "00000000-0000-0000-0000-000000000005",
+      "expected_ambiguous": false
+    }
+  ],
+  "layout_cases": [
+    { "id": "full_hd_sidebar_open", "window_left": 0, "window_right": 1920, "sidebar_open": true, "expected_center": 915 },
+    { "id": "full_hd_sidebar_closed", "window_left": 0, "window_right": 1920, "sidebar_open": false, "expected_center": 1110 },
+    { "id": "scaled_sidebar_open", "window_left": 0, "window_right": 1536, "sidebar_open": true, "expected_center": 732 },
+    { "id": "offset_sidebar_closed", "window_left": -8, "window_right": 1912, "sidebar_open": false, "expected_center": 1102 }
+  ]
+}

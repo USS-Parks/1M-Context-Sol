@@ -411,9 +411,7 @@ function Get-CodexPromptPalette {
         $sidebarOpen = [math]::Abs($sidebarRed - $red) -le 12 -and
             [math]::Abs($sidebarGreen - $green) -le 12 -and
             [math]::Abs($sidebarBlue - $blue) -le 12
-        $navigationWidth = $windowWidth * 0.15625
-        $sidebarWidth = if ($sidebarOpen) { $windowWidth * 0.203125 } else { 0.0 }
-        $promptCenter = $Window.WindowLeft + $navigationWidth + (($windowWidth - $navigationWidth - $sidebarWidth) / 2.0)
+        $promptCenter = Get-CodexComposerCenter -WindowLeft $Window.WindowLeft -WindowRight $Window.WindowRight -SidebarOpen $sidebarOpen
         $luminance = (0.2126 * $red) + (0.7152 * $green) + (0.0722 * $blue)
         $foreground = if ($luminance -gt 145) { 32 } else { 246 }
         [pscustomobject]@{
@@ -433,4 +431,19 @@ function Get-CodexPromptPalette {
     }
 }
 
-Export-ModuleMember -Function ConvertFrom-ContextTokenEvent, Get-ContextRolloutMetadata, Select-ContextRollout, Get-ContextOverlayState, Read-ContextRolloutTail, Get-CodexWindowAnchor, Get-CodexPromptPalette
+function Get-CodexComposerCenter {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)][int] $WindowLeft,
+        [Parameter(Mandatory = $true)][int] $WindowRight,
+        [Parameter(Mandatory = $true)][bool] $SidebarOpen
+    )
+
+    $windowWidth = $WindowRight - $WindowLeft
+    if ($windowWidth -le 0) { throw 'WindowRight must be greater than WindowLeft.' }
+    $navigationWidth = $windowWidth * 0.15625
+    $sidebarWidth = if ($SidebarOpen) { $windowWidth * 0.203125 } else { 0.0 }
+    [int][math]::Round($WindowLeft + $navigationWidth + (($windowWidth - $navigationWidth - $sidebarWidth) / 2.0))
+}
+
+Export-ModuleMember -Function ConvertFrom-ContextTokenEvent, Get-ContextRolloutMetadata, Select-ContextRollout, Get-ContextOverlayState, Read-ContextRolloutTail, Get-CodexWindowAnchor, Get-CodexPromptPalette, Get-CodexComposerCenter

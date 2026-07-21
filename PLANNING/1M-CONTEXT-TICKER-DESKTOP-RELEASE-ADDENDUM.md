@@ -127,7 +127,7 @@ The root README must replace the stale Context Continuum/TUI page with:
 
 **Objective:** Define platform-neutral active-context, task-selection, and layout expectations consumed by the PowerShell reference and C# executable.
 
-**Gate:** Golden cases cover fresh/stale/malformed/cumulative-vs-active/compaction/task selection, and both implementations agree.
+**Gate:** Golden cases cover fresh/stale/malformed/cumulative-vs-active/compaction/task selection and pass against the accepted PowerShell reference. RLS-03 must consume the same fixture before executable parity can pass.
 
 ### RLS-03 - Build the native Windows executable
 
