@@ -52,3 +52,18 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Verification:** All repository-relative README links resolve; install/status/uninstall commands name existing scripts/actions; stale active-product TUI/MCP claims are absent; `git diff --check` passed.
 - **Implementation commit:** `2a7211911dee95d500524f5429dd196b01a8813d`
 - **Remote SHA:** Not published; push authorization has not been granted.
+
+## RLS-04 - Integrate safe executable lifecycle
+
+- **Date:** 2026-07-21
+- **Status:** Complete; W-G3 passed.
+- **Files:** Native-aware `overlay/manage-overlay.ps1`, lifecycle tests, rounded-pill correction in both runtimes, and `docs/evidence/RLS-04/native-executable-lifecycle.md`.
+- **Lifecycle:** Clean native install, schema-1 PowerShell upgrade, fail-closed process inspection, start, duplicate rejection, stop, status, exact rollback, uninstall, and later-config-edit preservation are implemented and tested.
+- **Real upgrade:** The running PowerShell reference was upgraded, the installed native executable was started and inspected, rollback restored the reference exactly, and a final upgrade left the native executable active.
+- **Official identity:** Startup and Start Menu shortcuts migrated from legacy `Codex Context Dial` names to `1M Context Ticker` and now target the installed executable directly.
+- **User correction:** The pinched elliptical clip was replaced by a true rounded-rectangle pill with uniform 5-pixel padding. Final live geometry was `198x30`, with no activation, fresh unambiguous host state, and no runtime error.
+- **Installed proof:** Final installed executable/source hash `76733b8a1c600dd9ed90485152c4cee21df492c8acf8c8b6141cfc0e86475834`; installed and source manager hash `5455c5afcceb9260bbbb8e747a9da326ea4abf1b876e181614fdcb40149e34be`; exactly one installed native process; Codex process IDs unchanged.
+- **Verification:** Native build/self-test passed; shared fixture suite passed; lifecycle suite passed; Windows PowerShell parser passed; `git diff --check` passed; live upgrade/rollback/duplicate/stop/start/shortcut/status checks passed.
+- **Preserved-tree blocker:** Repository-wide Rust format/Clippy/tests cannot pass without changing excluded `src/precompact_guard.rs`; format differences and two `format!("{digest:x}")` type errors are recorded in the RLS-04 evidence. All three protected Rust hashes still match CDS-00 and were not staged.
+- **Implementation commit:** `c512d2016257eaf852a54655e209054f9a374bae`.
+- **Remote SHA:** Not published; push authorization has not been granted.
