@@ -19,6 +19,13 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | CDO-02 | Focusless floating context dial | Passed | `882351c7f5e6daf8bb01f6b625536bc4369ff426` and live no-activate/DPI/region/lifecycle proof |
 | CDO-03 | Safe four-key install, user shortcuts, rollback, and corrected live refresh | Passed | `01157263c7e9b7090882e58ffc9ccc29a51b7a41`, UX correction `557b0dedf8bdb8d152db6d952512f565e100190e`, and `docs/evidence/CDO-03/` |
 
+### Windows executable release (`1MCT-R1`)
+
+| Prompt | Gate | Status | Evidence |
+|---|---|---|---|
+| RLS-00 | Windows-only authority, preservation, toolchain, and exclusions | Passed | `PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md` and release DEVLOG; commit pending |
+| RLS-01 onward | README, fixtures, executable, lifecycle, artifact, acceptance | Not run | RLS-00 dependency |
+
 ### Historical Context Continuum initiative
 
 | Prompt | Gate | Status | Evidence |

@@ -2,7 +2,7 @@
 
 ## Authority
 
-`PLANNING/CODEX-DESKTOP-SOL-1M-PSPR.md` and approved addendum `PLANNING/CODEX-DESKTOP-SOL-1M-OVERLAY-ADDENDUM.md` are the canonical active authority. The base PSPR records the native prompt-pill no-go; execute the addendum's CDO prompt roster in dependency order. Do not mark a prompt complete until its acceptance gate passes and its evidence is recorded in `docs/sessions/CODEX-DESKTOP-SOL-1M-DEVLOG.md`.
+`PLANNING/CODEX-DESKTOP-SOL-1M-PSPR.md`, approved overlay addendum `PLANNING/CODEX-DESKTOP-SOL-1M-OVERLAY-ADDENDUM.md`, and approved Windows release addendum `PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md` are the canonical active authority. The base PSPR records the native prompt-pill no-go; the overlay addendum records the accepted reference; execute the release addendum's RLS prompt roster in dependency order. Do not mark a release prompt complete until its gate passes and evidence is recorded in `docs/sessions/1M-CONTEXT-TICKER-RELEASE-DEVLOG.md`.
 
 `PLANNING/CODEX-CONTEXT-CONTINUUM-PSPR.md` and `docs/sessions/CODEX-CONTEXT-CONTINUUM-DEVLOG.md` are preserved historical records of the superseded product direction. They are not execution authority.
 
@@ -22,6 +22,7 @@
 - Record prompt ID, files, exact verification commands, results, local commit, and remote SHA in the DEVLOG.
 - Preserve user-owned files, dirty work, and configuration. Global Codex changes, desktop restart/control, credentials, paid probes, installed-binary changes, releases, and external posts require their named special gates.
 - Preserve the M0 native-seam no-go as history. The only approved continuation is the narrow floating overlay defined by `CDS1M-A1`; do not expand it into another client or dashboard.
+- The approved release scope is Windows `.exe` and README copy only. DMG/macOS, imagery, signing, push, and public release remain parked.
 
 ## Baseline Rust checks
 
