@@ -128,3 +128,14 @@ jobs:
       - name: Require the negative cargo-deny gate to fail
         if: always()
         run: test "${{ steps.negative_deny.outcome }}" = "failure"
+
+  windows-executable:
+    name: Windows native executable
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Verify reproducible x64 release artifact
+        shell: powershell
+        run: .\ticker\windows\verify-release.ps1 -OutputDirectory "$env:RUNNER_TEMP\1m-context-ticker-dist"

@@ -1,0 +1,42 @@
+{
+    "schema_version":  2,
+    "product":  "1M Context Ticker",
+    "version":  "0.1.0.0",
+    "artifact":  "1M-Context-Ticker-Windows-x64.exe",
+    "architecture":  "amd64",
+    "target_framework":  ".NET Framework 4.8",
+    "compiler":  {
+                     "product_version":  "4.8.9221.0",
+                     "deterministic_normalization":  {
+                                                         "pe_timestamp":  0,
+                                                         "module_mvid":  "6ba0642e-ce0b-a1e3-03b4-8dea46604944",
+                                                         "source_seed_sha256":  "1a97d18f8da20495f0a222e00e9004c62d7a2c0d161cf39a79d164f3a92ca96d"
+                                                     }
+                 },
+    "bytes":  37376,
+    "sha256":  "29051b7ba096f466e3361796c4bb674a9b5be22e3d484d65cf10cb9f506830e3",
+    "checksum_file":  "1M-Context-Ticker-Windows-x64.exe.sha256",
+    "shared_fixture_sha256":  "44c26a3aca46e1017a4b9ea40ac025cd8f3a7033831dd3e8645843ca92794c31",
+    "self_test":  {
+                      "passed":  true,
+                      "token_cases":  5,
+                      "selection_cases":  3,
+                      "layout_cases":  4
+                  },
+    "managed_dependencies":  [
+                                 "mscorlib",
+                                 "PresentationCore",
+                                 "PresentationFramework",
+                                 "System",
+                                 "System.Core",
+                                 "System.Web.Extensions",
+                                 "WindowsBase"
+                             ],
+    "source_sha256":  {
+                          "Program.cs":  "44719102b76b811c736fb377faf021c5ad8e793ba2f9759ec7435d5341103750",
+                          "State.cs":  "f0e9b396886cd8bf06814edecb7cb0a81d2056e33ffe9e6a5607146868510829",
+                          "Native.cs":  "09a46348e115ca8b523261ed045e600e0949fd38ab69ab292bc7f207f7a9149f",
+                          "TickerWindow.cs":  "c9c37901830bb27f61996a40d5379f4bdbcad0ecb113eac09de63be7aec71fab",
+                          "SelfTest.cs":  "ef2dfbda19520ed5e9c1e2a69836ad67f194af17c7ca1817982019ee4ddd2019"
+                      }
+}

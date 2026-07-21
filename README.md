@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Windows preview</strong> · Native executable in progress · macOS parked
+  <strong>Windows release candidate</strong> · Reproducible native x64 executable · macOS parked
 </p>
 
 ## What it does
@@ -37,16 +37,19 @@ The ticker sits on the Codex prompt pill's lower control row, centered between t
 
 The face deliberately says `/ 1M` for readability while the tooltip and verification records retain the exact dimensions.
 
-## Install the current Windows preview
+## Install the Windows release candidate
 
-The accepted reference currently uses Windows PowerShell/WPF. A native `.exe` is being produced under the [Windows release addendum](PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md).
+The local release candidate is [`dist/1M-Context-Ticker-Windows-x64.exe`](dist/1M-Context-Ticker-Windows-x64.exe). It is an unsigned, framework-dependent .NET Framework 4.8 x64 executable. The checked-in checksum and artifact manifest are produced from two source-identical clean builds.
 
 From Windows PowerShell in this repository:
 
 ```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\ticker\windows\verify-release.ps1 -OutputDirectory .\dist
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Plan
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Install
 ```
+
+An existing PowerShell-reference installation can migrate in place with `-Action Upgrade`; `-Action Rollback` restores that retained reference exactly.
 
 Installation:
 
@@ -56,7 +59,7 @@ Installation:
 - preserves a byte-exact pre-install backup;
 - does not stop, restart, or otherwise control Codex.
 
-Quit and reopen Codex normally when convenient, then open **Codex Context Dial** from the Start menu once. Future Windows sign-ins launch the helper automatically; it remains hidden until Codex is foreground.
+Quit and reopen Codex normally when convenient, then open **1M Context Ticker** from the Start menu once. Future Windows sign-ins launch the helper automatically; it remains hidden until Codex is foreground.
 
 ## Status, stop, and uninstall
 
@@ -73,6 +76,7 @@ Uninstall stops only a verified ticker process, removes its two shortcuts and in
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\Test-ContextOverlay.ps1
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\Test-OverlayInstaller.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\ticker\windows\verify-release.ps1 -OutputDirectory .\dist
 ```
 
 Detailed local evidence is in:
@@ -95,7 +99,7 @@ Detailed local evidence is in:
 
 - Windows only.
 - The visible surface is a separate focusless overlay, not a native Codex prompt-pill component.
-- The installed reference currently depends on Windows PowerShell; the native executable release is tracked by `1MCT-R1`.
+- The release candidate is unsigned and Windows-only; Windows PowerShell is used for installation and verification, not as the running ticker process.
 - Public signing, GitHub Release publication, imagery, and macOS packaging are not part of the current release scope.
 - Configuration and host-budget proof do not substitute for an unrun paid request above the previously tested live boundary.
 
