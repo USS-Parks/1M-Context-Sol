@@ -16,3 +16,14 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Parked:** DMG/macOS, imagery/logo, signing, push, tag, GitHub Release, external communication, legacy cleanup, and large-token probes.
 - **Implementation commit:** `d0d9cacb504f946f6537c22e8c7c89ae2200b4aa`
 - **Remote SHA:** Not published; push authorization has not been granted.
+
+## RLS-01 - Replace repository welcome-page copy
+
+- **Date:** 2026-07-20
+- **Status:** Complete.
+- **Scope:** Replace the stale Context Continuum/TUI welcome page with official 1M Context Ticker copy; imagery remains parked.
+- **Copy:** Centered name/value statement, functions, placement, exact capacity terms, current preview install, status/stop/uninstall, verification, privacy/safety, limitations, and historical note.
+- **Claim boundary:** Windows preview only; native executable is explicitly in progress until RLS-03/RLS-05; macOS, imagery, signing, push, and public release remain parked.
+- **Verification:** All repository-relative README links resolve; install/status/uninstall commands name existing scripts/actions; stale active-product TUI/MCP claims are absent; `git diff --check` passed.
+- **Implementation commit:** Pending focused RLS-01 commit.
+- **Remote SHA:** Not published; push authorization has not been granted.

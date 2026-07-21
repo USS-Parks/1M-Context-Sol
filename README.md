@@ -1,52 +1,107 @@
-# Context Continuum for GPT-5.6 Sol
+<h1 align="center">1M Context Ticker</h1>
 
-Context Continuum is an open-source Codex runtime extension in active development for exact model `gpt-5.6-sol`. The planned product combines a Codex plugin, native `cctx` CLI/service, local MCP server, strict compaction guard, and durable local context reservoir.
+<p align="center">
+  A lightweight Windows companion for Codex Desktop that shows the exact active-context count inside the composer and enables GPT-5.6 Sol's 1M catalog policy.
+</p>
 
-## Current status
+<p align="center">
+  <strong>Windows preview</strong> · Native executable in progress · macOS parked
+</p>
 
-Foundation milestone M0 is complete under the [canonical PSPR](PLANNING/CODEX-CONTEXT-CONTINUUM-PSPR.md), and M1 implementation is underway. No native one-million-window claim has passed its live gate yet, and this repository does not currently provide an installable release.
+## What it does
 
-The frozen [CAC-01 capability baseline](docs/architecture/CODEX-CAPABILITY-BASELINE.md) shows `codex-cli 0.144.5` bundling Sol at 372,000 tokens but resolving Sol at 272,000 with a 258,400-token effective budget. That reproduces the current “256k class” behavior and remains far below Sol's official 1,050,000-token total window.
+- Displays the live host-authored count as `Context: <tokens> / 1M`.
+- Follows the freshest active root Codex Desktop task.
+- Centers itself in the composer region and responds when the right sidebar opens or closes.
+- Samples the Codex prompt color for a subdued light/dark appearance.
+- Hides when Codex is absent, minimized, or not foreground.
+- Uses one focusless, non-activating, single-instance overlay.
+- Applies only the supported Sol catalog/window/compaction settings with reversible ownership.
 
-The release contract, once proven, is:
+1M Context Ticker never proxies prompts, replaces the Codex interface, blocks normal compaction, or stops/restarts Codex.
 
-> GPT-5.6 Sol with its native 1.05M window. Compaction blocked. Durable continuity beyond the window.
+## Placement
 
-That sentence is a gated target, not a current performance claim. The project always reports Sol's 1,050,000-token total window separately from its 922,000-token maximum input and 128,000-token maximum output.
+The ticker sits on the Codex prompt pill's lower control row, centered between the approval and model controls. Its protected window is sized to the rendered text rather than a large fixed badge, so it stays visually quiet and avoids the surrounding controls.
 
-## Governance
+## Capacity terms
 
-Implementation follows stable CAC prompt IDs, prompt-local acceptance gates, and an auditable [development log](docs/sessions/CODEX-CONTEXT-CONTINUUM-DEVLOG.md). Public wording and capacity numbers are governed by the [claim contract](docs/architecture/CLAIM-CONTRACT.md) and its [machine-readable vocabulary](contracts/capability-vocabulary.json). See [verification status](docs/VERIFICATION.md) before relying on any capability.
+| Term | Value | Meaning |
+|---|---:|---|
+| Catalog total | 1,050,000 | GPT-5.6 Sol model-catalog context window |
+| Effective Codex budget | 1,008,000 | Host-reported task budget after Codex's 96% allowance |
+| Ticker value | Live | `last_token_usage.total_tokens` for the active context |
+| Automatic compaction | 900,000 | Normal Codex compaction threshold, scope `total` |
+| Maximum input | 922,000 | Model input limit, distinct from total context |
+| Maximum output | 128,000 | Model output limit |
 
-The settled component ownership and trust transitions are documented in the [data-flow contract](docs/architecture/DATA-FLOW-AND-TRUST-BOUNDARIES.md), nine [architecture decisions](docs/architecture/decisions/), and the repository [threat model](docs/security/THREAT-MODEL.md).
+The face deliberately says `/ 1M` for readability while the tooltip and verification records retain the exact dimensions.
 
-The [CI and evidence contract](docs/CI-AND-EVIDENCE-CONTRACT.md) requires clean Rust, documentation, secret, supply-chain, PSPR, and Draft 2020-12 JSON Schema gates plus deliberate failure proofs.
+## Install the current Windows preview
 
-The version-pinned [Sol catalog overlay](docs/architecture/MODEL-CATALOG-OVERLAY.md) now generates an uninstalled one-model candidate while preserving installed instructions and capabilities. That local catalog/parser proof is not live backend acceptance.
+The accepted reference currently uses Windows PowerShell/WPF. A native `.exe` is being produced under the [Windows release addendum](PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md).
 
-The [atomic configuration manager](docs/architecture/ATOMIC-CONFIG-MANAGEMENT.md) can now dry-run, atomically apply, and exactly roll back only its declared model, window, catalog, hook/plugin, and MCP settings. It requires explicit absolute paths and has not been run against the real global Codex configuration.
-
-The claim-safe [`doctor` and `status`](docs/architecture/DOCTOR-AND-STATUS-CONTRACT.md) commands now expose exact Sol identity, authentication lane, official limits, resolved catalog policy, Effective Codex budget, operational threshold, and compaction-guard state in human and JSON forms. They deliberately distinguish configuration-policy readiness from still-open live native-window proof.
-
-The [strict startup policy](docs/architecture/STRICT-SOL-STARTUP-POLICY.md) now implements fail-closed `SessionStart` and `UserPromptSubmit` handling. It blocks any non-Sol active model, model override, non-green doctor state, missing access, 272k/stale catalog, missing calibrated threshold, or unproven compaction guard, and records a prompt-free per-task audit. It is implemented and tested but is not globally installed yet.
-
-The [`cctx sol` catalog launcher](docs/architecture/SOL-1M-CATALOG-LAUNCHER.md) is the first directly usable path. It generates the replacement catalog from the installed Sol entry, requires Codex's own parser to resolve exact policy `1,050,000 / 1,050,000 / 96 / 900,000`, displays the context meter, and launches Codex with command-scoped overrides. It does not change global configuration or invoke another API lane. The catalog path is proven; an actual request above 272,000 remains a separate live gate.
-
-## Run the Sol 1M catalog launcher now
-
-From this repository in Windows PowerShell:
+From Windows PowerShell in this repository:
 
 ```powershell
-cargo build --locked --release
-$cctxState = Join-Path $env:LOCALAPPDATA "ContextContinuum\sol"
-$codexCommand = Join-Path $env:APPDATA "npm\codex.cmd"
-.\target\release\cctx.exe sol verify --codex $codexCommand --state-dir $cctxState
-.\target\release\cctx.exe sol run --codex $codexCommand --state-dir $cctxState --
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Plan
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Install
 ```
 
-`sol run` starts a new Codex TUI with a live footer containing the model, Codex's `context-remaining` counter, and the current directory. The startup meter shows Context Continuum's frozen bands at 840,000 checkpoint, 860,000 rollover, 880,000 admission stop, and 900,000 automatic compaction. There is no embedded desktop meter yet, and an already-running desktop task cannot retroactively adopt the replacement catalog.
+Installation:
 
-The model does not independently know its exact token count. Codex reads the model-catalog values, budgets the task, reports remaining context in the client, and sends requests to the backend, which enforces the native limit.
+- copies the ticker under `%LOCALAPPDATA%\CodexContextOverlay`;
+- creates ordinary Start Menu and Startup shortcuts;
+- adds exactly four owned Codex configuration keys;
+- preserves a byte-exact pre-install backup;
+- does not stop, restart, or otherwise control Codex.
+
+Quit and reopen Codex normally when convenient, then open **Codex Context Dial** from the Start menu once. Future Windows sign-ins launch the helper automatically; it remains hidden until Codex is foreground.
+
+## Status, stop, and uninstall
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Status
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Stop
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Uninstall
+```
+
+Uninstall stops only a verified ticker process, removes its two shortcuts and install directory, and restores owned configuration. If unrelated user/app settings changed after installation, those later changes are preserved.
+
+## Verification
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\Test-ContextOverlay.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\Test-OverlayInstaller.ps1
+```
+
+Detailed local evidence is in:
+
+- [Windows release verification](docs/VERIFICATION.md)
+- [Desktop/overlay development log](docs/sessions/CODEX-DESKTOP-SOL-1M-DEVLOG.md)
+- [Windows executable release log](docs/sessions/1M-CONTEXT-TICKER-RELEASE-DEVLOG.md)
+- [Safe install and rollback evidence](docs/evidence/CDO-03/safe-install-and-rollback.md)
+
+## Privacy and safety
+
+- Reads local Codex rollout metadata and `token_count` events.
+- Does not display or transmit transcript content.
+- Sends no model requests and uses no alternate API lane.
+- Does not modify the signed Codex package.
+- Does not terminate Codex or its app-server.
+- Uses no scheduled task, MCP server, browser service, or replacement chat client.
+
+## Current limitations
+
+- Windows only.
+- The visible surface is a separate focusless overlay, not a native Codex prompt-pill component.
+- The installed reference currently depends on Windows PowerShell; the native executable release is tracked by `1MCT-R1`.
+- Public signing, GitHub Release publication, imagery, and macOS packaging are not part of the current release scope.
+- Configuration and host-budget proof do not substitute for an unrun paid request above the previously tested live boundary.
+
+## Historical implementation
+
+Earlier Context Continuum/TUI, MCP, reservoir, and strict-compaction work remains in repository history and preserved source, but it is not the active product or installation path.
 
 ## License
 
