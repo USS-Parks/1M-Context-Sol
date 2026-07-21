@@ -29,7 +29,7 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Live proof:** Exact current task/window, `190x18` footprint, theme/sidebar center, focusless styles, heartbeat, duplicate rejection, no error, and no PowerShell child process passed.
 - **Rollback boundary:** Installed PowerShell reference files and shortcuts remain intact pending RLS-04 lifecycle migration.
 - **Evidence:** `docs/evidence/RLS-03/native-executable-parity.md`.
-- **Implementation commit:** Pending focused RLS-03 commit.
+- **Implementation commit:** `c0389222d9e95d6a8a82607d56160d9de165392f`
 - **Remote SHA:** Not published; push authorization has not been granted.
 
 ## RLS-02 - Freeze executable parity fixtures
