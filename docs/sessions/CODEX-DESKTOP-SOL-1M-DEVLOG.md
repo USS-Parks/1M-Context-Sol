@@ -106,4 +106,5 @@ This append-only ledger records execution of `CDS1M-PSPR-1`. A prompt is complet
 - **Theme proof:** Live prompt-pill sampling selected `#2D2D2D` in dark mode; foreground, border, track, and normal progress colors derive from sampled luminance for Codex-controlled light/dark adaptation.
 - **Verification:** Core and installer suites passed; `git diff --check` passed.
 - **Implementation commit:** `01157263c7e9b7090882e58ffc9ccc29a51b7a41`
+- **Installed-UX corrective commit:** `557b0dedf8bdb8d152db6d952512f565e100190e`
 - **Remote SHA:** Not published; push authorization has not been granted for this lane.
