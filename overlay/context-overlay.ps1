@@ -4,8 +4,8 @@ param(
     [string] $SessionsRoot = (Join-Path $env:USERPROFILE '.codex\sessions'),
     [string] $ThreadId,
     [int] $StaleAfterSeconds = 300,
-    [int] $RightOffset = 600,
-    [int] $BottomOffset = 115,
+    [int] $RightOffset = 920,
+    [int] $BottomOffset = 40,
     [int] $CompactionThreshold = 900000,
     [int] $RefreshMilliseconds = 1000,
     [string] $OutputPath
@@ -66,14 +66,14 @@ Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 [xml]$xaml = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         Title="Codex Context Dial"
-        Width="128" Height="28" WindowStyle="None" ResizeMode="NoResize"
+        Width="190" Height="28" WindowStyle="None" ResizeMode="NoResize"
         AllowsTransparency="True" Background="Transparent" Topmost="True"
         ShowInTaskbar="False" ShowActivated="False" Focusable="False" Opacity="0">
     <Grid Name="DialRoot" ToolTipService.ShowDuration="60000">
-        <Border Name="Capsule" Background="#FF303030" BorderBrush="#FF4A4A4A" BorderThickness="1" CornerRadius="14" />
-        <TextBlock Name="UsedText" Text="-- / 1M"
+        <Border Name="Capsule" Background="#FF303030" BorderThickness="0" CornerRadius="14" />
+        <TextBlock Name="UsedText" Text="Context: -- / 1M"
                    Foreground="#FFF6F7F9" FontFamily="Cascadia Mono, Consolas"
-                   FontSize="13" FontWeight="SemiBold"
+                   FontSize="13" FontWeight="Normal"
                    HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>
@@ -222,24 +222,23 @@ function Update-Overlay {
             $window.Top = $position.AnchorTop
         }
         $usedPercent = 100 - $current.PercentRemaining
-        $usedText.Text = ('{0:N0} / 1M' -f $current.UsedTokens)
+        $usedText.Text = ('Context: {0:N0} / 1M' -f $current.UsedTokens)
         $palette = Get-CodexPromptPalette -Window $position
         $script:lastPalette = $palette
         $capsule.Background = New-RgbBrush $palette.BackgroundR $palette.BackgroundG $palette.BackgroundB
-        $capsule.BorderBrush = New-RgbBrush $palette.BorderR $palette.BorderG $palette.BorderB
-        $usedText.Foreground = New-RgbBrush $palette.ForegroundR $palette.ForegroundG $palette.ForegroundB
+        $usedText.Foreground = New-RgbBrush $palette.MutedR $palette.MutedG $palette.MutedB
 
         if ($current.IsStale) {
-            $capsule.BorderBrush = [Windows.Media.Brushes]::SlateGray
+            $usedText.Foreground = [Windows.Media.Brushes]::SlateGray
         }
         elseif ($script:selectionAmbiguous) {
-            $capsule.BorderBrush = [Windows.Media.Brushes]::Gold
+            $usedText.Foreground = [Windows.Media.Brushes]::Gold
         }
         elseif ($usedPercent -ge 90) {
-            $capsule.BorderBrush = [Windows.Media.Brushes]::OrangeRed
+            $usedText.Foreground = [Windows.Media.Brushes]::OrangeRed
         }
         elseif ($usedPercent -ge 75) {
-            $capsule.BorderBrush = [Windows.Media.Brushes]::Orange
+            $usedText.Foreground = [Windows.Media.Brushes]::Orange
         }
 
         $status = if ($current.IsStale) { 'STALE' } elseif ($script:selectionAmbiguous) { 'AMBIGUOUS' } else { 'LIVE' }
@@ -260,8 +259,8 @@ Right-click the dial to stop the overlay.
         Write-OverlayStatus $current $position $true $null
     }
     catch {
-        $usedText.Text = '! / 1M'
-        $capsule.BorderBrush = [Windows.Media.Brushes]::OrangeRed
+        $usedText.Text = 'Context: ! / 1M'
+        $usedText.Foreground = [Windows.Media.Brushes]::OrangeRed
         $dialRoot.ToolTip = 'Context overlay error: ' + $_.Exception.Message
         try {
             $position = Get-CodexWindowAnchor -RightOffset $RightOffset -BottomOffset $BottomOffset

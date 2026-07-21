@@ -320,7 +320,7 @@ namespace ContextOverlay {
 function Get-CodexWindowAnchor {
     [CmdletBinding()]
     param(
-        [int] $DialWidth = 128,
+        [int] $DialWidth = 190,
         [int] $DialHeight = 28,
         [int] $RightOffset = 152,
         [int] $BottomOffset = 104
@@ -407,6 +407,9 @@ function Get-CodexPromptPalette {
             ForegroundR = $foreground
             ForegroundG = $foreground
             ForegroundB = $foreground
+            MutedR = [int][math]::Round(($red * 0.35) + ($foreground * 0.65))
+            MutedG = [int][math]::Round(($green * 0.35) + ($foreground * 0.65))
+            MutedB = [int][math]::Round(($blue * 0.35) + ($foreground * 0.65))
             TrackR = [int][math]::Round(($red * 0.72) + ($foreground * 0.28))
             TrackG = [int][math]::Round(($green * 0.72) + ($foreground * 0.28))
             TrackB = [int][math]::Round(($blue * 0.72) + ($foreground * 0.28))

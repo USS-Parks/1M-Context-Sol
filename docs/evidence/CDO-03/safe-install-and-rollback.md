@@ -55,15 +55,15 @@ Final live state after the user's normal restart:
 | Overlay process count | `1` |
 | Active task | `019f7e5d-bbfa-7922-ba42-71b52f309a39` |
 | Host context window | `1008000` |
-| Active context ticker | `200643 / 1M` at final placement proof |
-| Diagnostic used fraction | `19` percent |
-| Host remaining | `807357` tokens / `81` percent |
-| Native overlay rectangle | `1201,886,1361,921` |
+| Active context ticker | `Context: 216062 / 1M` at final placement proof |
+| Diagnostic used fraction | `20` percent |
+| Host remaining | `800674` tokens / `80` percent |
+| Native overlay rectangle | `819,961,1057,996` |
 | Sampled prompt background | `#2D2D2D`, dark |
 | Status refresh | advanced across a three-second sample |
 | Selection stale/ambiguous | `false` / `false` |
 
-The final user-directed face is a 128-by-28-DIP ticker capsule displaying exact `used tokens / 1M`. It contains no circle or progress bar and sits fully inside the prompt pill's upper-right empty band. Remaining capacity and the 900,000-token compaction threshold are tooltip details rather than face text. The capsule background is sampled from the live Codex prompt pill and its neutral foreground/border contrast is derived from that sample, so light and dark Codex themes are handled without a separate hard-coded overlay theme.
+The final user-directed face is a 190-by-28-DIP regular-weight ticker displaying exact `Context: used tokens / 1M`. It contains no circle, progress bar, or border/frame and sits on the same baseline as the prompt pill's approval and model controls. Remaining capacity and the 900,000-token compaction threshold are tooltip details rather than face text. The background is sampled from the live Codex prompt pill and the muted foreground is derived from that sample, so light and dark Codex themes are handled without a separate hard-coded overlay theme.
 
 ## Verification commands
 

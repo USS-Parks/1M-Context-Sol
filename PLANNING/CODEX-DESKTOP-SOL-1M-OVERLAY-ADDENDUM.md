@@ -132,8 +132,9 @@ This amendment is authoritative for CDO-03 and CDO-04. The aborted app-server-co
 
 The user rejected both a large remaining-percentage dial and a subsequent progress ring. The accepted face is a compact ticker capsule at the prompt pill's upper-right edge:
 
-- the ticker shows the exact host `last_token_usage.total_tokens` count with thousands separators followed by literal ` / 1M`;
+- the ticker shows `Context: ` followed by the exact host `last_token_usage.total_tokens` count with thousands separators and literal ` / 1M`;
 - no window-size, remaining-percent, or threshold text appears on the face;
 - full remaining/window/900,000-threshold details remain available in the tooltip;
-- the installed default is 128 by 28 device-independent pixels, fully inside the prompt pill's upper-right empty band with screenshot-calibrated padding;
+- the installed default is 190 by 28 device-independent pixels on the prompt pill's bottom row, centered between the approval and model controls;
+- the face has no border/frame and uses a luminance-derived muted foreground matching Codex's subdued composer labels;
 - the capsule samples quiet pixels from the actual Codex prompt pill and derives neutral foreground, border, and ring colors from the observed luminance, so Codex light/dark theme—not a separate hard-coded theme—controls its appearance.
