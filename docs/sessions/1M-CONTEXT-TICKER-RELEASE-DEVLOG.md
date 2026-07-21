@@ -14,5 +14,5 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Preserved dirty work:** `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain excluded with their established hashes.
 - **Scope:** Windows x64 executable, safe executable lifecycle, reproducible local artifact/checksum/manifest, Windows CI job, and README text rebrand.
 - **Parked:** DMG/macOS, imagery/logo, signing, push, tag, GitHub Release, external communication, legacy cleanup, and large-token probes.
-- **Implementation commit:** Pending focused RLS-00 governance commit.
+- **Implementation commit:** `d0d9cacb504f946f6537c22e8c7c89ae2200b4aa`
 - **Remote SHA:** Not published; push authorization has not been granted.
