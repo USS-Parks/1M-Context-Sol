@@ -4,9 +4,9 @@ Date: 2026-07-21
 
 ## Result
 
-W-G4 passed locally. Two clean source-identical builds produced byte-identical executables, checksum files, and artifact manifests. The exact final executable was installed and accepted live without a PowerShell ticker process or any Codex process control.
+W-G4 passed locally and on hosted CI. Two clean source-identical builds produced byte-identical executables, checksum files, and artifact manifests. The exact final executable was installed and accepted live without a PowerShell ticker process or any Codex process control.
 
-The new Windows CI job is source-verified but has not run on GitHub because RLS-05 push authorization has not been granted. Hosted CI is pending, not passed.
+GitHub Actions run [29836629916](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29836629916) passed all 11 jobs on published SHA `29b57c94ecfa101584ccdddfac837f165ad492a5`, including the new Windows executable job.
 
 ## Deterministic build
 
@@ -57,4 +57,6 @@ The verifier builds twice in separate fresh temporary directories, compares all 
 
 Hosted compiler security-patch versions can drift, so CI proves reproducibility within its recorded toolchain rather than requiring a cross-toolchain hash match to the local artifact.
 
-The excluded `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain uncommitted and byte-preserved. Signing, RLS-05 push, GitHub Release publication, imagery, macOS/DMG, and paid large-token proof remain outside this prompt.
+The first RLS-04 hosted run exposed a stale governance assertion that still required the superseded historical PSPR's former active status. Commit `29b57c94ecfa101584ccdddfac837f165ad492a5` corrected the contract to validate both the historical supersession record and the active seven-prompt RLS authority. Positive governance tests passed 6/6, the invalid PSPR negative fixture remained blocked, and the subsequent hosted run passed every job.
+
+The excluded `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain uncommitted and byte-preserved. Signing, GitHub Release publication, imagery, macOS/DMG, and paid large-token proof remain outside this prompt.

@@ -1,6 +1,6 @@
 # 1M Context Ticker Windows Release Development Log
 
-This append-only ledger records execution of `1MCT-R1`. Full STS execution for RLS-00 through RLS-06 was approved by the user on 2026-07-20. The user separately authorized publication through RLS-04 on 2026-07-21; RLS-05 push, public release, signing, DMG/macOS, and imagery remain outside authorization.
+This append-only ledger records execution of `1MCT-R1`. Full STS execution for RLS-00 through RLS-06 was approved by the user on 2026-07-20. The user separately authorized publication through RLS-05 and its CI repair on 2026-07-21; public release, signing, DMG/macOS, and imagery remain outside authorization.
 
 ## RLS-00 - Approve Windows release authority
 
@@ -78,7 +78,7 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 ## RLS-05 - Produce the local release artifact
 
 - **Date:** 2026-07-21
-- **Status:** Complete locally; W-G4 passed. Hosted Windows CI is pending because RLS-05 has not been pushed.
+- **Status:** Complete; W-G4 passed locally and on hosted CI.
 - **Files:** Deterministic `ticker/windows/build.ps1`, new `verify-release.ps1`, independent Windows CI job, exact three-file `dist`, updated README/attributes, and `docs/evidence/RLS-05/windows-release-artifact.md`.
 - **Root cause:** The in-box compiler rejects `/deterministic+`; raw builds differed only in PE timestamp, one compiler-generated identity string, and its matching module MVID.
 - **Correction:** Build normalization derives one stable source-seeded GUID, replaces exactly one identity/MVID pair, zeros the PE timestamp, and refuses unexpected binary structure before self-test and assembly inspection.
@@ -87,7 +87,15 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Supporting hashes:** Checksum file `0d0440646d4b5acb668282e8e2d87438882292d1d7c24fcb0189289e0fe59ebb`; artifact manifest `c92cef1a77dfcc6fa036063c6adf4172c32d506b949b9bebed053b226c43749b`.
 - **Self-test/dependencies:** Shared 5 token, 3 selection, and 4 layout cases passed; exact dependency allowlist contains only seven .NET Framework assemblies recorded in the manifest.
 - **Installed acceptance:** The exact artifact hash matched source, installed file, and install manifest; one live native PID, zero children, zero PowerShell ticker processes, `198x30` no-activate pill, fresh unambiguous state, and unchanged Codex process IDs.
-- **CI:** `windows-executable` runs the same two-build verifier on `windows-latest` in runner-temporary storage without changing existing jobs. Hosted proof remains pending until a separately authorized push.
+- **CI:** `windows-executable` runs the same two-build verifier on `windows-latest` in runner-temporary storage without changing existing jobs. GitHub Actions run `29836629916` passed all 11 jobs.
 - **Preservation:** Excluded `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain unstaged and byte-preserved.
 - **Implementation commit:** `e3d8e39028446e37eeb25d8cbb74335b0df39622`.
-- **Remote SHA:** Not published; RLS-05 push authorization has not been granted.
+- **Remote SHA:** Published through governance repair SHA `29b57c94ecfa101584ccdddfac837f165ad492a5`.
+
+### RLS-05 CI repair closeout
+
+- **Observed failure:** Run `29829535681` failed both Rust tests and the dedicated governance job on one stale assertion requiring the historical Context Continuum PSPR's former active status.
+- **Repair:** Governance now validates that the historical PSPR is explicitly superseded and independently proves the approved `1MCT-R1` addendum contains contiguous RLS-00 through RLS-06 prompts with objectives/gates and is routed by `AGENTS.md`.
+- **Local proof:** Clean-HEAD format, check, warnings-denied Clippy, all tests, rustdoc, six positive governance tests, and the invalid-PSPR negative proof passed.
+- **Commit:** `29b57c94ecfa101584ccdddfac837f165ad492a5`.
+- **Hosted proof:** Run [29836629916](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29836629916) passed every job, including Windows native executable, Rust quality/docs, PSPR/evidence contracts, all negative gates, secrets, and supply chain.
