@@ -17,6 +17,21 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Implementation commit:** `d0d9cacb504f946f6537c22e8c7c89ae2200b4aa`
 - **Remote SHA:** Not published; push authorization has not been granted.
 
+## RLS-03 - Build the native Windows executable
+
+- **Date:** 2026-07-20
+- **Status:** Complete; native self-test and interactive parity passed.
+- **Source:** `ticker/windows/Program.cs`, `State.cs`, `Native.cs`, `TickerWindow.cs`, `SelfTest.cs`, and `build.ps1`.
+- **Build:** In-box .NET Framework 4.8 C# compiler, x64 WPF `winexe`, warnings-as-errors, no third-party runtime dependency.
+- **Artifact proof:** 37,376 bytes, version `0.1.0.0`, AMD64; first hash `f3e3697611b95b92c2244bf965609ecbfa48b64e54e273bfdd971b8101c8f733`, clean canonical rebuild hash `7be18efe2266d4e779808f52ea8056cefc3588c14cf13cb15a7f2870ec2fc2b9`.
+- **Open artifact gate:** Source-identical hashes differ; deterministic/normalized output remains required by RLS-05 and is not claimed at RLS-03.
+- **Fixture proof:** Native executable consumed the same 5 token, 3 selection, and 4 layout cases as the PowerShell reference.
+- **Live proof:** Exact current task/window, `190x18` footprint, theme/sidebar center, focusless styles, heartbeat, duplicate rejection, no error, and no PowerShell child process passed.
+- **Rollback boundary:** Installed PowerShell reference files and shortcuts remain intact pending RLS-04 lifecycle migration.
+- **Evidence:** `docs/evidence/RLS-03/native-executable-parity.md`.
+- **Implementation commit:** Pending focused RLS-03 commit.
+- **Remote SHA:** Not published; push authorization has not been granted.
+
 ## RLS-02 - Freeze executable parity fixtures
 
 - **Date:** 2026-07-20
