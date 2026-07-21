@@ -27,7 +27,9 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | RLS-01 | Official repository welcome-page copy without imagery | Passed | `2a7211911dee95d500524f5429dd196b01a8813d`, root `README.md`, and release DEVLOG |
 | RLS-02 | Shared active-context, selection, and layout fixtures | Passed for reference | `368fcbba1a91006c37ab1b1b6da4ef60525e452c`, shared fixtures, and `docs/evidence/RLS-02/`; executable consumption required by RLS-03 |
 | RLS-03 | Native C# WPF executable and live parity | Passed | `c0389222d9e95d6a8a82607d56160d9de165392f` and `docs/evidence/RLS-03/native-executable-parity.md` |
-| RLS-04 onward | Lifecycle, artifact, acceptance | Not run | RLS-03 dependency |
+| RLS-04 | Native executable lifecycle, rollback, and installed pill correction | Passed | `c512d2016257eaf852a54655e209054f9a374bae` and `docs/evidence/RLS-04/native-executable-lifecycle.md` |
+| RLS-05 | Reproducible Windows artifact, checksum, manifest, and CI job | Passed locally; hosted CI pending push | `e3d8e39028446e37eeb25d8cbb74335b0df39622` and `docs/evidence/RLS-05/windows-release-artifact.md` |
+| RLS-06 | Final Windows acceptance and closeout | Not run | RLS-05 hosted result and RLS-06 acceptance remain |
 
 ### Historical Context Continuum initiative
 
