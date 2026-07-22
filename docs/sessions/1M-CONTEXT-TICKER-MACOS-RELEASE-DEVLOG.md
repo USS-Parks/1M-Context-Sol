@@ -15,3 +15,10 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Verification:** `python ticker/macos/verify-contract.py`; `git diff --check`; protected-file hash comparison.
 - **Implementation commit:** `81e8895950e97d79e0b6dfe8c42909150ca59923`.
 - **Remote SHA:** Pending normal push to `origin/main`.
+
+### MAC-00 publication closeout
+
+- **Authorization:** The user explicitly authorized commits and normal pushes to `main` on 2026-07-21.
+- **Push:** `origin/main` advanced normally from `7961497cd1f40b54332c71629c1a6267494b8bb7` to MAC-00 ledger SHA `c49abed21ab9164563e14cdaa7e9b04b2a4c0380`.
+- **Remote proof:** `git ls-remote origin refs/heads/main` matched the pushed ledger SHA exactly.
+- **Boundary:** No GitHub Actions file, tag, release, public artifact, real macOS configuration, or login item was changed.
