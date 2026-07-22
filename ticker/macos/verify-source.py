@@ -20,6 +20,10 @@ for required in [
     "ignoresMouseEvents = true",
     "orderFrontRegardless",
     "Context: !",
+    "SMAppService.mainApp",
+    "config.before.toml",
+    "install-manifest.json",
+    "removeIfPresent(paths.runtimeStatus)",
 ]:
     assert required in sources, f"missing required source contract: {required}"
 
@@ -41,6 +45,12 @@ assert 'testWrongWindowFailsClosed' in tests
 assert 'testSharedSelectionCases' in tests
 assert 'testSharedLayoutCases' in tests
 assert 'testPanelIsPassiveAndFitsCompleteFace' in tests
+assert 'testInstallStatusAndExactUninstall' in tests
+assert 'testLaterUserEditIsPreservedOnUninstall' in tests
+assert 'testPreexistingOwnedKeyIsRefusedWithoutChange' in tests
+assert 'testRegistrationFailureRollsBackEveryOwnedFile' in tests
+assert 'testFirstLaunchIsIdempotentAndUpgradeRetainsBackup' in tests
+assert 'testStartAtLoginReportsApprovalState' in tests
 
 baseline = fixture["baseline_tokens"]
 for case in fixture["token_cases"]:

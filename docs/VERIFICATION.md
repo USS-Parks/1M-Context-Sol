@@ -37,7 +37,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 |---|---|---|---|
 | MAC-00 | Supported host/state/config/AppKit/build contract and automated-only boundary | Passed locally | `81e8895950e97d79e0b6dfe8c42909150ca59923`, `ticker/macos/contract.json`, `ticker/macos/verify-contract.py`, and `docs/evidence/MAC-00/automated-contract.md` |
 | MAC-01 | Native Swift/AppKit ticker parity and passive layout | Passed locally and hosted | `14eafa7f9bafb814b86e8582070b4f00ed71d80d`, green run [29886220336](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886220336), and `docs/evidence/MAC-01/native-macos-ticker.md` |
-| MAC-02 | Reversible isolated lifecycle | Not run | Requires implementation and isolated-home tests |
+| MAC-02 | Reversible isolated lifecycle | Candidate; hosted gate pending | Injected login/process seams and temporary-home install, status, upgrade, rollback, later-edit, startup, stop, and uninstall tests |
 | MAC-03 | Universal app, DMG, checksums, manifest, and focused macOS CI | Not run | GitHub Actions edits retain a separate approval gate |
 | MAC-04 | Dual-platform public release | Not authorized | Final assets and release notes require separate approval |
 

@@ -3,11 +3,21 @@ import Darwin
 import Foundation
 import OneMContextTickerCore
 
+private enum ManagementAction: String {
+    case install
+    case status
+    case startAtLogin = "start-at-login"
+    case stop
+    case upgrade
+    case uninstall
+}
+
 private struct Options {
     let sessionsRoot: URL
     let threadID: String?
     let statusURL: URL
     let staleAfterSeconds: Int
+    let managementAction: ManagementAction?
 
     static func parse(_ arguments: [String]) throws -> Options {
         let home = FileManager.default.homeDirectoryForCurrentUser
@@ -17,6 +27,7 @@ private struct Options {
             "Library/Application Support/1M Context Ticker/state/runtime-status.json"
         )
         var staleAfterSeconds = 300
+        var managementAction: ManagementAction?
         var index = 0
 
         func value(after option: String) throws -> String {
@@ -42,6 +53,12 @@ private struct Options {
                     throw TickerFailure.invalid("--stale-after-seconds must be positive.")
                 }
                 staleAfterSeconds = parsed
+            case "--action":
+                let name = try value(after: option)
+                guard let parsed = ManagementAction(rawValue: name) else {
+                    throw TickerFailure.invalid("Unknown management action: \(name)")
+                }
+                managementAction = parsed
             default:
                 throw TickerFailure.invalid("Unknown option: \(option)")
             }
@@ -51,7 +68,8 @@ private struct Options {
             sessionsRoot: sessionsRoot,
             threadID: threadID,
             statusURL: statusURL,
-            staleAfterSeconds: staleAfterSeconds
+            staleAfterSeconds: staleAfterSeconds,
+            managementAction: managementAction
         )
     }
 }
@@ -222,8 +240,54 @@ private final class AppController: NSObject, NSApplicationDelegate {
     }
 }
 
+private func bundledCatalogURL() -> URL {
+    let resources = Bundle.main.resourceURL ?? Bundle.main.bundleURL
+    return resources.appendingPathComponent("sol-1m-models.json")
+}
+
+private func printJSON<T: Encodable>(_ value: T) throws {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+    var data = try encoder.encode(value)
+    data.append(0x0A)
+    FileHandle.standardOutput.write(data)
+}
+
+private func runManagementAction(
+    _ action: ManagementAction,
+    manager: LifecycleManager,
+    processes: TickerProcessControlling
+) throws {
+    switch action {
+    case .install:
+        try printJSON(manager.ensureInstalled())
+    case .status:
+        try printJSON(manager.status())
+    case .startAtLogin:
+        try printJSON(manager.startAtLogin())
+    case .stop:
+        try printJSON(["stopped_processes": processes.stopOtherInstances()])
+    case .upgrade:
+        try printJSON(manager.upgrade())
+    case .uninstall:
+        _ = processes.stopOtherInstances()
+        try printJSON(manager.uninstall())
+    }
+}
+
 do {
     let options = try Options.parse(Array(CommandLine.arguments.dropFirst()))
+    let manager = LifecycleManager(
+        paths: .userDefaults(),
+        sourceCatalog: bundledCatalogURL(),
+        loginItem: SystemLoginItemService()
+    )
+    let processes = SystemTickerProcessController()
+    if let action = options.managementAction {
+        try runManagementAction(action, manager: manager, processes: processes)
+        Darwin.exit(0)
+    }
+    _ = try manager.ensureInstalled()
     let application = NSApplication.shared
     application.setActivationPolicy(.accessory)
     let controller = AppController(options: options)

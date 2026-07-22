@@ -45,3 +45,15 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Hosted proof:** Run [29886220336](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886220336) passed all thirteen jobs. The macOS job built the release executable with warnings denied and ran six tests with zero failures.
 - **Evidence:** `docs/evidence/MAC-01/native-macos-ticker.md`.
 - **Boundary:** Real composer placement, physical-Mac use, real login-item registration, and live Codex configuration remain unclaimed.
+
+## MAC-02 - Add safe macOS lifecycle
+
+- **Date:** 2026-07-21
+- **Status:** Candidate; hosted macOS gate pending.
+- **Implementation:** App-owned catalog/state paths, byte-exact configuration backup, manifest hashes, four-key conflict refusal, atomic install, first-launch idempotence, upgrade, status, later-edit preservation, rollback on registration failure, stop, and uninstall.
+- **Startup:** The production adapter uses `SMAppService.mainApp`; tests inject a fake service and never register a real login item.
+- **Process boundary:** Stop and uninstall target only other processes with ticker bundle identifier `com.ussparks.1m-context-ticker`. Codex is never started, stopped, restarted, or activated.
+- **Isolated tests:** Every lifecycle case creates its own temporary home and config, uses the shared Sol catalog, and removes the temporary tree afterward.
+- **Local verification:** `python ticker/macos/verify-contract.py`; `python ticker/macos/verify-source.py`; `git diff --check`; protected-file hash comparison.
+- **Implementation commit:** Pending candidate commit.
+- **Remote SHA:** Pending normal push and hosted result.
