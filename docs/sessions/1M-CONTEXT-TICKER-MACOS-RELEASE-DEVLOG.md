@@ -35,3 +35,13 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Hosted gate:** The approved `macos-ticker` job builds the executable and runs the AppKit/shared-fixture suite on `macos-15` with Swift warnings denied.
 - **Implementation commit:** Pending candidate commit.
 - **Remote SHA:** Pending normal push and hosted result.
+
+### MAC-01 hosted closeout
+
+- **Status:** Complete; M-G1 and M-G2 passed on hosted macOS.
+- **Candidate commit:** `e84f25de8f5202fd091020b21922d130659989e7`.
+- **Test repair:** `daeaf965822b692bbd502c75eb9a820787ae296a`; moved one throwing fixture lookup outside an XCTest autoclosure.
+- **Governance repair:** `14eafa7f9bafb814b86e8582070b4f00ed71d80d`; preserved the completed Windows roster and added structural validation for active `MAC-00` through `MAC-04`.
+- **Hosted proof:** Run [29886220336](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886220336) passed all thirteen jobs. The macOS job built the release executable with warnings denied and ran six tests with zero failures.
+- **Evidence:** `docs/evidence/MAC-01/native-macos-ticker.md`.
+- **Boundary:** Real composer placement, physical-Mac use, real login-item registration, and live Codex configuration remain unclaimed.
