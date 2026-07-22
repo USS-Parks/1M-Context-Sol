@@ -42,7 +42,7 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Candidate commit:** `e84f25de8f5202fd091020b21922d130659989e7`.
 - **Test repair:** `daeaf965822b692bbd502c75eb9a820787ae296a`; moved one throwing fixture lookup outside an XCTest autoclosure.
 - **Governance repair:** `14eafa7f9bafb814b86e8582070b4f00ed71d80d`; preserved the completed Windows roster and added structural validation for active `MAC-00` through `MAC-04`.
-- **Hosted proof:** Run [29886220336](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886220336) passed all thirteen jobs. The macOS job built the release executable with warnings denied and ran six tests with zero failures.
+- **Hosted proof:** Run [29886220336](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886220336) passed all twelve jobs. The macOS job built the release executable with warnings denied and ran six tests with zero failures.
 - **Evidence:** `docs/evidence/MAC-01/native-macos-ticker.md`.
 - **Boundary:** Real composer placement, physical-Mac use, real login-item registration, and live Codex configuration remain unclaimed.
 
@@ -57,3 +57,12 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Local verification:** `python ticker/macos/verify-contract.py`; `python ticker/macos/verify-source.py`; `git diff --check`; protected-file hash comparison.
 - **Implementation commit:** Pending candidate commit.
 - **Remote SHA:** Pending normal push and hosted result.
+
+### MAC-02 hosted closeout
+
+- **Status:** Complete; M-G3 passed on hosted macOS.
+- **Lifecycle commit:** `9e37b0379063bbaa05bac9b6228d2e857fa1edea`.
+- **Literal-gate completion:** `c0ba24cf1a583c75e3e50c6d52be3254f5a98bf0`; added the injected stop test and checked bundle/login-item structure.
+- **Hosted proof:** Run [29886681553](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886681553) passed all twelve jobs. The macOS job built with warnings denied and ran nine lifecycle tests plus six ticker tests with zero failures.
+- **Evidence:** `docs/evidence/MAC-02/safe-macos-lifecycle.md`.
+- **Boundary:** No real home, Codex configuration, login item, running ticker, or Codex process was changed during verification.

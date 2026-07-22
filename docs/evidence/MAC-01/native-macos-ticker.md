@@ -9,7 +9,7 @@ M-G1 and M-G2 passed on the GitHub-hosted `macos-15` runner at commit `14eafa7f9
 - Runner: macOS 15 arm64
 - Release build: passed with Swift warnings denied
 - XCTest: six tests, zero failures
-- Full workflow: all thirteen jobs passed
+- Full workflow: all twelve jobs passed
 
 ## Behavior covered
 
