@@ -158,3 +158,23 @@ jobs:
 
       - name: Run the shared behavior and AppKit tests
         run: swift test --package-path ticker/macos -Xswiftc -warnings-as-errors
+
+      - name: Verify the release packaging source
+        run: python3 ticker/macos/verify-package-source.py
+
+      - name: Build and verify the universal DMG
+        run: |
+          bash ticker/macos/build-release.sh "$RUNNER_TEMP/1m-context-ticker-macos"
+          python3 ticker/macos/verify-release.py "$RUNNER_TEMP/1m-context-ticker-macos"
+
+      - name: Upload the universal DMG evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: 1M-Context-Ticker-macOS-universal
+          path: |
+            ${{ runner.temp }}/1m-context-ticker-macos/1M-Context-Ticker-macOS-universal.dmg
+            ${{ runner.temp }}/1m-context-ticker-macos/1M-Context-Ticker-macOS-universal.dmg.sha256
+            ${{ runner.temp }}/1m-context-ticker-macos/1M-Context-Ticker-macOS-universal.manifest.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

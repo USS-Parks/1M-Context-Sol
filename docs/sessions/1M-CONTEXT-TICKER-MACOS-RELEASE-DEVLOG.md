@@ -66,3 +66,16 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Hosted proof:** Run [29886681553](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886681553) passed all twelve jobs. The macOS job built with warnings denied and ran nine lifecycle tests plus six ticker tests with zero failures.
 - **Evidence:** `docs/evidence/MAC-02/safe-macos-lifecycle.md`.
 - **Boundary:** No real home, Codex configuration, login item, running ticker, or Codex process was changed during verification.
+
+## MAC-03 - Produce the universal DMG
+
+- **Date:** 2026-07-21
+- **Status:** Candidate; hosted macOS packaging gate pending.
+- **Authorization:** The user approved the MAC-03 Actions extension and instructed Codex to commit and push it to `main`.
+- **Packaging:** Cross-build `arm64` and `x86_64` release binaries against the macOS 13 target, combine them with `lipo`, assemble the checked app bundle, and create one compressed drag-to-Applications DMG.
+- **Integrity:** Mount-time architecture/content checks, SHA-256 checksum, JSON manifest, and an independent final-byte verifier require exactly three output files.
+- **Distribution boundary:** The manifest records unsigned, unnotarized, GitHub-hosted-only verification. `docs/MACOS.md` requires checksum verification and a per-app Control-click/Open flow; it never disables Gatekeeper system-wide.
+- **Hosted artifact:** The focused job uses immutable `actions/upload-artifact` commit `ea165f8d65b6e75b540449e92b4886f43607fa02` and retains the three-file candidate for fourteen days.
+- **Local verification:** `python ticker/macos/verify-contract.py`; `python ticker/macos/verify-source.py`; `python ticker/macos/verify-package-source.py`; Git Bash `bash -n ticker/macos/build-release.sh`; `git diff --check`.
+- **Implementation commit:** Pending candidate commit.
+- **Remote SHA:** Pending normal push and hosted result.
