@@ -16,7 +16,7 @@ with (MAC / "Info.plist").open("rb") as handle:
 for required in [
     "arm64-apple-macosx13.0",
     "x86_64-apple-macosx13.0",
-    "lipo -verify_arch arm64 x86_64",
+    "-verify_arch arm64 x86_64",
     "1M-Context-Ticker-macOS-universal.dmg",
     'ln -s /Applications',
     'logical_count',

@@ -62,7 +62,7 @@ app="$work/1M Context Ticker.app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 lipo -create "$arm_binary" "$intel_binary" -output "$app/Contents/MacOS/OneMContextTicker"
 chmod 755 "$app/Contents/MacOS/OneMContextTicker"
-lipo -verify_arch arm64 x86_64 "$app/Contents/MacOS/OneMContextTicker"
+lipo "$app/Contents/MacOS/OneMContextTicker" -verify_arch arm64 x86_64
 cp "$script_dir/Info.plist" "$app/Contents/Info.plist"
 cp "$repo_root/overlay/sol-1m-models.json" "$app/Contents/Resources/sol-1m-models.json"
 plutil -lint "$app/Contents/Info.plist"
@@ -97,7 +97,7 @@ for item in "$mount_point"/*; do
   esac
 done
 test "$logical_count" -eq 2
-lipo -verify_arch arm64 x86_64 "$mount_point/1M Context Ticker.app/Contents/MacOS/OneMContextTicker"
+lipo "$mount_point/1M Context Ticker.app/Contents/MacOS/OneMContextTicker" -verify_arch arm64 x86_64
 cmp "$script_dir/Info.plist" "$mount_point/1M Context Ticker.app/Contents/Info.plist"
 cmp "$repo_root/overlay/sol-1m-models.json" \
   "$mount_point/1M Context Ticker.app/Contents/Resources/sol-1m-models.json"

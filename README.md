@@ -1,11 +1,18 @@
 <h1 align="center">1M Context Ticker</h1>
 
+<h2 align="center">Windows and macOS downloads</h2>
+
+| Platform | Candidate | Verify and install |
+|---|---|---|
+| Windows x64 | [`1M-Context-Ticker-Windows-x64.exe`](dist/1M-Context-Ticker-Windows-x64.exe) | [SHA-256](dist/1M-Context-Ticker-Windows-x64.exe.sha256) |
+| macOS universal (`arm64` + `x86_64`) | `1M-Context-Ticker-macOS-universal.dmg` — public download pending final release approval | [Checksum-first macOS instructions](docs/MACOS.md) |
+
 <p align="center">
-  A lightweight Windows companion for Codex Desktop that shows the exact active-context count inside the composer and enables GPT-5.6 Sol's 1M catalog policy.
+  A lightweight native companion for Codex Desktop that shows the exact active-context count inside the composer and enables GPT-5.6 Sol's 1M catalog policy.
 </p>
 
 <p align="center">
-  <strong>Windows release candidate</strong> · Reproducible native x64 executable · macOS parked
+  <strong>Windows release candidate</strong> · Universal macOS candidate in hosted verification · Public release pending
 </p>
 
 ## What it does
