@@ -36,6 +36,19 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Implementation commit:** Pending candidate commit.
 - **Remote SHA:** Pending normal push and hosted result.
 
+### MAC-03 hosted closeout
+
+- **Status:** Complete; M-G4 passed on hosted macOS.
+- **Candidate commit:** `572a8668905b95b51622bbe6cb9ae1293ab4f51c`.
+- **Packaging repair:** `1ff0b541800cd61dc5dd51cf00b4c8b357d5c4f3`; corrected `lipo -verify_arch` argument order after both slices and the app had already built.
+- **Hosted proof:** Run [29888694993](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29888694993) passed all twelve jobs and uploaded artifact `8517461310`.
+- **DMG:** 296,637 bytes; SHA-256 `1df281bb9da3fb7b20efca67a8a9dfb0d6e5ab796201f745e9459bc666b2c535`; `arm64` plus `x86_64`; unsigned and unnotarized.
+- **Artifact archive:** 297,870 bytes; SHA-256 `0012e811bdf8e5889b1c323d83c7584d45a0719802c722161ca19bfb5da7c0ab`; retained for fourteen days.
+- **Independent check:** The downloaded three-file artifact passed `ticker/macos/verify-release.py` against its final bytes and manifest.
+- **README:** The user-requested top platform table names both Windows and macOS candidates and keeps the public macOS link pending MAC-04 approval.
+- **Evidence:** `docs/evidence/MAC-03/universal-dmg.md`.
+- **Boundary:** No tag, GitHub Release, public DMG publication, real macOS state change, or physical-Mac acceptance was performed.
+
 ### MAC-01 hosted closeout
 
 - **Status:** Complete; M-G1 and M-G2 passed on hosted macOS.

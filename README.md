@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <strong>Windows release candidate</strong> · Universal macOS candidate in hosted verification · Public release pending
+  <strong>Windows release candidate</strong> · Hosted-verified universal macOS candidate · Public release pending
 </p>
 
 ## What it does
