@@ -39,6 +39,7 @@ namespace OneMContextTicker
         internal const int GwlExStyle = -20;
         internal const long WsExToolWindow = 0x00000080L;
         internal const long WsExNoActivate = 0x08000000L;
+        internal const long WsExTransparent = 0x00000020L;
 
         internal delegate bool EnumWindowsProc(IntPtr handle, IntPtr extraData);
 

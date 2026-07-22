@@ -35,7 +35,19 @@ The ticker sits on the Codex prompt pill's lower control row, centered between t
 | Maximum input | 922,000 | Model input limit, distinct from total context |
 | Maximum output | 128,000 | Model output limit |
 
-The face deliberately says `/ 1M` for readability while the tooltip and verification records retain the exact dimensions.
+The face deliberately says `/ 1M` for readability while status output and verification records retain the exact dimensions.
+
+## Verify each fresh task
+
+When Codex is foreground, a verified task displays the full click-through face `Context: <active tokens> / 1M`. The normal `/ 1M` face appears only when the active host token event reports the exact `1,008,000` budget; a different window fails visibly as `Context: !` rather than making a false 1M claim.
+
+The ticker has no hover popup and does not intercept composer input. For exact diagnostics, run:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Status
+```
+
+Require `one_m_context_verified : True`. `display_state : hidden-outside-foreground-codex` means the verified ticker is intentionally hidden because another app has focus. After the initial installation/restart, verify each new task this way; an already-open task does not retroactively re-resolve changed model-catalog settings.
 
 ## Install the Windows release candidate
 
@@ -100,7 +112,7 @@ Detailed local evidence is in:
 - Windows only.
 - The visible surface is a separate focusless overlay, not a native Codex prompt-pill component.
 - The release candidate is unsigned and Windows-only; Windows PowerShell is used for installation and verification, not as the running ticker process.
-- Public signing, GitHub Release publication, imagery, and macOS packaging are not part of the current release scope.
+- Public signing, GitHub Release publication, imagery, and macOS packaging remain parked outside the current release scope.
 - Configuration and host-budget proof do not substitute for an unrun paid request above the previously tested live boundary.
 
 ## Historical implementation

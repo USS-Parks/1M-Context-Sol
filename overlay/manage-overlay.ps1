@@ -6,7 +6,7 @@ param(
 
     [string] $InstallRoot = (Join-Path $env:LOCALAPPDATA 'CodexContextOverlay'),
     [string] $ConfigPath = (Join-Path $env:USERPROFILE '.codex\config.toml'),
-    [string] $SourceRoot = $PSScriptRoot,
+    [string] $SourceRoot,
     [string] $ExecutablePath,
     [string] $ShortcutName = '1M Context Ticker',
     [switch] $SkipShortcut
@@ -15,6 +15,9 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+if ([string]::IsNullOrWhiteSpace($SourceRoot)) {
+    $SourceRoot = $PSScriptRoot
+}
 if ([string]::IsNullOrWhiteSpace($ExecutablePath)) {
     $ExecutablePath = Join-Path (Split-Path $PSScriptRoot -Parent) 'dist\1M-Context-Ticker-Windows-x64.exe'
 }
@@ -533,9 +536,31 @@ function Get-OverlayStatus {
     $manifest = Read-Manifest
     Assert-ManifestMatches $manifest
     $ticker = Get-TickerProcess $manifest
+    $oneMVerified = $null
+    $displayState = $ticker.State
+    if ($ticker.RuntimeKind -eq 'native-executable' -and $null -ne $ticker.Runtime) {
+        $windowProperty = $ticker.Runtime.PSObject.Properties['context_window']
+        $staleProperty = $ticker.Runtime.PSObject.Properties['is_stale']
+        $ambiguousProperty = $ticker.Runtime.PSObject.Properties['selection_ambiguous']
+        $errorProperty = $ticker.Runtime.PSObject.Properties['error']
+        $visibleProperty = $ticker.Runtime.PSObject.Properties['visible']
+        $foregroundProperty = $ticker.Runtime.PSObject.Properties['codex_foreground']
+        $oneMVerified = $ticker.State -eq 'running' -and
+            $null -ne $windowProperty -and [long]$windowProperty.Value -eq 1008000L -and
+            ($null -eq $staleProperty -or -not [bool]$staleProperty.Value) -and
+            ($null -eq $ambiguousProperty -or -not [bool]$ambiguousProperty.Value) -and
+            ($null -eq $errorProperty -or [string]::IsNullOrWhiteSpace([string]$errorProperty.Value))
+        if ($null -ne $visibleProperty -and [bool]$visibleProperty.Value) { $displayState = 'visible-in-codex' }
+        elseif ($null -ne $foregroundProperty -and -not [bool]$foregroundProperty.Value) { $displayState = 'hidden-outside-foreground-codex' }
+        elseif (-not $oneMVerified) { $displayState = 'error-or-unverified' }
+        else { $displayState = 'hidden' }
+    }
     [pscustomobject]@{
         installed = $true
         runtime_kind = Get-RuntimeKind $manifest
+        required_host_window = 1008000L
+        one_m_context_verified = $oneMVerified
+        display_state = $displayState
         config_owned_snapshot_matches = (Get-Sha256 $ConfigPath) -eq $manifest.installed_config_sha256
         startup_shortcut_exists = if ($SkipShortcut) { $null } else { Test-Path -LiteralPath $manifest.startup_shortcut }
         start_menu_shortcut_exists = if ($SkipShortcut) { $null } else { Test-Path -LiteralPath $manifest.start_menu_shortcut }

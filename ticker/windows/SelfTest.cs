@@ -21,16 +21,31 @@ namespace OneMContextTicker
                 int tokenCount = TestTokens(serializer, root);
                 int selectionCount = TestSelection(root);
                 int layoutCount = TestLayout(root);
+                int faceWidthCount = TestFaceWidth();
                 bool malformedFailed = false;
                 try { TokenEngine.FromLines(new[] { "not-json" }, DateTime.UtcNow, 60, null); }
                 catch (InvalidDataException) { malformedFailed = true; }
                 AssertEqual(true, malformedFailed, "malformed input");
+
+                bool wrongWindowFailed = false;
+                try
+                {
+                    TokenEngine.FromLines(
+                        new[] { "{\"timestamp\":\"2026-07-20T12:00:00Z\",\"type\":\"event_msg\",\"payload\":{\"type\":\"token_count\",\"info\":{\"last_token_usage\":{\"total_tokens\":112000},\"model_context_window\":258400}}}" },
+                        DateTime.Parse("2026-07-20T12:00:01Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
+                        60,
+                        null);
+                }
+                catch (InvalidDataException) { wrongWindowFailed = true; }
+                AssertEqual(true, wrongWindowFailed, "non-1M host window");
 
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 result["passed"] = true;
                 result["token_cases"] = tokenCount;
                 result["selection_cases"] = selectionCount;
                 result["layout_cases"] = layoutCount;
+                result["face_width_cases"] = faceWidthCount;
+                result["window_guard_cases"] = 1;
                 result["executable"] = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 File.WriteAllText(outputPath, serializer.Serialize(result), new UTF8Encoding(false));
                 return 0;
@@ -146,6 +161,21 @@ namespace OneMContextTicker
                 AssertEqual(JsonValue.Int32(item, "expected_center"), actual, JsonValue.Text(item, "id") + " center");
             }
             return cases.Length;
+        }
+
+        private static int TestFaceWidth()
+        {
+            string[] faces = { "Context: 117,015 / 1M", "Context: 1,008,000 / 1M" };
+            foreach (string face in faces)
+            {
+                double textWidth = TickerWindow.MeasureFaceTextWidth(face);
+                double requiredWidth = TickerWindow.RequiredFaceWidth(face);
+                if (requiredWidth < textWidth + 22.0)
+                {
+                    throw new InvalidDataException("Ticker face width does not preserve padding and safety margin: " + face);
+                }
+            }
+            return faces.Length;
         }
 
         private static void AssertEqual(object expected, object actual, string label)

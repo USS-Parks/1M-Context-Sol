@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -16,6 +15,10 @@ namespace OneMContextTicker
 {
     internal sealed class TickerWindow : Window
     {
+        private const double FaceFontSize = 12.0;
+        private const double FaceHorizontalPadding = 5.0;
+        private const double FaceWidthSafetyMargin = 12.0;
+        private static readonly FontFamily FaceFontFamily = new FontFamily("Cascadia Mono, Consolas");
         private readonly Options options;
         private readonly Border capsule;
         private readonly TextBlock text;
@@ -31,7 +34,7 @@ namespace OneMContextTicker
         {
             this.options = options;
             Title = "1M Context Ticker";
-            SizeToContent = SizeToContent.WidthAndHeight;
+            SizeToContent = SizeToContent.Height;
             WindowStyle = WindowStyle.None;
             ResizeMode = ResizeMode.NoResize;
             AllowsTransparency = true;
@@ -45,24 +48,25 @@ namespace OneMContextTicker
             text = new TextBlock
             {
                 Text = "Context: -- / 1M",
-                FontFamily = new FontFamily("Cascadia Mono, Consolas"),
-                FontSize = 12,
+                FontFamily = FaceFontFamily,
+                FontSize = FaceFontSize,
                 FontWeight = FontWeights.Normal,
-                Foreground = Brushes.White
+                Foreground = Brushes.White,
+                TextWrapping = TextWrapping.NoWrap
             };
             capsule = new Border
             {
                 Background = new SolidColorBrush(Color.FromRgb(48, 48, 48)),
                 BorderThickness = new Thickness(0),
                 CornerRadius = new CornerRadius(13),
-                Padding = new Thickness(5),
+                Padding = new Thickness(FaceHorizontalPadding),
                 Child = text
             };
             Content = capsule;
+            Width = RequiredFaceWidth(text.Text);
 
             SourceInitialized += OnSourceInitialized;
             SizeChanged += delegate { UpdateRegion(); };
-            MouseRightButtonUp += delegate { Close(); };
             Loaded += OnLoaded;
             Closed += OnClosed;
 
@@ -74,7 +78,7 @@ namespace OneMContextTicker
         {
             handle = new WindowInteropHelper(this).Handle;
             long style = Native.GetWindowLongPtr(handle, Native.GwlExStyle).ToInt64();
-            style |= Native.WsExToolWindow | Native.WsExNoActivate;
+            style |= Native.WsExToolWindow | Native.WsExNoActivate | Native.WsExTransparent;
             Native.SetWindowLongPtr(handle, Native.GwlExStyle, new IntPtr(style));
             UpdateRegion();
         }
@@ -135,6 +139,7 @@ namespace OneMContextTicker
                 PromptPalette palette = Native.ReadPromptPalette(codexWindow);
                 lastPalette = palette;
                 text.Text = String.Format(CultureInfo.CurrentCulture, "Context: {0:N0} / 1M", state.UsedTokens);
+                Width = RequiredFaceWidth(text.Text);
                 capsule.Background = Brush(palette.BackgroundR, palette.BackgroundG, palette.BackgroundB);
                 text.Foreground = Brush(palette.MutedR, palette.MutedG, palette.MutedB);
                 int percentUsed = 100 - state.PercentRemaining;
@@ -143,8 +148,8 @@ namespace OneMContextTicker
                 else if (percentUsed >= 90) text.Foreground = Brushes.OrangeRed;
                 else if (percentUsed >= 75) text.Foreground = Brushes.Orange;
 
-                ToolTip = BuildTooltip(state, selectedPath, selectionAmbiguous);
                 UpdateLayout();
+                UpdateRegion();
                 SetLocation(codexWindow, palette);
                 if (!IsVisible) Show();
                 Opacity = 1;
@@ -152,9 +157,9 @@ namespace OneMContextTicker
             }
             catch (Exception error)
             {
-                text.Text = "Context: ! / 1M";
+                text.Text = "Context: !";
+                Width = RequiredFaceWidth(text.Text);
                 text.Foreground = Brushes.OrangeRed;
-                ToolTip = "1M Context Ticker error: " + error.Message;
                 try
                 {
                     codexWindow = codexWindow ?? Native.FindCodexWindow();
@@ -184,23 +189,28 @@ namespace OneMContextTicker
             Top = dipCenter.Y - (ActualHeight / 2.0);
         }
 
+        internal static double MeasureFaceTextWidth(string value)
+        {
+            TextBlock probe = new TextBlock
+            {
+                Text = value,
+                FontFamily = FaceFontFamily,
+                FontSize = FaceFontSize,
+                FontWeight = FontWeights.Normal,
+                TextWrapping = TextWrapping.NoWrap
+            };
+            probe.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+            return probe.DesiredSize.Width;
+        }
+
+        internal static double RequiredFaceWidth(string value)
+        {
+            return Math.Ceiling(MeasureFaceTextWidth(value) + (FaceHorizontalPadding * 2.0) + FaceWidthSafetyMargin);
+        }
+
         private static Brush Brush(byte red, byte green, byte blue)
         {
             return new SolidColorBrush(Color.FromRgb(red, green, blue));
-        }
-
-        private static string BuildTooltip(TokenState state, string path, bool ambiguous)
-        {
-            string status = state.IsStale ? "STALE" : ambiguous ? "AMBIGUOUS" : "LIVE";
-            return String.Format(
-                CultureInfo.InvariantCulture,
-                "{0} context state\nActive context: {1}\nRemaining: {2} of {3} effective tokens\nHost window: {4}\nAutomatic compaction threshold: 900000 total tokens\nSource: {5}\nRight-click to stop the ticker.",
-                status,
-                state.UsedTokens,
-                state.RemainingTokens,
-                state.EffectiveWindow,
-                state.ContextWindow,
-                path);
         }
 
         private void WriteStatus(TokenState state, CodexWindowInfo codexWindow, bool visible, string error)
@@ -223,6 +233,7 @@ namespace OneMContextTicker
                 value["native_height"] = hasRect ? (object)(rect.Bottom - rect.Top) : null;
                 value["has_tool_window"] = (style & Native.WsExToolWindow) != 0;
                 value["has_no_activate"] = (style & Native.WsExNoActivate) != 0;
+                value["has_transparent_input"] = (style & Native.WsExTransparent) != 0;
                 value["session_id"] = selectedPath == null ? null : RolloutReader.ReadMetadata(selectedPath).SessionId;
                 value["used_tokens"] = state == null ? null : (object)state.UsedTokens;
                 value["context_window"] = state == null ? null : (object)state.ContextWindow;

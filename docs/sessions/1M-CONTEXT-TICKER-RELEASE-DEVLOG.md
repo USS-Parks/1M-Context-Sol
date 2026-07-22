@@ -99,3 +99,20 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Local proof:** Clean-HEAD format, check, warnings-denied Clippy, all tests, rustdoc, six positive governance tests, and the invalid-PSPR negative proof passed.
 - **Commit:** `29b57c94ecfa101584ccdddfac837f165ad492a5`.
 - **Hosted proof:** Run [29836629916](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29836629916) passed every job, including Windows native executable, Rust quality/docs, PSPR/evidence contracts, all negative gates, secrets, and supply chain.
+
+## RLS-06 - Run Windows acceptance and close out
+
+- **Date:** 2026-07-21
+- **Status:** Complete locally; W-G1 through W-G5 passed for the local Windows release candidate.
+- **Acceptance discoveries:** The exact documented manager command failed to initialize the default source path under Windows PowerShell 5.1; the dynamic face clipped the trailing `1M`; the default WPF tooltip obstructed the composer and caused palette feedback after hover; and a smaller host window could have retained a misleading hardcoded `/ 1M` face.
+- **Corrections:** Initialize `SourceRoot` after parameter binding; measure every face and add a fixed safety margin; remove tooltip/right-click capture; apply `WS_EX_TRANSPARENT`; require exact host window `1008000` in both parsers; render `Context: !` on invalid state; and expose `required_host_window`, `one_m_context_verified`, and `display_state` in status.
+- **User flow:** Real stop/start/duplicate/status, uninstall, deterministic rebuild, plan/install/start, exact restore, later-edit preservation, shortcut, process identity, and active-task checks passed without controlling Codex.
+- **Live final state:** One native PID `21076`; zero children; zero PowerShell ticker processes; `213x30`; visible in foreground Codex; no activate; click-through input; dark theme; fresh and unambiguous current task; `1008000` host window; no error.
+- **Artifact:** 38,400 bytes; SHA-256 `f62558811f95866c4284ea2f68ce06355805230179735c74cbae1244c0337f56`; checksum-file SHA-256 `aa895166094c4886165e2acf3b69dd8bb8aa3cfeb20ebc868830886f1b1ecda4`; manifest SHA-256 `a94bbd774177cb669ed1af1a3a65903f69221143a35e2363a351de89f74491c9`.
+- **Focused verification:** Shared fixtures passed; lifecycle suite passed; two-build release verifier passed; five token, three selection, four layout, two face-width, and one wrong-window guard cases passed; PowerShell parsing, README links/identity, Clippy, and `git diff --check` passed.
+- **Baseline boundary:** Rust format remains blocked only by excluded `src/precompact_guard.rs`; the reused governance-test binary retained a stale temporary compile-time manifest path. These non-results do not alter the Windows gates, and published pre-RLS-06 SHA `7961497` remains green across 11 hosted jobs.
+- **Preservation:** Protected hashes for `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain unchanged and unstaged. One canonical worktree remains; `target` is approximately 922 MiB and `dist` approximately 39 KiB.
+- **Evidence:** `docs/evidence/RLS-06/windows-acceptance-and-closeout.md`.
+- **Implementation commit:** Pending creation; recorded in a ledger-only follow-up.
+- **Remote SHA:** `7961497cd1f40b54332c71629c1a6267494b8bb7`; RLS-06 push is not authorized.
+- **Parked:** Push, tag, GitHub Release, signing, imagery, macOS/DMG, external communication, and paid above-boundary proof.

@@ -22,7 +22,8 @@ try {
     [IO.File]::WriteAllText($config, $original, (New-Object Text.UTF8Encoding($false)))
     $originalHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $config).Hash
 
-    & $manager -Action Plan -InstallRoot $install -ConfigPath $config -SourceRoot $PSScriptRoot -SkipShortcut | Out-Null
+    # Exercise the documented default source path under Windows PowerShell 5.1.
+    & $manager -Action Plan -InstallRoot $install -ConfigPath $config -SkipShortcut | Out-Null
     & $manager -Action Install -InstallRoot $install -ConfigPath $config -SourceRoot $PSScriptRoot -SkipShortcut | Out-Null
     $installedText = Get-Content -Raw -LiteralPath $config
     foreach ($key in 'model_context_window','model_auto_compact_token_limit','model_auto_compact_token_limit_scope','model_catalog_json') {
@@ -36,6 +37,7 @@ try {
     Assert-True ($freshManifest.runtime_kind -eq 'native-executable') 'fresh install selects native runtime'
     $freshStatus = & $manager -Action Status -InstallRoot $install -ConfigPath $config -SourceRoot $PSScriptRoot -SkipShortcut
     Assert-True ($freshStatus.runtime_kind -eq 'native-executable') 'status reports native runtime'
+    Assert-True ($freshStatus.required_host_window -eq 1008000L) 'status reports exact required host window'
 
     & $manager -Action Uninstall -InstallRoot $install -ConfigPath $config -SourceRoot $PSScriptRoot -SkipShortcut | Out-Null
     Assert-True ((Get-FileHash -Algorithm SHA256 -LiteralPath $config).Hash -eq $originalHash) 'unchanged uninstall restores exact bytes'

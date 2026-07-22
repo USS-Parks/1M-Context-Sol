@@ -190,6 +190,8 @@ $selfTestEvidence = [ordered]@{
     token_cases = [int]$selfTestResult.token_cases
     selection_cases = [int]$selfTestResult.selection_cases
     layout_cases = [int]$selfTestResult.layout_cases
+    face_width_cases = [int]$selfTestResult.face_width_cases
+    window_guard_cases = [int]$selfTestResult.window_guard_cases
 }
 $manifest = [ordered]@{
     schema_version = 2

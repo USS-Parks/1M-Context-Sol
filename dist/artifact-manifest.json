@@ -9,19 +9,21 @@
                      "product_version":  "4.8.9221.0",
                      "deterministic_normalization":  {
                                                          "pe_timestamp":  0,
-                                                         "module_mvid":  "6ba0642e-ce0b-a1e3-03b4-8dea46604944",
-                                                         "source_seed_sha256":  "1a97d18f8da20495f0a222e00e9004c62d7a2c0d161cf39a79d164f3a92ca96d"
+                                                         "module_mvid":  "d673f981-9c68-96fa-27c3-265c38a8bd76",
+                                                         "source_seed_sha256":  "64f6b576e86e0daa58ce3e4e5f92b0e91dc9bb6ae45a9b0670ad9e8807f817b9"
                                                      }
                  },
-    "bytes":  37376,
-    "sha256":  "29051b7ba096f466e3361796c4bb674a9b5be22e3d484d65cf10cb9f506830e3",
+    "bytes":  38400,
+    "sha256":  "f62558811f95866c4284ea2f68ce06355805230179735c74cbae1244c0337f56",
     "checksum_file":  "1M-Context-Ticker-Windows-x64.exe.sha256",
     "shared_fixture_sha256":  "44c26a3aca46e1017a4b9ea40ac025cd8f3a7033831dd3e8645843ca92794c31",
     "self_test":  {
                       "passed":  true,
                       "token_cases":  5,
                       "selection_cases":  3,
-                      "layout_cases":  4
+                      "layout_cases":  4,
+                      "face_width_cases":  2,
+                      "window_guard_cases":  1
                   },
     "managed_dependencies":  [
                                  "mscorlib",
@@ -34,9 +36,9 @@
                              ],
     "source_sha256":  {
                           "Program.cs":  "44719102b76b811c736fb377faf021c5ad8e793ba2f9759ec7435d5341103750",
-                          "State.cs":  "f0e9b396886cd8bf06814edecb7cb0a81d2056e33ffe9e6a5607146868510829",
-                          "Native.cs":  "09a46348e115ca8b523261ed045e600e0949fd38ab69ab292bc7f207f7a9149f",
-                          "TickerWindow.cs":  "c9c37901830bb27f61996a40d5379f4bdbcad0ecb113eac09de63be7aec71fab",
-                          "SelfTest.cs":  "ef2dfbda19520ed5e9c1e2a69836ad67f194af17c7ca1817982019ee4ddd2019"
+                          "State.cs":  "70690d76a4bafe49f9fc6302af7e170c9daff08b7d996b5b1749b30e14301d7e",
+                          "Native.cs":  "f5d15575b3fafc92726e9cb7c2db6828040f8783f8d3de08800faf587e10d7f3",
+                          "TickerWindow.cs":  "5867cdf4a1183205974dfae62f39e475aa66ce1118cd8c5139276747f1b017df",
+                          "SelfTest.cs":  "46e49fd5ca28d072600cc8c08fb58699e8f48c0c21c724709cec7119c666628d"
                       }
 }
