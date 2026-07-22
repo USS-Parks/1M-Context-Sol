@@ -123,6 +123,32 @@ final class LifecycleTests: XCTestCase {
         }
     }
 
+    func testStopUsesOnlyTheInjectedTickerProcessController() throws {
+        try withFixture { fixture in
+            let processes = FakeTickerProcessController(stopped: 2)
+            XCTAssertEqual(fixture.manager.stop(processes: processes), 2)
+            XCTAssertEqual(processes.callCount, 1)
+        }
+    }
+
+    func testBundleAndLoginItemStructure() throws {
+        let macOS = macOSRoot()
+        let plistData = try Data(contentsOf: macOS.appendingPathComponent("Info.plist"))
+        let plist = try XCTUnwrap(
+            try PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any]
+        )
+        XCTAssertEqual(plist["CFBundleIdentifier"] as? String, "com.ussparks.1m-context-ticker")
+        XCTAssertEqual(plist["LSMinimumSystemVersion"] as? String, "13.0")
+        XCTAssertEqual(plist["LSUIElement"] as? Bool, true)
+
+        let lifecycle = try String(
+            contentsOf: macOS.appendingPathComponent("Sources/OneMContextTickerCore/Lifecycle.swift"),
+            encoding: .utf8
+        )
+        XCTAssertTrue(lifecycle.contains("SMAppService.mainApp.register()"))
+        XCTAssertTrue(lifecycle.contains("SMAppService.mainApp.unregister()"))
+    }
+
     private func withFixture(
         config: String = """
         model = "gpt-5.6-sol"
@@ -153,9 +179,14 @@ final class LifecycleTests: XCTestCase {
     }
 
     private func sharedCatalogURL() -> URL {
+        macOSRoot().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("overlay/sol-1m-models.json")
+    }
+
+    private func macOSRoot() -> URL {
         var url = URL(fileURLWithPath: #filePath)
-        for _ in 0..<5 { url.deleteLastPathComponent() }
-        return url.appendingPathComponent("overlay/sol-1m-models.json")
+        for _ in 0..<3 { url.deleteLastPathComponent() }
+        return url
     }
 }
 
@@ -181,5 +212,19 @@ private final class FakeLoginItemService: LoginItemServicing {
     func unregister() throws {
         unregisterCount += 1
         state = .notRegistered
+    }
+}
+
+private final class FakeTickerProcessController: TickerProcessControlling {
+    let stopped: Int
+    var callCount = 0
+
+    init(stopped: Int) {
+        self.stopped = stopped
+    }
+
+    func stopOtherInstances() -> Int {
+        callCount += 1
+        return stopped
     }
 }

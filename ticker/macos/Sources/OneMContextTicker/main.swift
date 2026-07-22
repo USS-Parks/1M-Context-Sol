@@ -266,11 +266,11 @@ private func runManagementAction(
     case .startAtLogin:
         try printJSON(manager.startAtLogin())
     case .stop:
-        try printJSON(["stopped_processes": processes.stopOtherInstances()])
+        try printJSON(["stopped_processes": manager.stop(processes: processes)])
     case .upgrade:
         try printJSON(manager.upgrade())
     case .uninstall:
-        _ = processes.stopOtherInstances()
+        _ = manager.stop(processes: processes)
         try printJSON(manager.uninstall())
     }
 }

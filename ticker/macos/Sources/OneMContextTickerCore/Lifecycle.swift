@@ -241,6 +241,10 @@ public final class LifecycleManager {
         return status()
     }
 
+    public func stop(processes: TickerProcessControlling) -> Int {
+        processes.stopOtherInstances()
+    }
+
     public func uninstall() throws -> LifecycleStatus {
         let manifest = try readManifest()
         try validateManifestPaths(manifest)

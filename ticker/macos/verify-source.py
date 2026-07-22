@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import plistlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -9,6 +10,8 @@ fixture = json.loads((ROOT / "ticker/fixtures/behavior-cases.json").read_text(en
 sources = "\n".join(path.read_text(encoding="utf-8") for path in (MAC / "Sources").rglob("*.swift"))
 tests = "\n".join(path.read_text(encoding="utf-8") for path in (MAC / "Tests").rglob("*.swift"))
 package = (MAC / "Package.swift").read_text(encoding="utf-8")
+with (MAC / "Info.plist").open("rb") as handle:
+    info = plistlib.load(handle)
 
 for required in [
     "last_token_usage",
@@ -40,6 +43,9 @@ for forbidden in [
 
 assert '.macOS(.v13)' in package
 assert 'OneMContextTickerCoreTests' in package
+assert info['CFBundleIdentifier'] == 'com.ussparks.1m-context-ticker'
+assert info['LSMinimumSystemVersion'] == '13.0'
+assert info['LSUIElement'] is True
 assert 'testSharedTokenCases' in tests
 assert 'testWrongWindowFailsClosed' in tests
 assert 'testSharedSelectionCases' in tests
@@ -51,6 +57,8 @@ assert 'testPreexistingOwnedKeyIsRefusedWithoutChange' in tests
 assert 'testRegistrationFailureRollsBackEveryOwnedFile' in tests
 assert 'testFirstLaunchIsIdempotentAndUpgradeRetainsBackup' in tests
 assert 'testStartAtLoginReportsApprovalState' in tests
+assert 'testStopUsesOnlyTheInjectedTickerProcessController' in tests
+assert 'testBundleAndLoginItemStructure' in tests
 
 baseline = fixture["baseline_tokens"]
 for case in fixture["token_cases"]:
