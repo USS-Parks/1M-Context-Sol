@@ -41,10 +41,10 @@ for forbidden in [
 ]:
     assert forbidden not in sources, f"forbidden source surface: {forbidden}"
 
-assert '.macOS(.v13)' in package
+assert '.macOS(.v14)' in package
 assert 'OneMContextTickerCoreTests' in package
 assert info['CFBundleIdentifier'] == 'com.ussparks.1m-context-ticker'
-assert info['LSMinimumSystemVersion'] == '13.0'
+assert info['LSMinimumSystemVersion'] == '14.0'
 assert info['LSUIElement'] is True
 assert 'testSharedTokenCases' in tests
 assert 'testWrongWindowFailsClosed' in tests

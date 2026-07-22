@@ -68,10 +68,10 @@ The existing protected `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs
 - **Appearance:** compact system dark/light treatment; no screen capture and no hover popup.
 - **State:** bounded reads of the same local Codex rollout metadata and `token_count` records used by Windows.
 - **Configuration:** `~/.codex/config.toml` plus a catalog under `~/Library/Application Support/1M Context Ticker/`; byte-exact backup and owned-key-only restore.
-- **Startup:** `SMAppService.mainApp` on macOS 13 or later.
+- **Startup:** `SMAppService.mainApp`; the app ships for macOS 14 or later.
 - **Packaging:** Xcode command-line build, universal `.app`, drag-to-Applications DMG, SHA-256, and JSON manifest.
 - **Public distribution:** unsigned community DMG on GitHub with SHA-256 verification and concise, honest instructions for macOS's unidentified-developer prompt. Instructions must never disable Gatekeeper globally.
-- **Minimum target:** macOS 13.0. Raising this minimum requires an addendum; lowering it is not required.
+- **Minimum target:** macOS 14.0. Lowering it requires an addendum.
 
 ## 5. Reuse ledger
 
@@ -176,3 +176,7 @@ This addendum is complete only when the existing Windows `.exe` and one unsigned
 - **`Approve 1MCT-M1 and run it STS through MAC-03.`** Build the DMG and stop before public release.
 - **`Approve MAC-04 for publication.`** Publish only the previously reviewed assets and release notes.
 - **`Revise 1MCT-M1 as follows: ...`** Update this draft only; do not execute.
+
+## 12. Release-floor override
+
+On 2026-07-21, before MAC-04 publication, the user explicitly required the macOS build to support only recent macOS versions and no platform older than five years. The shipping minimum is raised from macOS 13.0 to macOS 14.0. This supersedes the earlier minimum-target sentence and requires a fresh hosted MAC-03 artifact before release; earlier macOS 13 candidates remain historical evidence and must not be published.

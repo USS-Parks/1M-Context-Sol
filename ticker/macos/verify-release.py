@@ -29,7 +29,7 @@ expected_manifest = {
     "bytes": artifact.stat().st_size,
     "sha256": digest,
     "bundle_identifier": "com.ussparks.1m-context-ticker",
-    "minimum_macos": "13.0",
+    "minimum_macos": "14.0",
     "architectures": ["arm64", "x86_64"],
     "dmg_contents": ["1M Context Ticker.app", "Applications"],
     "signed": False,

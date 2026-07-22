@@ -14,8 +14,8 @@ with (MAC / "Info.plist").open("rb") as handle:
     info = plistlib.load(handle)
 
 for required in [
-    "arm64-apple-macosx13.0",
-    "x86_64-apple-macosx13.0",
+    "arm64-apple-macosx14.0",
+    "x86_64-apple-macosx14.0",
     "-verify_arch arm64 x86_64",
     "1M-Context-Ticker-macOS-universal.dmg",
     'ln -s /Applications',
@@ -36,7 +36,7 @@ for forbidden in [
     assert forbidden not in build, f"forbidden package operation: {forbidden}"
 
 assert info["CFBundleIdentifier"] == "com.ussparks.1m-context-ticker"
-assert info["LSMinimumSystemVersion"] == "13.0"
+assert info["LSMinimumSystemVersion"] == "14.0"
 assert info["LSUIElement"] is True
 
 for required in [

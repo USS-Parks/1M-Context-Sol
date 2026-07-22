@@ -51,8 +51,8 @@ build_architecture() {
     --show-bin-path
 }
 
-arm_bin_dir="$(build_architecture arm64-apple-macosx13.0 | tail -n 1)"
-intel_bin_dir="$(build_architecture x86_64-apple-macosx13.0 | tail -n 1)"
+arm_bin_dir="$(build_architecture arm64-apple-macosx14.0 | tail -n 1)"
+intel_bin_dir="$(build_architecture x86_64-apple-macosx14.0 | tail -n 1)"
 arm_binary="$arm_bin_dir/OneMContextTicker"
 intel_binary="$intel_bin_dir/OneMContextTicker"
 test -x "$arm_binary"

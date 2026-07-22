@@ -2,6 +2,8 @@
 
 The macOS download is an unsigned, unnotarized community build. Its automated checks run on GitHub-hosted macOS; no physical-Mac acceptance is claimed.
 
+The app requires macOS 14 or later. Older macOS releases are unsupported.
+
 ## Verify and install
 
 Download these three files from the same release:

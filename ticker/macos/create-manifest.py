@@ -27,7 +27,7 @@ manifest = {
     "sha256": args.sha256,
     "source_commit": args.source_commit,
     "bundle_identifier": "com.ussparks.1m-context-ticker",
-    "minimum_macos": "13.0",
+    "minimum_macos": "14.0",
     "architectures": ["arm64", "x86_64"],
     "dmg_contents": ["1M Context Ticker.app", "Applications"],
     "signed": False,

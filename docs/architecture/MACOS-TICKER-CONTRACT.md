@@ -4,7 +4,7 @@ This contract freezes MAC-00 for the unsigned community build. It is intentional
 
 ## Supported baseline
 
-- The ticker deployment target is macOS 13.0. OpenAI's current macOS desktop host requires macOS 14 or later, so current end-to-end use starts at macOS 14 even though the ticker binary itself remains 13-compatible.
+- The ticker deployment target is macOS 14.0, matching the current macOS desktop host floor. Older macOS versions are unsupported.
 - The supported host bundle identifier is `com.openai.codex`. This identifier is checked at runtime. A renamed, beta, patched, or future host is unsupported until its identifier and window behavior are reviewed.
 - The host must be the frontmost application reported by `NSWorkspace.shared.frontmostApplication`. A name match alone is never enough.
 - Window bounds come from `CGWindowListCopyWindowInfo`, filtered to the frontmost host PID, on-screen normal windows, and a single unambiguous candidate. The ticker never calls a window-image or screen-capture API.
@@ -34,7 +34,7 @@ The app creates one `NSPanel` with `borderless` and `nonactivatingPanel` style m
 
 ## Build and evidence boundary
 
-The focused hosted runner is `macos-15` with its installed Xcode. The app is built for `arm64` and `x86_64` with `MACOSX_DEPLOYMENT_TARGET=13.0`; `lipo -verify_arch arm64 x86_64` is the architecture gate. The same shared behavior fixture and Sol catalog used by Windows are inputs, not copied forks.
+The focused hosted runner is `macos-15` with its installed Xcode. The app is built for `arm64` and `x86_64` with `MACOSX_DEPLOYMENT_TARGET=14.0`; `lipo -verify_arch arm64 x86_64` is the architecture gate. The same shared behavior fixture and Sol catalog used by Windows are inputs, not copied forks.
 
 Automated evidence covers parsing, selection, layout arithmetic, AppKit construction, isolated lifecycle behavior, bundle structure, architecture slices, and artifact integrity. It does not prove placement over a real Codex composer, real login launch, Gatekeeper interaction, or live Codex configuration on a physical Mac. Those claims must remain absent from release evidence.
 

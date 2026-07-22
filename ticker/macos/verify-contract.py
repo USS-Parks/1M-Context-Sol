@@ -15,7 +15,7 @@ fixtures = load("ticker/fixtures/behavior-cases.json")
 catalog = load("overlay/sol-1m-models.json")
 
 assert contract["schema_version"] == 1
-assert contract["product"]["deployment_target"] == "13.0"
+assert contract["product"]["deployment_target"] == "14.0"
 assert contract["product"]["architectures"] == ["arm64", "x86_64"]
 assert contract["host"]["bundle_identifiers"] == ["com.openai.codex"]
 assert contract["host"]["unknown_bundle_action"] == "hide"

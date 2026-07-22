@@ -138,7 +138,7 @@ final class LifecycleTests: XCTestCase {
             try PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any]
         )
         XCTAssertEqual(plist["CFBundleIdentifier"] as? String, "com.ussparks.1m-context-ticker")
-        XCTAssertEqual(plist["LSMinimumSystemVersion"] as? String, "13.0")
+        XCTAssertEqual(plist["LSMinimumSystemVersion"] as? String, "14.0")
         XCTAssertEqual(plist["LSUIElement"] as? Bool, true)
 
         let lifecycle = try String(

@@ -3,7 +3,7 @@
   "product": {
     "name": "1M Context Ticker",
     "bundle_identifier": "com.ussparks.1m-context-ticker",
-    "deployment_target": "13.0",
+    "deployment_target": "14.0",
     "current_host_minimum": "14.0",
     "architectures": ["arm64", "x86_64"]
   },
@@ -52,7 +52,7 @@
   },
   "startup": {
     "api": "SMAppService.mainApp",
-    "minimum_version": "13.0",
+    "minimum_version": "14.0",
     "real_registration_in_automated_tests": false
   },
   "build": {

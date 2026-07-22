@@ -49,6 +49,13 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Evidence:** `docs/evidence/MAC-03/universal-dmg.md`.
 - **Boundary:** No tag, GitHub Release, public DMG publication, real macOS state change, or physical-Mac acceptance was performed.
 
+### MAC-03 macOS 14 release-floor override
+
+- **Authorization:** Before MAC-04 publication, the user required support only for recent macOS releases and no platform older than five years.
+- **Decision:** Raise the shipping and Swift deployment target from macOS 13.0 to macOS 14.0 for both `arm64` and `x86_64`.
+- **Supersession:** Artifact `8517733470` and every earlier macOS 13 candidate are historical only and must not be published.
+- **Gate:** Re-run the full hosted build, architecture, mounted-DMG, checksum, manifest, and artifact-download verification before creating the public release.
+
 ### MAC-01 hosted closeout
 
 - **Status:** Complete; M-G1 and M-G2 passed on hosted macOS.
