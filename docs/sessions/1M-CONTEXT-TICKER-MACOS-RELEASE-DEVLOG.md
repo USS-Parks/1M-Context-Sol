@@ -22,3 +22,16 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Push:** `origin/main` advanced normally from `7961497cd1f40b54332c71629c1a6267494b8bb7` to MAC-00 ledger SHA `c49abed21ab9164563e14cdaa7e9b04b2a4c0380`.
 - **Remote proof:** `git ls-remote origin refs/heads/main` matched the pushed ledger SHA exactly.
 - **Boundary:** No GitHub Actions file, tag, release, public artifact, real macOS configuration, or login item was changed.
+
+## MAC-01 - Build the native macOS ticker
+
+- **Date:** 2026-07-21
+- **Status:** Candidate; hosted macOS gate pending.
+- **Authorization:** The user separately approved the focused GitHub Actions edit and hosted use on 2026-07-21.
+- **Implementation:** Swift Package Manager executable with a Foundation parser/selector, exact-window guard, AppKit host-window discovery, one passive `NSPanel`, system appearance, bounded status output, and responsive placement arithmetic.
+- **Shared parity:** Tests consume `ticker/fixtures/behavior-cases.json` directly for five token, three selection, and four layout cases. A separate wrong-window test requires `Context: !` behavior.
+- **Passive boundary:** The panel is borderless, nonactivating, floating, click-through, and non-key. Source gates reject capture APIs, tracking areas, global event monitors, tooltip wiring, and transcript surfaces.
+- **Local verification:** `python ticker/macos/verify-contract.py`; `python ticker/macos/verify-source.py`; `git diff --check`.
+- **Hosted gate:** The approved `macos-ticker` job builds the executable and runs the AppKit/shared-fixture suite on `macos-15` with Swift warnings denied.
+- **Implementation commit:** Pending candidate commit.
+- **Remote SHA:** Pending normal push and hosted result.

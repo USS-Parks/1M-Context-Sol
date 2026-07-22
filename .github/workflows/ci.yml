@@ -139,3 +139,22 @@ jobs:
       - name: Verify reproducible x64 release artifact
         shell: powershell
         run: .\ticker\windows\verify-release.ps1 -OutputDirectory "$env:RUNNER_TEMP\1m-context-ticker-dist"
+
+  macos-ticker:
+    name: macOS native ticker
+    runs-on: macos-15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Verify the frozen macOS contract
+        run: python3 ticker/macos/verify-contract.py
+
+      - name: Verify the passive source boundary
+        run: python3 ticker/macos/verify-source.py
+
+      - name: Build the native ticker
+        run: swift build --package-path ticker/macos --configuration release -Xswiftc -warnings-as-errors
+
+      - name: Run the shared behavior and AppKit tests
+        run: swift test --package-path ticker/macos -Xswiftc -warnings-as-errors
