@@ -108,12 +108,13 @@ final class TickerCoreTests: XCTestCase {
         let fixture = try loadFixture()
         let cases = try XCTUnwrap(fixture["layout_cases"] as? [[String: Any]])
         for item in cases {
+            let identifier = try string(item, "id")
             let center = try LayoutEngine.composerCenter(
                 windowLeft: CGFloat(try integer(item, "window_left")),
                 windowRight: CGFloat(try integer(item, "window_right")),
                 sidebarOpen: try boolean(item, "sidebar_open")
             )
-            XCTAssertEqual(center, CGFloat(try integer(item, "expected_center")), try string(item, "id"))
+            XCTAssertEqual(center, CGFloat(try integer(item, "expected_center")), identifier)
         }
     }
 
