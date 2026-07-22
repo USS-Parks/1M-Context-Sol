@@ -35,7 +35,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 
 | Prompt | Gate | Status | Evidence |
 |---|---|---|---|
-| MAC-00 | Supported host/state/config/AppKit/build contract and automated-only boundary | Passed locally | `ticker/macos/contract.json`, `ticker/macos/verify-contract.py`, `docs/architecture/MACOS-TICKER-CONTRACT.md`, `docs/evidence/MAC-00/automated-contract.md`, and macOS release DEVLOG |
+| MAC-00 | Supported host/state/config/AppKit/build contract and automated-only boundary | Passed locally | `81e8895950e97d79e0b6dfe8c42909150ca59923`, `ticker/macos/contract.json`, `ticker/macos/verify-contract.py`, and `docs/evidence/MAC-00/automated-contract.md` |
 | MAC-01 | Native Swift/AppKit ticker parity and passive layout | Not run | Requires implementation plus a GitHub-hosted macOS run |
 | MAC-02 | Reversible isolated lifecycle | Not run | Requires implementation and isolated-home tests |
 | MAC-03 | Universal app, DMG, checksums, manifest, and focused macOS CI | Not run | GitHub Actions edits retain a separate approval gate |

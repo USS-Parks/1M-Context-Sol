@@ -13,5 +13,5 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Automated-only boundary:** No physical-Mac placement, real login launch, Gatekeeper interaction, or live Codex configuration is claimed.
 - **Files:** macOS addendum approval record, `AGENTS.md`, verification ledger, machine contract/checker, architecture contract, and `docs/evidence/MAC-00/automated-contract.md`.
 - **Verification:** `python ticker/macos/verify-contract.py`; `git diff --check`; protected-file hash comparison.
-- **Implementation commit:** Pending commit creation.
+- **Implementation commit:** `81e8895950e97d79e0b6dfe8c42909150ca59923`.
 - **Remote SHA:** Pending normal push to `origin/main`.
