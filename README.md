@@ -21,6 +21,16 @@
 
 ## Screenshots
 
+### Desktop ticker
+
+<p align="center">
+  <img src="docs/assets/screenshots/context-ticker-desktop.png" alt="Codex Desktop prompt panel with the Context: 366,226 / 1M ticker visible" width="797">
+</p>
+
+<p align="center">The passive desktop ticker sits between the approval and model controls without intercepting input.</p>
+
+### Same task on mobile
+
 <p align="center">
   <img src="docs/assets/screenshots/codex-mobile-1m-context.jpg" alt="Codex mobile context window popup showing 285K used out of 1M" width="328">
 </p>
