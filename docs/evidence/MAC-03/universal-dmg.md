@@ -42,3 +42,9 @@ Candidate `572a8668905b95b51622bbe6cb9ae1293ab4f51c` built both architecture sli
 `docs/MACOS.md` requires SHA-256 verification before a per-app Control-click/Open or Privacy & Security approval. It never instructs users to remove quarantine metadata or disable Gatekeeper system-wide. The README lists the exact macOS filename at the top while stating that public download still requires final release approval.
 
 No physical-Mac composer placement, real login launch, real Codex configuration change, Gatekeeper interaction, tag, or GitHub Release is claimed or performed.
+
+## macOS 14 release-floor rebuild
+
+Before publication, the user raised the shipping floor to macOS 14.0. The macOS 13 artifact above remains historical and was not published. Commit `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9` rebuilt the universal app and DMG with a macOS 14.0 target. Run [29890495321](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29890495321) passed all twelve jobs and produced artifact `8518078853`.
+
+The replacement DMG is 295,092 bytes with SHA-256 `0a92ce6382793be6852e9b7484a6393bcd76e57d07cc1e7e5b3b5fbc2867c788`. Its manifest records macOS 14.0, `arm64` plus `x86_64`, the exact source commit, unsigned/unnotarized status, and automated-only verification. This is the artifact published in v0.1.0.

@@ -1,12 +1,12 @@
 # 1M Context Ticker macOS DMG Addendum
 
-> **Status:** APPROVED v3 - STS ACTIVE THROUGH MAC-03
+> **Status:** COMPLETE - v0.1.0 PUBLISHED 2026-07-21
 >
 > **Addendum ID:** 1MCT-M1
 >
 > **Extends:** Completed Windows release addendum `1MCT-R1`
 >
-> **Approval record:** The user approved STS execution on 2026-07-21 and separately authorized focused commits and normal pushes to `main`. GitHub Actions edits, real macOS Codex or login-item changes, tags, releases, and public artifact publication retain their named special gates.
+> **Approval record:** The user approved STS execution, focused commits, normal pushes to `main`, the macOS Actions gates, and explicit MAC-04 public DMG publication on 2026-07-21. Real macOS Codex or login-item changes were never authorized or performed.
 
 ## 1. Initiative
 

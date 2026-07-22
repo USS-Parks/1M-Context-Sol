@@ -103,7 +103,7 @@ fn active_macos_release_authority_is_structurally_valid() {
         .unwrap_or_else(|error| panic!("could not read {}: {error}", path.display()));
 
     for required in [
-        "> **Status:** APPROVED v3 - STS ACTIVE THROUGH MAC-03",
+        "> **Status:** COMPLETE - v0.1.0 PUBLISHED 2026-07-21",
         "> **Addendum ID:** 1MCT-M1",
         "## 6. Verification gates",
         "## 7. Sequential prompt roster",

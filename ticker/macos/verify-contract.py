@@ -83,7 +83,7 @@ for unsupported_claim in [
 addendum = (ROOT / "PLANNING/1M-CONTEXT-TICKER-MACOS-DMG-ADDENDUM.md").read_text(encoding="utf-8")
 agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
 architecture = (ROOT / "docs/architecture/MACOS-TICKER-CONTRACT.md").read_text(encoding="utf-8")
-assert "APPROVED v3 - STS ACTIVE THROUGH MAC-03" in addendum
+assert "COMPLETE - v0.1.0 PUBLISHED 2026-07-21" in addendum
 assert "execute the MAC roster in dependency order" in agents
 assert "does not prove placement over a real Codex composer" in architecture
 

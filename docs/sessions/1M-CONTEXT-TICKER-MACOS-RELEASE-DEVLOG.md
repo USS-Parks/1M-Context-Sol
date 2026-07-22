@@ -56,6 +56,24 @@ This append-only ledger records execution of `1MCT-M1`. The user approved STS ex
 - **Supersession:** Artifact `8517733470` and every earlier macOS 13 candidate are historical only and must not be published.
 - **Gate:** Re-run the full hosted build, architecture, mounted-DMG, checksum, manifest, and artifact-download verification before creating the public release.
 
+### MAC-03 macOS 14 rebuild closeout
+
+- **Commit:** `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9`.
+- **Hosted proof:** Run [29890495321](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29890495321) passed all twelve jobs and produced artifact `8518078853`.
+- **DMG:** 295,092 bytes; SHA-256 `0a92ce6382793be6852e9b7484a6393bcd76e57d07cc1e7e5b3b5fbc2867c788`; macOS 14.0 minimum; `arm64` plus `x86_64`.
+- **Supersession:** This artifact replaces every macOS 13 candidate for publication.
+
+## MAC-04 - Publish the dual-platform release
+
+- **Date:** 2026-07-21
+- **Status:** Complete; M-G5 passed.
+- **Authorization:** The user explicitly ordered immediate public DMG publication and confirmed it again after the macOS 14 floor change.
+- **Release:** [1M Context Ticker v0.1.0](https://github.com/USS-Parks/1M-Context-Sol/releases/tag/v0.1.0), release ID `357774461`, public and not a prerelease.
+- **Tag:** `v0.1.0` at `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9`.
+- **Assets:** Windows executable/checksum/manifest plus macOS DMG/checksum/manifest; all six sizes and GitHub-reported SHA-256 digests match `docs/evidence/MAC-04/public-release.md`.
+- **README:** Top download table links directly to both permanent release assets.
+- **Boundary:** The macOS release remains unsigned and unnotarized; physical-Mac placement and real login-item/configuration acceptance remain unclaimed.
+
 ### MAC-01 hosted closeout
 
 - **Status:** Complete; M-G1 and M-G2 passed on hosted macOS.

@@ -38,8 +38,8 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | MAC-00 | Supported host/state/config/AppKit/build contract and automated-only boundary | Passed locally | `81e8895950e97d79e0b6dfe8c42909150ca59923`, `ticker/macos/contract.json`, `ticker/macos/verify-contract.py`, and `docs/evidence/MAC-00/automated-contract.md` |
 | MAC-01 | Native Swift/AppKit ticker parity and passive layout | Passed locally and hosted | `14eafa7f9bafb814b86e8582070b4f00ed71d80d`, green run [29886220336](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886220336), and `docs/evidence/MAC-01/native-macos-ticker.md` |
 | MAC-02 | Reversible isolated lifecycle | Passed locally and hosted | `c0ba24cf1a583c75e3e50c6d52be3254f5a98bf0`, green run [29886681553](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29886681553), and `docs/evidence/MAC-02/safe-macos-lifecycle.md` |
-| MAC-03 | Universal app, DMG, checksums, manifest, and focused macOS CI | Rebuild pending for macOS 14 release floor | Earlier macOS 13 artifacts are historical only; publish only the replacement artifact |
-| MAC-04 | Dual-platform public release | Not authorized | Final assets and release notes require separate approval |
+| MAC-03 | Universal app, DMG, checksums, manifest, and focused macOS CI | Passed for macOS 14+ | `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9`, green run [29890495321](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29890495321), artifact `8518078853`, and `docs/evidence/MAC-03/universal-dmg.md` |
+| MAC-04 | Dual-platform public release | Published | Public [v0.1.0 release](https://github.com/USS-Parks/1M-Context-Sol/releases/tag/v0.1.0), tag `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9`, and `docs/evidence/MAC-04/public-release.md` |
 
 ### Historical Context Continuum initiative
 
