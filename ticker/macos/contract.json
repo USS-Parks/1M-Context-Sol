@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "product": {
+    "name": "1M Context Ticker",
+    "bundle_identifier": "com.ussparks.1m-context-ticker",
+    "deployment_target": "13.0",
+    "current_host_minimum": "14.0",
+    "architectures": ["arm64", "x86_64"]
+  },
+  "host": {
+    "bundle_identifiers": ["com.openai.codex"],
+    "foreground_api": "NSWorkspace.shared.frontmostApplication",
+    "window_api": "CGWindowListCopyWindowInfo",
+    "unknown_bundle_action": "hide",
+    "ambiguous_window_action": "hide",
+    "screen_capture": false
+  },
+  "rollout": {
+    "sessions_path": "~/.codex/sessions",
+    "required_originator": "Codex Desktop",
+    "excluded_automatic_thread_source": "subagent",
+    "event_type": "token_count",
+    "active_usage_path": "payload.info.last_token_usage.total_tokens",
+    "host_window_path": "payload.info.model_context_window",
+    "required_host_window": 1008000,
+    "wrong_window_face": "Context: !",
+    "normal_face_template": "Context: <active tokens> / 1M"
+  },
+  "configuration": {
+    "path": "~/.codex/config.toml",
+    "catalog_path": "~/Library/Application Support/1M Context Ticker/sol-1m-models.json",
+    "user_owned_model": "gpt-5.6-sol",
+    "owned_values": {
+      "model_context_window": 1050000,
+      "model_auto_compact_token_limit": 900000,
+      "model_auto_compact_token_limit_scope": "total",
+      "model_catalog_json": "<catalog_path>"
+    },
+    "existing_owned_key_action": "refuse_without_change",
+    "later_edit_action": "preserve_and_remove_only_matching_owned_values"
+  },
+  "panel": {
+    "class": "NSPanel",
+    "style_masks": ["borderless", "nonactivatingPanel"],
+    "level": "floating",
+    "ignores_mouse_events": true,
+    "activates_app": false,
+    "tooltip": false,
+    "hover_handler": false,
+    "input_capture": false,
+    "transcript_display": false
+  },
+  "startup": {
+    "api": "SMAppService.mainApp",
+    "minimum_version": "13.0",
+    "real_registration_in_automated_tests": false
+  },
+  "build": {
+    "runner": "macos-15",
+    "sdk": "macosx",
+    "configuration": "Release",
+    "artifact": "1M-Context-Ticker-macOS-universal.dmg"
+  },
+  "verification": {
+    "shared_behavior_fixture": "ticker/fixtures/behavior-cases.json",
+    "shared_sol_catalog": "overlay/sol-1m-models.json",
+    "physical_mac_acceptance": false,
+    "live_codex_placement": false,
+    "real_login_launch": false,
+    "gatekeeper_interaction": false
+  }
+}

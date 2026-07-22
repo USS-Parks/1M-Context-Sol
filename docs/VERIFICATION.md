@@ -31,6 +31,16 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | RLS-05 | Reproducible Windows artifact, checksum, manifest, and CI job | Passed locally and hosted | `e3d8e39028446e37eeb25d8cbb74335b0df39622`, governance repair `29b57c94ecfa101584ccdddfac837f165ad492a5`, green run [29836629916](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29836629916), and `docs/evidence/RLS-05/windows-release-artifact.md` |
 | RLS-06 | Final Windows acceptance and closeout | Passed locally | `41063488866daca71fa3776a80a5aa2f493fcd58`; exact-window fail-closed ticker, measured full face, no hover UI, click-through input, direct `one_m_context_verified` status, lifecycle/rebuild/reinstall proof, and `docs/evidence/RLS-06/windows-acceptance-and-closeout.md` |
 
+### macOS universal DMG (`1MCT-M1`)
+
+| Prompt | Gate | Status | Evidence |
+|---|---|---|---|
+| MAC-00 | Supported host/state/config/AppKit/build contract and automated-only boundary | Passed locally | `ticker/macos/contract.json`, `ticker/macos/verify-contract.py`, `docs/architecture/MACOS-TICKER-CONTRACT.md`, `docs/evidence/MAC-00/automated-contract.md`, and macOS release DEVLOG |
+| MAC-01 | Native Swift/AppKit ticker parity and passive layout | Not run | Requires implementation plus a GitHub-hosted macOS run |
+| MAC-02 | Reversible isolated lifecycle | Not run | Requires implementation and isolated-home tests |
+| MAC-03 | Universal app, DMG, checksums, manifest, and focused macOS CI | Not run | GitHub Actions edits retain a separate approval gate |
+| MAC-04 | Dual-platform public release | Not authorized | Final assets and release notes require separate approval |
+
 ### Historical Context Continuum initiative
 
 | Prompt | Gate | Status | Evidence |
