@@ -1,5 +1,9 @@
 <h1 align="center">1M Context Ticker</h1>
 
+<p align="center">
+  <img src="docs/assets/1m-context-ticker-hero.jpg" alt="1M Context Ticker icon and Context wordmark on a blue background" width="960">
+</p>
+
 <h2 align="center">Windows and macOS downloads</h2>
 
 | Platform | Candidate | Verify and install |
