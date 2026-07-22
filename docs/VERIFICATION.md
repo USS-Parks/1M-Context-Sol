@@ -29,7 +29,7 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | RLS-03 | Native C# WPF executable and live parity | Passed | `c0389222d9e95d6a8a82607d56160d9de165392f` and `docs/evidence/RLS-03/native-executable-parity.md` |
 | RLS-04 | Native executable lifecycle, rollback, and installed pill correction | Passed | `c512d2016257eaf852a54655e209054f9a374bae` and `docs/evidence/RLS-04/native-executable-lifecycle.md` |
 | RLS-05 | Reproducible Windows artifact, checksum, manifest, and CI job | Passed locally and hosted | `e3d8e39028446e37eeb25d8cbb74335b0df39622`, governance repair `29b57c94ecfa101584ccdddfac837f165ad492a5`, green run [29836629916](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29836629916), and `docs/evidence/RLS-05/windows-release-artifact.md` |
-| RLS-06 | Final Windows acceptance and closeout | Passed locally | Exact-window fail-closed ticker, measured full face, no hover UI, click-through input, direct `one_m_context_verified` status, lifecycle/rebuild/reinstall proof, and `docs/evidence/RLS-06/windows-acceptance-and-closeout.md` |
+| RLS-06 | Final Windows acceptance and closeout | Passed locally | `41063488866daca71fa3776a80a5aa2f493fcd58`; exact-window fail-closed ticker, measured full face, no hover UI, click-through input, direct `one_m_context_verified` status, lifecycle/rebuild/reinstall proof, and `docs/evidence/RLS-06/windows-acceptance-and-closeout.md` |
 
 ### Historical Context Continuum initiative
 

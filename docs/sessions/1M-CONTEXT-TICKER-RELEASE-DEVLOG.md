@@ -113,6 +113,6 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Baseline boundary:** Rust format remains blocked only by excluded `src/precompact_guard.rs`; the reused governance-test binary retained a stale temporary compile-time manifest path. These non-results do not alter the Windows gates, and published pre-RLS-06 SHA `7961497` remains green across 11 hosted jobs.
 - **Preservation:** Protected hashes for `src/lib.rs`, `src/main.rs`, and `src/precompact_guard.rs` remain unchanged and unstaged. One canonical worktree remains; `target` is approximately 922 MiB and `dist` approximately 39 KiB.
 - **Evidence:** `docs/evidence/RLS-06/windows-acceptance-and-closeout.md`.
-- **Implementation commit:** Pending creation; recorded in a ledger-only follow-up.
+- **Implementation commit:** `41063488866daca71fa3776a80a5aa2f493fcd58`.
 - **Remote SHA:** `7961497cd1f40b54332c71629c1a6267494b8bb7`; RLS-06 push is not authorized.
 - **Parked:** Push, tag, GitHub Release, signing, imagery, macOS/DMG, external communication, and paid above-boundary proof.
