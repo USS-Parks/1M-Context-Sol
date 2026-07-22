@@ -33,7 +33,7 @@ fn canonical_pspr_is_structurally_valid() {
 }
 
 #[test]
-fn active_release_authority_is_structurally_valid() {
+fn completed_windows_release_authority_is_structurally_valid() {
     let path = root().join("PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md");
     let text = fs::read_to_string(&path)
         .unwrap_or_else(|error| panic!("could not read {}: {error}", path.display()));
@@ -91,9 +91,71 @@ fn active_release_authority_is_structurally_valid() {
         .unwrap_or_else(|error| panic!("could not read {}: {error}", agents_path.display()));
     assert!(
         agents.contains("PLANNING/1M-CONTEXT-TICKER-DESKTOP-RELEASE-ADDENDUM.md")
-            && agents
-                .contains("execute the release addendum's RLS prompt roster in dependency order"),
-        "AGENTS.md does not route execution to the active release authority"
+            && agents.contains("Windows roster remains completed history"),
+        "AGENTS.md does not preserve the completed Windows release authority"
+    );
+}
+
+#[test]
+fn active_macos_release_authority_is_structurally_valid() {
+    let path = root().join("PLANNING/1M-CONTEXT-TICKER-MACOS-DMG-ADDENDUM.md");
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("could not read {}: {error}", path.display()));
+
+    for required in [
+        "> **Status:** APPROVED v3 - STS ACTIVE THROUGH MAC-03",
+        "> **Addendum ID:** 1MCT-M1",
+        "## 6. Verification gates",
+        "## 7. Sequential prompt roster",
+        "## 10. Completion boundary",
+    ] {
+        assert!(
+            text.contains(required),
+            "{}: missing active macOS marker: {required}",
+            path.display()
+        );
+    }
+
+    let lines: Vec<_> = text.lines().collect();
+    let prompt_starts: Vec<_> = lines
+        .iter()
+        .enumerate()
+        .filter_map(|(index, line)| line.starts_with("### MAC-").then_some(index))
+        .collect();
+    assert_eq!(prompt_starts.len(), 5, "expected MAC-00 through MAC-04");
+
+    let mut ids = BTreeSet::new();
+    for (position, start) in prompt_starts.iter().copied().enumerate() {
+        let id = lines[start]
+            .strip_prefix("### ")
+            .and_then(|line| line.split_once(" - "))
+            .map(|(id, _)| id)
+            .unwrap_or_else(|| panic!("malformed macOS prompt header at line {}", start + 1));
+        assert!(ids.insert(id), "duplicate macOS prompt ID: {id}");
+        let end = prompt_starts
+            .get(position + 1)
+            .copied()
+            .unwrap_or(lines.len());
+        let block = lines[start + 1..end].join("\n");
+        assert!(
+            block.contains("**Objective:**"),
+            "{id} is missing an objective"
+        );
+        assert!(block.contains("**Gate:**"), "{id} is missing a gate");
+    }
+    let expected_ids: BTreeSet<_> = ["MAC-00", "MAC-01", "MAC-02", "MAC-03", "MAC-04"]
+        .into_iter()
+        .collect();
+    assert_eq!(ids, expected_ids, "macOS prompt roster is not contiguous");
+
+    let agents_path = root().join("AGENTS.md");
+    let agents = fs::read_to_string(&agents_path)
+        .unwrap_or_else(|error| panic!("could not read {}: {error}", agents_path.display()));
+    assert!(
+        agents.contains("PLANNING/1M-CONTEXT-TICKER-MACOS-DMG-ADDENDUM.md")
+            && agents.contains("execute the MAC roster in dependency order")
+            && agents.contains("docs/sessions/1M-CONTEXT-TICKER-MACOS-RELEASE-DEVLOG.md"),
+        "AGENTS.md does not route execution to the active macOS authority"
     );
 }
 
