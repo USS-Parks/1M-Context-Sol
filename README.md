@@ -21,16 +21,11 @@
 
 ## Screenshots
 
-<table>
-  <tr>
-    <td align="center"><img src="docs/assets/screenshots/codex-mobile-task.jpg" alt="Codex mobile view of the active GPT-5.6 Sol task" width="295"></td>
-    <td align="center"><img src="docs/assets/screenshots/codex-mobile-1m-context.jpg" alt="Codex mobile context window popup showing 285K used out of 1M" width="328"></td>
-  </tr>
-  <tr>
-    <td align="center">The same GPT-5.6 Sol task viewed on mobile.</td>
-    <td align="center">Codex's built-in mobile indicator reports <code>285K used / 1M</code>.</td>
-  </tr>
-</table>
+<p align="center">
+  <img src="docs/assets/screenshots/codex-mobile-1m-context.jpg" alt="Codex mobile context window popup showing 285K used out of 1M" width="328">
+</p>
+
+<p align="center">Codex's built-in mobile indicator reports <code>285K used / 1M</code>.</p>
 
 The mobile popup is Codex's native task indicator, not the Windows/macOS ticker overlay. It reflects the same host-reported 1M context window across clients.
 
