@@ -191,6 +191,7 @@ $selfTestEvidence = [ordered]@{
     selection_cases = [int]$selfTestResult.selection_cases
     layout_cases = [int]$selfTestResult.layout_cases
     face_width_cases = [int]$selfTestResult.face_width_cases
+    idle_io_cases = [int]$selfTestResult.idle_io_cases
     window_guard_cases = [int]$selfTestResult.window_guard_cases
 }
 $manifest = [ordered]@{

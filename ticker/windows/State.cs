@@ -155,6 +155,28 @@ namespace OneMContextTicker
             serializer.RecursionLimit = 128;
             return serializer;
         }
+
+        public static TokenState RefreshAge(TokenState state, DateTime nowUtc, int staleAfterSeconds)
+        {
+            if (state == null) throw new ArgumentNullException("state");
+            DateTime timestamp = DateTime.Parse(
+                state.EventTimestampUtc,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal);
+            int age = Math.Max(0, (int)(nowUtc.ToUniversalTime() - timestamp.ToUniversalTime()).TotalSeconds);
+            return new TokenState
+            {
+                UsedTokens = state.UsedTokens,
+                ContextWindow = state.ContextWindow,
+                EffectiveWindow = state.EffectiveWindow,
+                RemainingTokens = state.RemainingTokens,
+                PercentRemaining = state.PercentRemaining,
+                EventTimestampUtc = state.EventTimestampUtc,
+                AgeSeconds = age,
+                IsStale = age > staleAfterSeconds,
+                WasCompacted = false
+            };
+        }
     }
 
     internal static class RolloutReader
@@ -163,12 +185,17 @@ namespace OneMContextTicker
 
         public static TokenState ReadState(string path, int staleAfterSeconds, long? previousUsedTokens)
         {
+            return ReadState(path, staleAfterSeconds, previousUsedTokens, DateTime.UtcNow);
+        }
+
+        public static TokenState ReadState(string path, int staleAfterSeconds, long? previousUsedTokens, DateTime nowUtc)
+        {
             Exception lastError = null;
             foreach (int size in TailSizes)
             {
                 try
                 {
-                    return TokenEngine.FromLines(ReadTailLines(path, size), DateTime.UtcNow, staleAfterSeconds, previousUsedTokens);
+                    return TokenEngine.FromLines(ReadTailLines(path, size), nowUtc, staleAfterSeconds, previousUsedTokens);
                 }
                 catch (InvalidDataException error)
                 {
@@ -267,6 +294,118 @@ namespace OneMContextTicker
                 ShortId = selected.SessionId.Length <= 8 ? selected.SessionId : selected.SessionId.Substring(selected.SessionId.Length - 8),
                 Ambiguous = ambiguous
             };
+        }
+    }
+
+    internal sealed class RolloutPollCache
+    {
+        private readonly TimeSpan selectionRefreshInterval;
+        private DateTime nextSelectionScanUtc = DateTime.MinValue;
+        private string selectedPath;
+        private string selectedSessionId;
+        private bool selectionAmbiguous;
+        private long selectedLength = -1L;
+        private DateTime selectedWriteUtc = DateTime.MinValue;
+        private long? previousUsed;
+        private TokenState state;
+
+        public RolloutPollCache(TimeSpan selectionRefreshInterval)
+        {
+            if (selectionRefreshInterval <= TimeSpan.Zero) throw new ArgumentOutOfRangeException("selectionRefreshInterval");
+            this.selectionRefreshInterval = selectionRefreshInterval;
+        }
+
+        public string SelectedSessionId { get { return selectedSessionId; } }
+        public bool SelectionAmbiguous { get { return selectionAmbiguous; } }
+        public int SelectionScanCount { get; private set; }
+        public int StateReadCount { get; private set; }
+
+        public TokenState Poll(string sessionsRoot, string explicitThreadId, int staleAfterSeconds, DateTime nowUtc)
+        {
+            DateTime now = nowUtc.ToUniversalTime();
+            if (String.IsNullOrEmpty(selectedPath) || !File.Exists(selectedPath) || now >= nextSelectionScanUtc)
+            {
+                RolloutSelection candidate = RolloutSelector.Select(sessionsRoot, explicitThreadId, 15);
+                SelectionScanCount++;
+                nextSelectionScanUtc = now.Add(selectionRefreshInterval);
+                if (String.IsNullOrEmpty(selectedPath))
+                {
+                    Select(candidate);
+                }
+                else if (!String.Equals(candidate.Path, selectedPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    DateTime selectedWrite = File.Exists(selectedPath) ? File.GetLastWriteTimeUtc(selectedPath) : DateTime.MinValue;
+                    DateTime candidateWrite = File.GetLastWriteTimeUtc(candidate.Path);
+                    if (candidateWrite > selectedWrite.AddSeconds(3)) Select(candidate);
+                }
+                else
+                {
+                    selectedSessionId = candidate.SessionId;
+                }
+                selectionAmbiguous = candidate.Ambiguous;
+            }
+
+            FileInfo file = new FileInfo(selectedPath);
+            if (!file.Exists) throw new FileNotFoundException("Selected Codex rollout no longer exists.", selectedPath);
+            if (state == null || file.Length != selectedLength || file.LastWriteTimeUtc != selectedWriteUtc)
+            {
+                state = RolloutReader.ReadState(selectedPath, staleAfterSeconds, previousUsed, now);
+                StateReadCount++;
+                previousUsed = state.UsedTokens;
+                selectedLength = file.Length;
+                selectedWriteUtc = file.LastWriteTimeUtc;
+            }
+            else
+            {
+                state = TokenEngine.RefreshAge(state, now, staleAfterSeconds);
+            }
+            return state;
+        }
+
+        private void Select(RolloutSelection selection)
+        {
+            selectedPath = selection.Path;
+            selectedSessionId = selection.SessionId;
+            selectedLength = -1L;
+            selectedWriteUtc = DateTime.MinValue;
+            previousUsed = null;
+            state = null;
+        }
+    }
+
+    internal static class TickerPollPolicy
+    {
+        public static bool ShouldReadRollout(bool codexForeground, bool codexMinimized)
+        {
+            return codexForeground && !codexMinimized;
+        }
+    }
+
+    internal sealed class StatusWriteGate
+    {
+        private readonly TimeSpan heartbeatInterval;
+        private string lastSignature;
+        private DateTime lastWriteUtc = DateTime.MinValue;
+
+        public StatusWriteGate(TimeSpan heartbeatInterval)
+        {
+            if (heartbeatInterval <= TimeSpan.Zero) throw new ArgumentOutOfRangeException("heartbeatInterval");
+            this.heartbeatInterval = heartbeatInterval;
+        }
+
+        public int ApprovedWriteCount { get; private set; }
+
+        public bool ShouldWrite(string signature, DateTime nowUtc)
+        {
+            if (signature == null) throw new ArgumentNullException("signature");
+            DateTime now = nowUtc.ToUniversalTime();
+            bool changed = !String.Equals(signature, lastSignature, StringComparison.Ordinal);
+            bool heartbeatDue = lastSignature != null && now - lastWriteUtc >= heartbeatInterval;
+            if (!changed && !heartbeatDue) return false;
+            lastSignature = signature;
+            lastWriteUtc = now;
+            ApprovedWriteCount++;
+            return true;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace OneMContextTicker
                 int selectionCount = TestSelection(root);
                 int layoutCount = TestLayout(root);
                 int faceWidthCount = TestFaceWidth();
+                int idleIoCount = TestIdleIo(serializer);
                 bool malformedFailed = false;
                 try { TokenEngine.FromLines(new[] { "not-json" }, DateTime.UtcNow, 60, null); }
                 catch (InvalidDataException) { malformedFailed = true; }
@@ -45,6 +46,7 @@ namespace OneMContextTicker
                 result["selection_cases"] = selectionCount;
                 result["layout_cases"] = layoutCount;
                 result["face_width_cases"] = faceWidthCount;
+                result["idle_io_cases"] = idleIoCount;
                 result["window_guard_cases"] = 1;
                 result["executable"] = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 File.WriteAllText(outputPath, serializer.Serialize(result), new UTF8Encoding(false));
@@ -176,6 +178,84 @@ namespace OneMContextTicker
                 }
             }
             return faces.Length;
+        }
+
+        private static int TestIdleIo(JavaScriptSerializer serializer)
+        {
+            AssertEqual(false, TickerPollPolicy.ShouldReadRollout(false, false), "background Codex skips rollout I/O");
+            AssertEqual(false, TickerPollPolicy.ShouldReadRollout(true, true), "minimized Codex skips rollout I/O");
+            AssertEqual(true, TickerPollPolicy.ShouldReadRollout(true, false), "foreground Codex permits rollout I/O");
+
+            DateTime baseTime = DateTime.Parse("2026-07-20T12:00:00Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+            StatusWriteGate writeGate = new StatusWriteGate(TimeSpan.FromSeconds(60));
+            AssertEqual(true, writeGate.ShouldWrite("hidden", baseTime), "initial status write");
+            for (int second = 1; second <= 10; second++)
+            {
+                AssertEqual(false, writeGate.ShouldWrite("hidden", baseTime.AddSeconds(second)), "unchanged idle status suppression");
+            }
+            AssertEqual(1, writeGate.ApprovedWriteCount, "idle status write bound");
+            AssertEqual(true, writeGate.ShouldWrite("visible", baseTime.AddSeconds(11)), "meaningful status change");
+            AssertEqual(false, writeGate.ShouldWrite("visible", baseTime.AddSeconds(70)), "heartbeat not yet due");
+            AssertEqual(true, writeGate.ShouldWrite("visible", baseTime.AddSeconds(71)), "status heartbeat");
+
+            string testRoot = Path.Combine(Path.GetTempPath(), "1mct-native-idle-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(testRoot);
+            try
+            {
+                string sessionId = "idle-session";
+                string path = Path.Combine(testRoot, "rollout-" + sessionId + ".jsonl");
+                Dictionary<string, object> metadata = new Dictionary<string, object>();
+                metadata["type"] = "session_meta";
+                metadata["payload"] = new Dictionary<string, object>
+                {
+                    { "id", sessionId },
+                    { "originator", "Codex Desktop" },
+                    { "thread_source", "root" }
+                };
+                File.WriteAllText(
+                    path,
+                    serializer.Serialize(metadata) + "\n" + TokenEvent(serializer, baseTime, 112000L) + "\n",
+                    new UTF8Encoding(false));
+                File.SetLastWriteTimeUtc(path, baseTime);
+
+                RolloutPollCache cache = new RolloutPollCache(TimeSpan.FromSeconds(30));
+                TokenState initial = cache.Poll(testRoot, null, 60, baseTime.AddSeconds(1));
+                AssertEqual(112000L, initial.UsedTokens, "initial cached state");
+                for (int second = 2; second <= 10; second++)
+                {
+                    cache.Poll(testRoot, null, 60, baseTime.AddSeconds(second));
+                }
+                AssertEqual(1, cache.SelectionScanCount, "unchanged candidate scan bound");
+                AssertEqual(1, cache.StateReadCount, "unchanged rollout read bound");
+
+                File.AppendAllText(path, TokenEvent(serializer, baseTime.AddSeconds(11), 113000L) + "\n", new UTF8Encoding(false));
+                File.SetLastWriteTimeUtc(path, baseTime.AddSeconds(11));
+                TokenState changed = cache.Poll(testRoot, null, 60, baseTime.AddSeconds(11));
+                AssertEqual(113000L, changed.UsedTokens, "changed rollout is reread");
+                AssertEqual(1, cache.SelectionScanCount, "file change avoids recursive rescan");
+                AssertEqual(2, cache.StateReadCount, "changed rollout read count");
+
+                cache.Poll(testRoot, null, 60, baseTime.AddSeconds(31));
+                AssertEqual(2, cache.SelectionScanCount, "periodic recovery scan");
+                AssertEqual(2, cache.StateReadCount, "recovery scan reuses unchanged state");
+            }
+            finally
+            {
+                if (Directory.Exists(testRoot)) Directory.Delete(testRoot, true);
+            }
+            return 1;
+        }
+
+        private static string TokenEvent(JavaScriptSerializer serializer, DateTime timestampUtc, long usedTokens)
+        {
+            Dictionary<string, object> info = new Dictionary<string, object>();
+            info["last_token_usage"] = new Dictionary<string, object> { { "total_tokens", usedTokens } };
+            info["model_context_window"] = TokenEngine.RequiredHostWindow;
+            Dictionary<string, object> record = new Dictionary<string, object>();
+            record["timestamp"] = timestampUtc.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture);
+            record["type"] = "event_msg";
+            record["payload"] = new Dictionary<string, object> { { "type", "token_count" }, { "info", info } };
+            return serializer.Serialize(record);
         }
 
         private static void AssertEqual(object expected, object actual, string label)

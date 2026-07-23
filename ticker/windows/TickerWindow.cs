@@ -23,9 +23,8 @@ namespace OneMContextTicker
         private readonly Border capsule;
         private readonly TextBlock text;
         private readonly DispatcherTimer timer;
-        private string selectedPath;
-        private bool selectionAmbiguous;
-        private long? previousUsed;
+        private readonly RolloutPollCache rolloutCache;
+        private readonly StatusWriteGate statusWriteGate;
         private TokenState lastState;
         private PromptPalette lastPalette;
         private IntPtr handle;
@@ -33,6 +32,8 @@ namespace OneMContextTicker
         public TickerWindow(Options options)
         {
             this.options = options;
+            rolloutCache = new RolloutPollCache(TimeSpan.FromSeconds(15));
+            statusWriteGate = new StatusWriteGate(TimeSpan.FromMinutes(1));
             Title = "1M Context Ticker";
             SizeToContent = SizeToContent.Height;
             WindowStyle = WindowStyle.None;
@@ -111,30 +112,24 @@ namespace OneMContextTicker
             CodexWindowInfo codexWindow = null;
             try
             {
-                RolloutSelection candidate = RolloutSelector.Select(options.SessionsRoot, options.ThreadId, 15);
-                if (String.IsNullOrEmpty(selectedPath)) selectedPath = candidate.Path;
-                else if (candidate.Path != selectedPath)
-                {
-                    DateTime selectedWrite = File.Exists(selectedPath) ? File.GetLastWriteTimeUtc(selectedPath) : DateTime.MinValue;
-                    DateTime candidateWrite = File.GetLastWriteTimeUtc(candidate.Path);
-                    if (candidateWrite > selectedWrite.AddSeconds(3))
-                    {
-                        selectedPath = candidate.Path;
-                        previousUsed = null;
-                    }
-                }
-                selectionAmbiguous = candidate.Ambiguous;
-                TokenState state = RolloutReader.ReadState(selectedPath, options.StaleAfterSeconds, previousUsed);
-                previousUsed = state.UsedTokens;
-                lastState = state;
                 codexWindow = Native.FindCodexWindow();
-
-                if (codexWindow.IsMinimized || !codexWindow.IsForeground)
+                if (!TickerPollPolicy.ShouldReadRollout(codexWindow.IsForeground, codexWindow.IsMinimized))
                 {
                     Hide();
-                    WriteStatus(state, codexWindow, false, null);
+                    if (lastState != null)
+                    {
+                        lastState = TokenEngine.RefreshAge(lastState, DateTime.UtcNow, options.StaleAfterSeconds);
+                    }
+                    WriteStatus(lastState, codexWindow, false, null);
                     return;
                 }
+
+                TokenState state = rolloutCache.Poll(
+                    options.SessionsRoot,
+                    options.ThreadId,
+                    options.StaleAfterSeconds,
+                    DateTime.UtcNow);
+                lastState = state;
 
                 PromptPalette palette = Native.ReadPromptPalette(codexWindow);
                 lastPalette = palette;
@@ -144,7 +139,7 @@ namespace OneMContextTicker
                 text.Foreground = Brush(palette.MutedR, palette.MutedG, palette.MutedB);
                 int percentUsed = 100 - state.PercentRemaining;
                 if (state.IsStale) text.Foreground = Brushes.SlateGray;
-                else if (selectionAmbiguous) text.Foreground = Brushes.Gold;
+                else if (rolloutCache.SelectionAmbiguous) text.Foreground = Brushes.Gold;
                 else if (percentUsed >= 90) text.Foreground = Brushes.OrangeRed;
                 else if (percentUsed >= 75) text.Foreground = Brushes.Orange;
 
@@ -174,6 +169,10 @@ namespace OneMContextTicker
                     else Hide();
                 }
                 catch { Hide(); }
+                if (lastState != null)
+                {
+                    lastState = TokenEngine.RefreshAge(lastState, DateTime.UtcNow, options.StaleAfterSeconds);
+                }
                 WriteStatus(lastState, codexWindow, IsVisible, error.Message);
             }
         }
@@ -217,8 +216,6 @@ namespace OneMContextTicker
         {
             try
             {
-                string directory = Path.GetDirectoryName(options.StatusPath);
-                if (!String.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
                 Native.Rect rect = new Native.Rect();
                 bool hasRect = handle != IntPtr.Zero && Native.GetWindowRect(handle, out rect);
                 long style = handle == IntPtr.Zero ? 0L : Native.GetWindowLongPtr(handle, Native.GwlExStyle).ToInt64();
@@ -234,13 +231,13 @@ namespace OneMContextTicker
                 value["has_tool_window"] = (style & Native.WsExToolWindow) != 0;
                 value["has_no_activate"] = (style & Native.WsExNoActivate) != 0;
                 value["has_transparent_input"] = (style & Native.WsExTransparent) != 0;
-                value["session_id"] = selectedPath == null ? null : RolloutReader.ReadMetadata(selectedPath).SessionId;
+                value["session_id"] = rolloutCache.SelectedSessionId;
                 value["used_tokens"] = state == null ? null : (object)state.UsedTokens;
                 value["context_window"] = state == null ? null : (object)state.ContextWindow;
                 value["remaining_tokens"] = state == null ? null : (object)state.RemainingTokens;
                 value["percent_remaining"] = state == null ? null : (object)state.PercentRemaining;
                 value["is_stale"] = state == null ? null : (object)state.IsStale;
-                value["selection_ambiguous"] = selectionAmbiguous;
+                value["selection_ambiguous"] = rolloutCache.SelectionAmbiguous;
                 value["prompt_background"] = lastPalette == null ? null : String.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", lastPalette.BackgroundR, lastPalette.BackgroundG, lastPalette.BackgroundB);
                 value["prompt_theme"] = lastPalette == null ? null : lastPalette.IsLight ? "light" : "dark";
                 value["prompt_center"] = lastPalette == null ? null : (object)lastPalette.PromptCenter;
@@ -248,8 +245,14 @@ namespace OneMContextTicker
                 value["codex_foreground"] = codexWindow != null && codexWindow.IsForeground;
                 value["codex_minimized"] = codexWindow == null ? null : (object)codexWindow.IsMinimized;
                 value["error"] = error;
-                value["updated_utc"] = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
-                File.WriteAllText(options.StatusPath, TokenEngine.NewSerializer().Serialize(value), new System.Text.UTF8Encoding(false));
+                JavaScriptSerializer serializer = TokenEngine.NewSerializer();
+                DateTime nowUtc = DateTime.UtcNow;
+                string signature = serializer.Serialize(value);
+                if (!statusWriteGate.ShouldWrite(signature, nowUtc)) return;
+                value["updated_utc"] = nowUtc.ToString("o", CultureInfo.InvariantCulture);
+                string directory = Path.GetDirectoryName(options.StatusPath);
+                if (!String.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+                File.WriteAllText(options.StatusPath, serializer.Serialize(value), new System.Text.UTF8Encoding(false));
             }
             catch { }
         }
