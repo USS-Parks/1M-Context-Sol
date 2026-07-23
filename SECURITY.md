@@ -2,7 +2,12 @@
 
 ## Supported versions
 
-No released version exists yet. Security fixes apply to the active development branch until the first release.
+| Version | Supported |
+|---|---|
+| 0.1.x | Yes |
+| < 0.1.0 | No |
+
+Security fixes apply to the latest v0.1.x release and the active development branch.
 
 ## Reporting a vulnerability
 

@@ -6,7 +6,7 @@
 
 <h2 align="center">Windows and macOS downloads</h2>
 
-| Platform | Candidate | Verify and install |
+| Platform | Download | Verify and install |
 |---|---|---|
 | Windows x64 | [`1M-Context-Ticker-Windows-x64.exe`](https://github.com/USS-Parks/1M-Context-Sol/releases/download/v0.1.0/1M-Context-Ticker-Windows-x64.exe) | [SHA-256](https://github.com/USS-Parks/1M-Context-Sol/releases/download/v0.1.0/1M-Context-Ticker-Windows-x64.exe.sha256) |
 | macOS 14+ universal (`arm64` + `x86_64`) | [`1M-Context-Ticker-macOS-universal.dmg`](https://github.com/USS-Parks/1M-Context-Sol/releases/download/v0.1.0/1M-Context-Ticker-macOS-universal.dmg) | [Checksum-first macOS instructions](docs/MACOS.md) |
@@ -68,7 +68,7 @@ The ticker sits on the Codex prompt pill's lower control row, centered between t
 
 The face deliberately says `/ 1M` for readability while status output and verification records retain the exact dimensions.
 
-## Verify each fresh task
+## Verify each active task
 
 When Codex is foreground, a verified task displays the full click-through face `Context: <active tokens> / 1M`. The normal `/ 1M` face appears only when the active host token event reports the exact `1,008,000` budget; a different window fails visibly as `Context: !` rather than making a false 1M claim.
 
@@ -78,11 +78,11 @@ The ticker has no hover popup and does not intercept composer input. For exact d
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Status
 ```
 
-Require `one_m_context_verified : True`. `display_state : hidden-outside-foreground-codex` means the verified ticker is intentionally hidden because another app has focus. After the initial installation/restart, verify each new task this way; an already-open task does not retroactively re-resolve changed model-catalog settings.
+Require `one_m_context_verified : True`. `display_state : hidden-outside-foreground-codex` means the verified ticker is intentionally hidden because another app has focus. After installation, quit and reopen Codex normally, send another turn, and verify the active task this way. Live v0.1.0 testing observed an existing session re-resolve the changed model catalog after restart, but this may vary by Codex Desktop version; task age is not proof, and the active task's verified host window remains authoritative.
 
-## Install the Windows release candidate
+## Install the Windows release
 
-The local release candidate is [`dist/1M-Context-Ticker-Windows-x64.exe`](dist/1M-Context-Ticker-Windows-x64.exe). It is an unsigned, framework-dependent .NET Framework 4.8 x64 executable. The checked-in checksum and artifact manifest are produced from two source-identical clean builds.
+The local Windows release artifact is [`dist/1M-Context-Ticker-Windows-x64.exe`](dist/1M-Context-Ticker-Windows-x64.exe). It is an unsigned, framework-dependent .NET Framework 4.8 x64 executable. The checked-in checksum and artifact manifest are produced from two source-identical clean builds.
 
 From Windows PowerShell in this repository:
 
@@ -112,6 +112,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\overlay\manage-overlay.ps1 -Action Uninstall
 ```
 
+`config_snapshot_matches` compares the entire current config with the post-install snapshot, so an unrelated Codex rewrite can make it false. `config_owned_values_match` checks only the four manifest-owned values and must remain true.
+
 Uninstall stops only a verified ticker process, removes its two shortcuts and install directory, and restores owned configuration. If unrelated user/app settings changed after installation, those later changes are preserved.
 
 ## Verification
@@ -140,10 +142,10 @@ Detailed local evidence is in:
 
 ## Current limitations
 
-- Windows only.
+- Public v0.1.0 builds support Windows x64 and macOS 14+ universal (`arm64` and `x86_64`); other platforms are unsupported.
 - The visible surface is a separate focusless overlay, not a native Codex prompt-pill component.
-- The release candidate is unsigned and Windows-only; Windows PowerShell is used for installation and verification, not as the running ticker process.
-- Public signing, GitHub Release publication, imagery, and macOS packaging remain parked outside the current release scope.
+- The Windows executable is unsigned, and the macOS DMG is unsigned and unnotarized. Windows PowerShell is used for Windows installation and verification, not as the running ticker process.
+- Physical-Mac placement and real login-item/configuration acceptance remain unclaimed.
 - Configuration and host-budget proof do not substitute for an unrun paid request above the previously tested live boundary.
 
 ## Historical implementation

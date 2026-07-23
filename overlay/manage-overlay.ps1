@@ -86,7 +86,7 @@ function Get-TopLevelPrefix([string] $Text) {
 
 function Get-TopLevelValue([string] $Prefix, [string] $Key) {
     $escaped = [regex]::Escape($Key)
-    $matches = [regex]::Matches($Prefix, "(?m)^[ \t]*$escaped[ \t]*=[ \t]*(?<value>[^\r\n]+)[ \t]*$")
+    $matches = [regex]::Matches($Prefix, "(?m)^[ \t]*$escaped[ \t]*=[ \t]*(?<value>[^\r\n]*?[^ \t\r\n])[ \t]*\r?$")
     if ($matches.Count -gt 1) {
         throw "Duplicate top-level key '$Key' is not safe to manage."
     }
@@ -343,6 +343,22 @@ function Get-ConfigWithoutOwnedKeys($Manifest) {
     [pscustomobject]@{ Bytes = ConvertTo-Utf8Bytes ($parts.Prefix + $parts.Suffix) $hasBom; ExactRestore = $false }
 }
 
+function Test-ConfigOwnedValues($Manifest) {
+    try {
+        $text = ConvertFrom-Utf8Bytes ([IO.File]::ReadAllBytes($ConfigPath))
+        $prefix = (Get-TopLevelPrefix $text).Prefix
+        foreach ($key in $ownedKeys) {
+            if ((Get-TopLevelValue $prefix $key) -ne [string]$Manifest.installed_values.$key) {
+                return $false
+            }
+        }
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
 function Get-RuntimeKind($Manifest) {
     if ($Manifest.schema_version -eq 2 -and $Manifest.runtime_kind -eq 'native-executable') { return 'native-executable' }
     'powershell-reference'
@@ -561,7 +577,8 @@ function Get-OverlayStatus {
         required_host_window = 1008000L
         one_m_context_verified = $oneMVerified
         display_state = $displayState
-        config_owned_snapshot_matches = (Get-Sha256 $ConfigPath) -eq $manifest.installed_config_sha256
+        config_snapshot_matches = (Get-Sha256 $ConfigPath) -eq $manifest.installed_config_sha256
+        config_owned_values_match = Test-ConfigOwnedValues $manifest
         startup_shortcut_exists = if ($SkipShortcut) { $null } else { Test-Path -LiteralPath $manifest.startup_shortcut }
         start_menu_shortcut_exists = if ($SkipShortcut) { $null } else { Test-Path -LiteralPath $manifest.start_menu_shortcut }
         process_state = $ticker.State
