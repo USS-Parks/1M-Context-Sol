@@ -55,3 +55,11 @@ The command runs `codex --version` and `codex debug models`, generates two expli
 The checked-in implementation generated a one-model catalog from the full resolved installed catalog and loaded it back through Codex with a command-scoped `model_catalog_json` override. Codex reported exactly one `gpt-5.6-sol` entry with policy `1,050,000 / 1,050,000 / 96`; base instruction bytes, model-message semantics, and reviewed feature flags matched the source. The generated catalog SHA-256 was `eceabc60cee218fc5a4bd2042ecccd9330be7986a8095ed26905779a15687081`.
 
 This is local client-parser compatibility evidence only. It is not G2 native-window evidence and makes no release claim.
+
+## Headless Linux profile
+
+The Linux/Paseo manager adds a separate `codex-model-catalog/0.145.0-v1` profile. It captures the version-matched embedded catalog with `codex debug models --bundled`; it does not reuse the checked-in 0.144.5 entry. The profile is pinned to the official `rust-v0.145.0` source tag (`25af12f7e61572b0bc18ddb1008be543b91519b0`) and requires the exact reviewed Sol field set and value kinds.
+
+Codex 0.145.0's source entry differs materially from 0.144.5: its catalog window is 272,000, it has no `effective_context_window_percent` field, and it carries different instruction/capability metadata. Linux generation therefore preserves the complete 0.145.0 source entry and changes only `context_window`, `max_context_window`, and `auto_compact_token_limit`. The separate top-level `model_context_window`, `model_auto_compact_token_limit`, and `model_auto_compact_token_limit_scope` keys carry the installed user policy.
+
+An unsupported CLI version, added/removed Sol field, wrong value kind, duplicate/missing slug, or preservation mismatch stops plan/install. Each deterministic install manifest records the Codex version, schema ID, raw/normalized/source/preserved/output hashes, approved allowlist, and actual changed fields. See [Headless Linux and Paseo](../LINUX-PASEO.md).

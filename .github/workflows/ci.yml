@@ -146,6 +146,24 @@ jobs:
         shell: powershell
         run: .\ticker\windows\verify-release.ps1 -OutputDirectory "$env:RUNNER_TEMP\1m-context-ticker-dist"
 
+  linux-sol-policy:
+    name: Headless Linux Sol policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Check Bash syntax and lint
+        run: |
+          bash -n scripts/linux/manage-sol-policy
+          shellcheck scripts/linux/manage-sol-policy
+
+      - name: Compile the Python manager
+        run: python3 -m py_compile scripts/linux/sol_policy_manager.py
+
+      - name: Run Linux policy lifecycle and negative gates
+        run: python3 -m unittest discover -s scripts/linux/tests -v
+
   macos-ticker:
     name: macOS native ticker
     runs-on: macos-15

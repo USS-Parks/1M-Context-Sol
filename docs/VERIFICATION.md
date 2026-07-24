@@ -41,6 +41,12 @@ No release claim is active. G0–G9 remain open until their prescribed evidence 
 | MAC-03 | Universal app, DMG, checksums, manifest, and focused macOS CI | Passed for macOS 14+ | `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9`, green run [29890495321](https://github.com/USS-Parks/1M-Context-Sol/actions/runs/29890495321), artifact `8518078853`, and `docs/evidence/MAC-03/universal-dmg.md` |
 | MAC-04 | Dual-platform public release | Published | Public [v0.1.0 release](https://github.com/USS-Parks/1M-Context-Sol/releases/tag/v0.1.0), tag `ef7b779c794f654c431a8c0f9fddf1040d7a3ed9`, and `docs/evidence/MAC-04/public-release.md` |
 
+### Headless Linux/Paseo (`LNX-01`)
+
+| Prompt | Gate | Status | Evidence |
+|---|---|---|---|
+| LNX-01 | Codex 0.145.0-derived Sol catalog, four-key ownership, reversible config lifecycle, explicit-only live verification, Paseo startup/model boundary, and `ubuntu-latest` gates | Passed locally; hosted and live proof unclaimed | 11 Linux tests, official 0.145.0 catalog generation, repository gates, `scripts/linux/`, `docs/LINUX-PASEO.md`, and the Linux/Paseo DEVLOG |
+
 ### Historical Context Continuum initiative
 
 | Prompt | Gate | Status | Evidence |

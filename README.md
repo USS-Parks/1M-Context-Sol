@@ -104,6 +104,19 @@ Installation:
 
 Quit and reopen Codex normally when convenient, then open **1M Context Ticker** from the Start menu once. Future Windows sign-ins launch the helper automatically; it remains hidden until Codex is foreground.
 
+## Headless Linux and Paseo
+
+Linux is a supported headless policy/verification surface for exact `codex-cli 0.145.0`; it does not reproduce the Windows/macOS composer overlay. The manager derives a compatible Sol entry from the installed CLI, owns only the four documented Codex keys, and never restarts Paseo or sends model traffic unless `verify --live` is explicitly invoked.
+
+```bash
+bash scripts/linux/manage-sol-policy plan
+bash scripts/linux/manage-sol-policy install
+bash scripts/linux/manage-sol-policy status
+bash scripts/linux/manage-sol-policy verify
+```
+
+After install, start a fresh Paseo Codex agent with `--provider codex` or `--provider codex/gpt-5.6-sol`. An explicit different provider model such as `codex/gpt-5.4` remains authoritative and does not use the Sol policy. See [Headless Linux and Paseo](docs/LINUX-PASEO.md) for `CODEX_HOME`, compatibility, live verification, and safe uninstall details.
+
 ## Status, stop, and uninstall
 
 ```powershell
@@ -130,19 +143,20 @@ Detailed local evidence is in:
 - [Desktop/overlay development log](docs/sessions/CODEX-DESKTOP-SOL-1M-DEVLOG.md)
 - [Windows executable release log](docs/sessions/1M-CONTEXT-TICKER-RELEASE-DEVLOG.md)
 - [Safe install and rollback evidence](docs/evidence/CDO-03/safe-install-and-rollback.md)
+- [Headless Linux/Paseo installation and verification](docs/LINUX-PASEO.md)
 
 ## Privacy and safety
 
 - Reads local Codex rollout metadata and `token_count` events.
 - Does not display or transmit transcript content.
-- Sends no model requests and uses no alternate API lane.
+- Sends no model requests during plan, install, status, uninstall, or ordinary verification and uses no alternate API lane. Linux `verify --live` sends one request only after explicit opt-in.
 - Does not modify the signed Codex package.
 - Does not terminate Codex or its app-server.
 - Uses no scheduled task, MCP server, browser service, or replacement chat client.
 
 ## Current limitations
 
-- Public v0.1.0 builds support Windows x64 and macOS 14+ universal (`arm64` and `x86_64`); other platforms are unsupported.
+- Public v0.1.0 visible ticker builds support Windows x64 and macOS 14+ universal (`arm64` and `x86_64`). Linux support is headless policy/verification only and currently pins exact Codex CLI 0.145.0.
 - The visible surface is a separate focusless overlay, not a native Codex prompt-pill component.
 - The Windows executable is unsigned, and the macOS DMG is unsigned and unnotarized. Windows PowerShell is used for Windows installation and verification, not as the running ticker process.
 - Physical-Mac placement and real login-item/configuration acceptance remain unclaimed.
