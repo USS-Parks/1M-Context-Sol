@@ -127,3 +127,12 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Verification:** `cargo fmt --check` clean; 76 Rust tests passed across 11 suites; shared-fixture overlay tests passed; installer lifecycle tests passed; two source-identical clean builds matched; native self-test passed with 5 token, 3 selection, 4 layout, 3 face-width, 1 idle-I/O, and 1 window-guard cases.
 - **Deployment:** Upgraded the local install in place to SHA-256 `cecbd31045608606eb03f1a04f878e43c3ac31d3c0be6ee0b54f423349e29baa` (44,544 bytes); one native PID running with no-activate click-through styles; owned config values match. The reference module read the live rollout end to end: 170,108 of 1,008,000 host tokens, unambiguous.
 - **Boundary:** `ticker/macos` still carries the exact-window contract and was not modified; the same guard change applies there when a Mac build environment is available.
+
+## Live boundary test - Proven to 355,074 tokens
+
+- **Date:** 2026-07-23 (test events 2026-07-24T02:01Z through 03:03Z)
+- **Test:** A user-driven controlled deep-context run in a live root Codex Desktop task under the installed 1M policy, with nine parallel subagent loader threads, followed by a full rollout sweep.
+- **Evidence:** Root session `019f91a3-3bc6-7762-85a6-3d5cc128eebd` carried host window `1,008,000` across all 202 token events. It crossed `258,400` at 02:06:25Z (`265,537`), `272,000` at 02:07:12Z (`275,849`), and `353,400` at 02:59:31Z (`353,784`), and completed its deepest turn at `355,074` tokens at 03:00:04Z. No context-exhaustion failure occurred; the session ended three minutes later with a deliberate reset (`355,074 -> 0`, no error event), which is distinct from the pre-install failure signature.
+- **Contrast:** Pre-install sessions on 2026-07-17 and 2026-07-19 ended cold at `226,505`, `228,910`, and `239,993` of a `258,400` budget with no further turns and no logged error - the "ran out of usable context" walls this policy removes.
+- **Subagent behavior:** All nine loader threads compacted at roughly `226,000`-`231,600` down to about `25,000` and continued working. Thread-level compaction is governed separately from the root task's `900,000` threshold; single-thread depth belongs in the root task.
+- **Conclusion:** Server-proven acceptance for exact `gpt-5.6-sol` under this policy extends from the prior ~`252K` observation to `355,074` tokens. The `355K`-to-`900K` range remains unproven, and `900,000` root auto-compaction remains the designed ceiling behavior.
