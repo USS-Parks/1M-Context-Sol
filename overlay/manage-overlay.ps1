@@ -398,8 +398,12 @@ function Get-TickerProcess($Manifest) {
 function Stop-TickerProcess($Manifest) {
     $ticker = Get-TickerProcess $Manifest
     if ($ticker.State -ne 'running') { return $ticker.State }
-    Stop-Process -Id ([int]$ticker.Process.ProcessId)
-    Wait-Process -Id ([int]$ticker.Process.ProcessId) -Timeout 10 -ErrorAction SilentlyContinue
+    $processId = [int]$ticker.Process.ProcessId
+    Stop-Process -Id $processId -Force
+    $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
+    if ($process -and -not $process.WaitForExit(10000)) {
+        throw "Ticker process $processId did not terminate; refusing to replace a running executable."
+    }
     'stopped'
 }
 
@@ -408,6 +412,44 @@ function Upgrade-Overlay {
     Assert-NativeExecutable $ExecutablePath
     $manifest = Read-Manifest
     Assert-ManifestMatches $manifest
+    if ($manifest.schema_version -eq 2 -and $manifest.runtime_kind -eq 'native-executable') {
+        $manifestBytes = [IO.File]::ReadAllBytes($manifestPath)
+        $backupExecutable = $installedExecutablePath + '.before-upgrade'
+        $upgraded = $false
+        try {
+            Copy-Item -LiteralPath $installedExecutablePath -Destination $backupExecutable -Force
+            $processState = Stop-TickerProcess $manifest
+            Copy-Item -LiteralPath $ExecutablePath -Destination $installedExecutablePath -Force
+            $executableHash = Get-Sha256 $installedExecutablePath
+            $manifest.executable_sha256 = $executableHash
+            $manifest.file_sha256.PSObject.Properties[$nativeExecutableName].Value = $executableHash
+            $manifestJson = $manifest | ConvertTo-Json -Depth 8
+            Write-BytesAtomically $manifestPath ((New-Object Text.UTF8Encoding($false)).GetBytes($manifestJson))
+            New-TickerShortcuts 'native-executable' $manifest.startup_shortcut $manifest.start_menu_shortcut
+            $upgraded = $true
+            [pscustomobject]@{
+                action = 'upgrade'
+                upgraded = $true
+                prior_process = $processState
+                runtime_kind = 'native-executable'
+                executable_path = $installedExecutablePath
+                executable_sha256 = $executableHash
+                ticker_launch_required = $true
+                codex_process_control = 'none'
+            }
+            return
+        }
+        finally {
+            if (-not $upgraded) {
+                if (Test-Path -LiteralPath $backupExecutable -PathType Leaf) {
+                    Copy-Item -LiteralPath $backupExecutable -Destination $installedExecutablePath -Force
+                }
+                Write-BytesAtomically $manifestPath $manifestBytes
+                New-TickerShortcuts 'native-executable' $manifest.startup_shortcut $manifest.start_menu_shortcut
+            }
+            Remove-Item -LiteralPath $backupExecutable -Force -ErrorAction SilentlyContinue
+        }
+    }
     if ($manifest.schema_version -ne 1) { throw 'Upgrade requires the installed PowerShell reference manifest (schema 1).' }
     foreach ($file in $requiredSourceFiles) {
         if (-not (Test-Path -LiteralPath (Join-Path $InstallRoot $file) -PathType Leaf)) {
@@ -557,14 +599,12 @@ function Get-OverlayStatus {
     if ($ticker.RuntimeKind -eq 'native-executable' -and $null -ne $ticker.Runtime) {
         $windowProperty = $ticker.Runtime.PSObject.Properties['context_window']
         $staleProperty = $ticker.Runtime.PSObject.Properties['is_stale']
-        $ambiguousProperty = $ticker.Runtime.PSObject.Properties['selection_ambiguous']
         $errorProperty = $ticker.Runtime.PSObject.Properties['error']
         $visibleProperty = $ticker.Runtime.PSObject.Properties['visible']
         $foregroundProperty = $ticker.Runtime.PSObject.Properties['codex_foreground']
         $oneMVerified = $ticker.State -eq 'running' -and
-            $null -ne $windowProperty -and [long]$windowProperty.Value -eq 1008000L -and
+            $null -ne $windowProperty -and $null -ne $windowProperty.Value -and [long]$windowProperty.Value -ge 1000000L -and
             ($null -eq $staleProperty -or -not [bool]$staleProperty.Value) -and
-            ($null -eq $ambiguousProperty -or -not [bool]$ambiguousProperty.Value) -and
             ($null -eq $errorProperty -or [string]::IsNullOrWhiteSpace([string]$errorProperty.Value))
         if ($null -ne $visibleProperty -and [bool]$visibleProperty.Value) { $displayState = 'visible-in-codex' }
         elseif ($null -ne $foregroundProperty -and -not [bool]$foregroundProperty.Value) { $displayState = 'hidden-outside-foreground-codex' }
@@ -574,7 +614,7 @@ function Get-OverlayStatus {
     [pscustomobject]@{
         installed = $true
         runtime_kind = Get-RuntimeKind $manifest
-        required_host_window = 1008000L
+        minimum_one_m_window = 1000000L
         one_m_context_verified = $oneMVerified
         display_state = $displayState
         config_snapshot_matches = (Get-Sha256 $ConfigPath) -eq $manifest.installed_config_sha256

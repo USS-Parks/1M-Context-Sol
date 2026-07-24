@@ -77,7 +77,6 @@ namespace OneMContextTicker
     internal static class TokenEngine
     {
         public const long BaselineTokens = 12000L;
-        public const long RequiredHostWindow = 1008000L;
 
         public static TokenState FromLines(
             IEnumerable<string> lines,
@@ -114,13 +113,12 @@ namespace OneMContextTicker
             Dictionary<string, object> last = JsonValue.Object(JsonValue.Required(info, "last_token_usage"), "last_token_usage");
             long used = JsonValue.Integer(last, "total_tokens");
             long contextWindow = JsonValue.Integer(info, "model_context_window");
-            if (contextWindow != RequiredHostWindow)
+            if (contextWindow <= BaselineTokens)
             {
                 throw new InvalidDataException(String.Format(
                     CultureInfo.InvariantCulture,
-                    "Host context window {0} does not match required 1M budget {1}.",
-                    contextWindow,
-                    RequiredHostWindow));
+                    "Host context window {0} is not a usable task budget.",
+                    contextWindow));
             }
             if (used < 0) throw new InvalidDataException("Invalid active token count.");
 

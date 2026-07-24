@@ -70,7 +70,7 @@ The face deliberately says `/ 1M` for readability while status output and verifi
 
 ## Verify each active task
 
-When Codex is foreground, a verified task displays the full click-through face `Context: <active tokens> / 1M`. The normal `/ 1M` face appears only when the active host token event reports the exact `1,008,000` budget; a different window fails visibly as `Context: !` rather than making a false 1M claim.
+When Codex is foreground, the ticker displays the full click-through face `Context: <active tokens> / 1M` straight from the freshest host token event. The denominator is the host-reported window: any 1M-class budget (such as the observed `1,008,000`) renders as `/ 1M`, and a smaller host window renders its actual size (for example `/ 272K`) instead of making a false 1M claim. `Context: !` appears only when no valid token event can be read.
 
 The ticker has no hover popup and does not intercept composer input. For exact diagnostics, run:
 

@@ -9,12 +9,12 @@
                      "product_version":  "4.8.9221.0",
                      "deterministic_normalization":  {
                                                          "pe_timestamp":  0,
-                                                         "module_mvid":  "d673f981-9c68-96fa-27c3-265c38a8bd76",
-                                                         "source_seed_sha256":  "64f6b576e86e0daa58ce3e4e5f92b0e91dc9bb6ae45a9b0670ad9e8807f817b9"
+                                                         "module_mvid":  "b2856dcc-ef5a-0b60-29c6-d9833a89f6ca",
+                                                         "source_seed_sha256":  "5bc9f6ca80b0e75223a7d368d9568363cb48f1f9a082cc2464f4f3a1231ef21b"
                                                      }
                  },
-    "bytes":  38400,
-    "sha256":  "f62558811f95866c4284ea2f68ce06355805230179735c74cbae1244c0337f56",
+    "bytes":  44544,
+    "sha256":  "cecbd31045608606eb03f1a04f878e43c3ac31d3c0be6ee0b54f423349e29baa",
     "checksum_file":  "1M-Context-Ticker-Windows-x64.exe.sha256",
     "shared_fixture_sha256":  "44c26a3aca46e1017a4b9ea40ac025cd8f3a7033831dd3e8645843ca92794c31",
     "self_test":  {
@@ -22,7 +22,8 @@
                       "token_cases":  5,
                       "selection_cases":  3,
                       "layout_cases":  4,
-                      "face_width_cases":  2,
+                      "face_width_cases":  3,
+                      "idle_io_cases":  1,
                       "window_guard_cases":  1
                   },
     "managed_dependencies":  [
@@ -36,9 +37,9 @@
                              ],
     "source_sha256":  {
                           "Program.cs":  "44719102b76b811c736fb377faf021c5ad8e793ba2f9759ec7435d5341103750",
-                          "State.cs":  "70690d76a4bafe49f9fc6302af7e170c9daff08b7d996b5b1749b30e14301d7e",
+                          "State.cs":  "edd21c1b832548f29fc233c5431b0a2923abbc6f1fb0b54e1b02b7299b3b47cb",
                           "Native.cs":  "f5d15575b3fafc92726e9cb7c2db6828040f8783f8d3de08800faf587e10d7f3",
-                          "TickerWindow.cs":  "5867cdf4a1183205974dfae62f39e475aa66ce1118cd8c5139276747f1b017df",
-                          "SelfTest.cs":  "46e49fd5ca28d072600cc8c08fb58699e8f48c0c21c724709cec7119c666628d"
+                          "TickerWindow.cs":  "4bca4718a50cd78dd820daa63e4fa22613567b4bdc231c6cec2cee055a762df5",
+                          "SelfTest.cs":  "b9b81dec86a853bb05544caec708a54d9d98e3d938b5db4a384d623925735b1a"
                       }
 }

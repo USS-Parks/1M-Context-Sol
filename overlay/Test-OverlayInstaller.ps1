@@ -51,7 +51,7 @@ try {
     Assert-True ($freshManifest.runtime_kind -eq 'native-executable') 'fresh install selects native runtime'
     $freshStatus = & $manager -Action Status -InstallRoot $install -ConfigPath $config -SourceRoot $PSScriptRoot -SkipShortcut
     Assert-True ($freshStatus.runtime_kind -eq 'native-executable') 'status reports native runtime'
-    Assert-True ($freshStatus.required_host_window -eq 1008000L) 'status reports exact required host window'
+    Assert-True ($freshStatus.minimum_one_m_window -eq 1000000L) 'status reports the minimum 1M host window'
     Assert-True ($freshStatus.config_snapshot_matches -eq $true) 'fresh status reports matching whole-config snapshot'
     Assert-True ($freshStatus.config_owned_values_match -eq $true) 'fresh status reports matching owned values'
     Assert-True ($freshStatus.PSObject.Properties.Name -notcontains 'config_owned_snapshot_matches') 'misleading legacy status field is removed'

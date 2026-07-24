@@ -116,3 +116,14 @@ This append-only ledger records execution of `1MCT-R1`. Full STS execution for R
 - **Implementation commit:** `41063488866daca71fa3776a80a5aa2f493fcd58`.
 - **Remote SHA:** `7961497cd1f40b54332c71629c1a6267494b8bb7`; RLS-06 push is not authorized.
 - **Parked:** Push, tag, GitHub Release, signing, imagery, macOS/DMG, external communication, and paid above-boundary proof.
+
+## Post-release repair - Restore the live count
+
+- **Date:** 2026-07-23
+- **Problem:** The shipped parsers refused any host window that was not exactly `1008000`, so a healthy task could render `Context: !`, and status could report `error-or-unverified` while the 1M policy was live. An uncommitted session had additionally rebuilt the ticker to show `Context: ? / 1M` with frozen root selection whenever two root tasks advanced together, forced `cctx sol run` onto an `OPENAI_API_KEY`-only provider lane, wired an unstaged PreCompact handler that blocked every compaction, and upgraded the local install to that build.
+- **Working-tree cleanup:** Reverted the uncommitted `src/lib.rs`, `src/main.rs`, `src/sol_launcher.rs`, and ticker changes to HEAD and deleted the never-committed `src/precompact_guard.rs`; the ChatGPT-authenticated launch route and normal compaction behavior stand.
+- **Repair:** Both parsers now accept any usable host window (greater than the 12,000-token baseline) and report it as read. The face denominator is derived from the host window: 1M-class budgets render `/ 1M`, smaller windows render their real size, and `Context: !` remains only for unreadable state. Status verifies `one_m_context_verified` against a 1,000,000-token minimum and exposes `minimum_one_m_window`. Upgrade handles an installed native ticker in place and waits on the stopped process handle instead of racing a PID recheck.
+- **Files:** `ticker/windows/State.cs`, `ticker/windows/TickerWindow.cs`, `ticker/windows/SelfTest.cs`, `overlay/ContextOverlay.Core.psm1`, `overlay/context-overlay.ps1`, `overlay/manage-overlay.ps1`, `overlay/Test-ContextOverlay.ps1`, `overlay/Test-OverlayInstaller.ps1`, `README.md`, `dist/*`.
+- **Verification:** `cargo fmt --check` clean; 76 Rust tests passed across 11 suites; shared-fixture overlay tests passed; installer lifecycle tests passed; two source-identical clean builds matched; native self-test passed with 5 token, 3 selection, 4 layout, 3 face-width, 1 idle-I/O, and 1 window-guard cases.
+- **Deployment:** Upgraded the local install in place to SHA-256 `cecbd31045608606eb03f1a04f878e43c3ac31d3c0be6ee0b54f423349e29baa` (44,544 bytes); one native PID running with no-activate click-through styles; owned config values match. The reference module read the live rollout end to end: 170,108 of 1,008,000 host tokens, unambiguous.
+- **Boundary:** `ticker/macos` still carries the exact-window contract and was not modified; the same guard change applies there when a Mac build environment is available.

@@ -48,10 +48,14 @@ $invalidFailed = $false
 try { ConvertFrom-ContextTokenEvent -Lines @('not-json') | Out-Null } catch { $invalidFailed = $true }
 Assert-Equal $true $invalidFailed 'malformed input fails closed'
 
-$wrongWindowFailed = $false
-$wrongWindowEvent = '{"timestamp":"2026-07-20T12:00:00Z","type":"event_msg","payload":{"type":"token_count","info":{"last_token_usage":{"total_tokens":112000},"model_context_window":258400}}}'
-try { ConvertFrom-ContextTokenEvent -Lines @($wrongWindowEvent) -Now ([datetime]'2026-07-20T12:00:01Z') | Out-Null } catch { $wrongWindowFailed = $true }
-Assert-Equal $true $wrongWindowFailed 'non-1M host window fails closed'
+$smallerWindowEvent = '{"timestamp":"2026-07-20T12:00:00Z","type":"event_msg","payload":{"type":"token_count","info":{"last_token_usage":{"total_tokens":112000},"model_context_window":258400}}}'
+$smallerWindowState = ConvertFrom-ContextTokenEvent -Lines @($smallerWindowEvent) -Now ([datetime]'2026-07-20T12:00:01Z')
+Assert-Equal 258400 $smallerWindowState.ContextWindow 'non-1M host window is reported as-is'
+
+$unusableWindowFailed = $false
+$unusableWindowEvent = '{"timestamp":"2026-07-20T12:00:00Z","type":"event_msg","payload":{"type":"token_count","info":{"last_token_usage":{"total_tokens":112000},"model_context_window":0}}}'
+try { ConvertFrom-ContextTokenEvent -Lines @($unusableWindowEvent) -Now ([datetime]'2026-07-20T12:00:01Z') | Out-Null } catch { $unusableWindowFailed = $true }
+Assert-Equal $true $unusableWindowFailed 'unusable host window fails closed'
 
 $tailFixture = Join-Path ([IO.Path]::GetTempPath()) ('context-overlay-tail-' + [guid]::NewGuid().ToString('N') + '.jsonl')
 try {

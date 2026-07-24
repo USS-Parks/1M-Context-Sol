@@ -133,7 +133,7 @@ namespace OneMContextTicker
 
                 PromptPalette palette = Native.ReadPromptPalette(codexWindow);
                 lastPalette = palette;
-                text.Text = String.Format(CultureInfo.CurrentCulture, "Context: {0:N0} / 1M", state.UsedTokens);
+                text.Text = String.Format(CultureInfo.CurrentCulture, "Context: {0:N0} / {1}", state.UsedTokens, FormatWindow(state.ContextWindow));
                 Width = RequiredFaceWidth(text.Text);
                 capsule.Background = Brush(palette.BackgroundR, palette.BackgroundG, palette.BackgroundB);
                 text.Foreground = Brush(palette.MutedR, palette.MutedG, palette.MutedB);
@@ -186,6 +186,13 @@ namespace OneMContextTicker
                 : deviceCenter;
             Left = dipCenter.X - (ActualWidth / 2.0);
             Top = dipCenter.Y - (ActualHeight / 2.0);
+        }
+
+        internal static string FormatWindow(long window)
+        {
+            return window >= 995000L
+                ? String.Format(CultureInfo.CurrentCulture, "{0:0.#}M", window / 1000000.0)
+                : String.Format(CultureInfo.CurrentCulture, "{0:N0}K", window / 1000L);
         }
 
         internal static double MeasureFaceTextWidth(string value)

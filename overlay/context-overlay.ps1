@@ -239,7 +239,13 @@ function Update-Overlay {
         }
 
         $usedPercent = 100 - $current.PercentRemaining
-        $usedText.Text = ('Context: {0:N0} / 1M' -f $current.UsedTokens)
+        $windowLabel = if ($current.ContextWindow -ge 995000L) {
+            '{0:0.#}M' -f ($current.ContextWindow / 1000000.0)
+        }
+        else {
+            '{0:N0}K' -f [long][math]::Floor($current.ContextWindow / 1000)
+        }
+        $usedText.Text = ('Context: {0:N0} / {1}' -f $current.UsedTokens, $windowLabel)
         $palette = Get-CodexPromptPalette -Window $position
         $script:lastPalette = $palette
         $capsule.Background = New-RgbBrush $palette.BackgroundR $palette.BackgroundG $palette.BackgroundB

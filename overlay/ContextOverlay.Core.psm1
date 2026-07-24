@@ -1,7 +1,6 @@
 Set-StrictMode -Version Latest
 
 $script:BaselineTokens = 12000L
-$script:RequiredHostWindow = 1008000L
 
 function ConvertFrom-ContextTokenEvent {
     [CmdletBinding()]
@@ -36,8 +35,8 @@ function ConvertFrom-ContextTokenEvent {
 
     $usedTokens = [long]$event.payload.info.last_token_usage.total_tokens
     $contextWindow = [long]$event.payload.info.model_context_window
-    if ($contextWindow -ne $script:RequiredHostWindow) {
-        throw "Host context window $contextWindow does not match required 1M budget $($script:RequiredHostWindow)."
+    if ($contextWindow -le $script:BaselineTokens) {
+        throw "Host context window $contextWindow is not a usable task budget."
     }
     if ($usedTokens -lt 0) {
         throw 'The token event contains an invalid active-context count.'

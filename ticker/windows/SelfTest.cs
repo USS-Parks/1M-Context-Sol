@@ -28,17 +28,24 @@ namespace OneMContextTicker
                 catch (InvalidDataException) { malformedFailed = true; }
                 AssertEqual(true, malformedFailed, "malformed input");
 
-                bool wrongWindowFailed = false;
+                TokenState smallerWindow = TokenEngine.FromLines(
+                    new[] { "{\"timestamp\":\"2026-07-20T12:00:00Z\",\"type\":\"event_msg\",\"payload\":{\"type\":\"token_count\",\"info\":{\"last_token_usage\":{\"total_tokens\":112000},\"model_context_window\":258400}}}" },
+                    DateTime.Parse("2026-07-20T12:00:01Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
+                    60,
+                    null);
+                AssertEqual(258400L, smallerWindow.ContextWindow, "non-1M host window is reported as-is");
+
+                bool unusableWindowFailed = false;
                 try
                 {
                     TokenEngine.FromLines(
-                        new[] { "{\"timestamp\":\"2026-07-20T12:00:00Z\",\"type\":\"event_msg\",\"payload\":{\"type\":\"token_count\",\"info\":{\"last_token_usage\":{\"total_tokens\":112000},\"model_context_window\":258400}}}" },
+                        new[] { "{\"timestamp\":\"2026-07-20T12:00:00Z\",\"type\":\"event_msg\",\"payload\":{\"type\":\"token_count\",\"info\":{\"last_token_usage\":{\"total_tokens\":112000},\"model_context_window\":0}}}" },
                         DateTime.Parse("2026-07-20T12:00:01Z", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
                         60,
                         null);
                 }
-                catch (InvalidDataException) { wrongWindowFailed = true; }
-                AssertEqual(true, wrongWindowFailed, "non-1M host window");
+                catch (InvalidDataException) { unusableWindowFailed = true; }
+                AssertEqual(true, unusableWindowFailed, "unusable host window");
 
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 result["passed"] = true;
@@ -167,7 +174,9 @@ namespace OneMContextTicker
 
         private static int TestFaceWidth()
         {
-            string[] faces = { "Context: 117,015 / 1M", "Context: 1,008,000 / 1M" };
+            AssertEqual("1M", TickerWindow.FormatWindow(1008000L), "1M face window");
+            AssertEqual("258K", TickerWindow.FormatWindow(258400L), "smaller face window");
+            string[] faces = { "Context: 117,015 / 1M", "Context: 1,008,000 / 1M", "Context: 112,000 / 258K" };
             foreach (string face in faces)
             {
                 double textWidth = TickerWindow.MeasureFaceTextWidth(face);
@@ -250,7 +259,7 @@ namespace OneMContextTicker
         {
             Dictionary<string, object> info = new Dictionary<string, object>();
             info["last_token_usage"] = new Dictionary<string, object> { { "total_tokens", usedTokens } };
-            info["model_context_window"] = TokenEngine.RequiredHostWindow;
+            info["model_context_window"] = 1008000L;
             Dictionary<string, object> record = new Dictionary<string, object>();
             record["timestamp"] = timestampUtc.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture);
             record["type"] = "event_msg";
